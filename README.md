@@ -5,7 +5,7 @@
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-orange)
 
-**Find and fix broken links on your WordPress site. Scan posts, pages and Gutenberg blocks for 404 errors to improve SEO.**
+**Find and fix broken links on your WordPress site. Scan posts, pages, and Gutenberg blocks for 404 errors to improve SEO.**
 
 ## 🚀 Description
 
@@ -14,7 +14,7 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 ### Why You Need This Plugin
 
 - ❌ Broken links negatively impact your Google rankings
-- 😤 404 errors create poor user experience
+- 😤 404 errors create a poor user experience
 - ⏰ Manual link checking is time-consuming and error-prone
 
 ## ✨ Features
@@ -47,7 +47,7 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 - Daily/Hourly scanning
 - Priority Support
 
-[Get Pro Version](https://awplife.com/)
+[Get Pro Version](https://awplife.com/) (coming soon)
 
 ## 📸 Screenshots
 
@@ -80,8 +80,8 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 ## 🎯 How to Use
 
 1. **Start Scan** - Click "Scan Now" to scan your entire website
-2. **Review Results** - View broken, warning, and working links in dashboard
-3. **Fix Links** - Go to source post/page and update broken links
+2. **Review Results** - View broken, warning, and working links in the dashboard
+3. **Fix Links** - Go to the source post/page and update broken links
 4. **Dismiss False Positives** - Click "Dismiss" for links that work but show errors
 5. **Enable Auto-Scan** - Plugin automatically rechecks weekly
 
@@ -145,8 +145,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 This plugin is licensed under the GPL v2 or later.
 
 ```
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
+This program is free software; you can redistribute it and/or modify it
+It is under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 ```
