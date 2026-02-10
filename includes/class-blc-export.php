@@ -4,8 +4,8 @@
  *
  * Exports links to CSV or JSON format.
  *
- * @package BrokenLinkChecker
- * @since 1.0.0
+ * @package DeadLinkCheckerPro
+ * @since 3.0.0
  */
 
 defined('ABSPATH') || exit;
@@ -29,15 +29,14 @@ class BLC_Export
         }
 
         $upload_dir = wp_upload_dir();
-        $export_dir = $upload_dir['basedir'] . '/blc-exports';
+        $export_dir = $upload_dir['basedir'] . '/dlc-exports';
 
         if (!file_exists($export_dir)) {
             wp_mkdir_p($export_dir);
-            file_put_contents($export_dir . '/.htaccess', 'deny from all');
             file_put_contents($export_dir . '/index.php', '<?php // Silence is golden');
         }
 
-        $filename = 'blc-export-' . gmdate('Y-m-d-His') . '.' . $format;
+        $filename = 'dlc-export-' . gmdate('Y-m-d-His') . '.' . $format;
         $filepath = $export_dir . '/' . $filename;
 
         if ($format === 'json') {
@@ -50,7 +49,7 @@ class BLC_Export
             return new WP_Error('export_failed', __('Failed to create export file.', 'dead-link-checker'));
         }
 
-        return $upload_dir['baseurl'] . '/blc-exports/' . $filename;
+        return $upload_dir['baseurl'] . '/dlc-exports/' . $filename;
     }
 
     /**

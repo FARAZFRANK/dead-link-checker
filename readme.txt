@@ -5,7 +5,7 @@ Tags: broken links, dead links, seo, 404 error, link checker, redirects, element
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,12 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 
 == Changelog ==
 
+= 3.0.1 =
+* Fixed export feature - renamed export folder from blc-exports to dlc-exports
+* Fixed export file prefix from blc-export to dlc-export for consistent branding
+* Fixed 403 Forbidden error when downloading exported CSV/JSON files
+* Blog article added for plugin promotion
+
 = 3.0.0 =
 * Complete rebranding from "Broken Link Checker" to "Dead Link Checker Pro"
 * Enhanced dashboard UI with real-time statistics
@@ -144,6 +150,9 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.1 =
+Fixed export feature with proper branding and resolved 403 download error.
 
 = 3.0.0 =
 Major rebranding release. Dead Link Checker Pro now includes all premium features with improved UI and performance.

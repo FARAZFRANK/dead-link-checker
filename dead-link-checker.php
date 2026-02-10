@@ -3,7 +3,7 @@
  * Plugin Name: Dead Link Checker Pro
  * Plugin URI: https://awplife.com/
  * Description: Professional Dead Link Checker Pro for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
- * Version: 3.0.0
+ * Version: 3.0.1
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life

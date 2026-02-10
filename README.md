@@ -3,7 +3,7 @@
 ![WordPress Version](https://img.shields.io/badge/WordPress-5.8%2B-blue)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/License-GPLv2-green)
-![Version](https://img.shields.io/badge/Version-3.0.0-orange)
+![Version](https://img.shields.io/badge/Version-3.0.1-orange)
 
 **The complete professional solution for finding and fixing broken links on your WordPress website.**
 
@@ -124,6 +124,12 @@ Dead Link Checker Pro scans your entire WordPress site, identifies dead links, a
 ---
 
 ## 📝 Changelog
+
+### 3.0.1
+- Fixed export feature - renamed folder from blc-exports to dlc-exports
+- Fixed export file prefix from blc-export to dlc-export for consistent branding
+- Fixed 403 Forbidden error when downloading exported CSV/JSON files
+- Blog article added for plugin promotion
 
 ### 3.0.0
 - Complete rebranding from "Broken Link Checker" to "Dead Link Checker Pro"
