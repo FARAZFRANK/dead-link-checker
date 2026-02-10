@@ -550,8 +550,28 @@
                 success: function (response) {
                     if (response.success && response.data && response.data.download_url) {
                         BLC.showToast(blcAdmin.strings.exportSuccess || 'Export created successfully!', 'success');
-                        // Trigger download
-                        window.location.href = response.data.download_url;
+                        var downloadUrl = response.data.download_url;
+
+                        if (format === 'json') {
+                            // Open JSON in a new tab for easy viewing
+                            window.open(downloadUrl, '_blank');
+                        } else {
+                            // Download CSV without leaving the page
+                            var fileName = downloadUrl.split('/').pop();
+                            fetch(downloadUrl)
+                                .then(function (resp) { return resp.blob(); })
+                                .then(function (blob) {
+                                    var blobUrl = window.URL.createObjectURL(blob);
+                                    var $downloadLink = $('<a>')
+                                        .attr('href', blobUrl)
+                                        .attr('download', fileName)
+                                        .css('display', 'none')
+                                        .appendTo('body');
+                                    $downloadLink[0].click();
+                                    $downloadLink.remove();
+                                    window.URL.revokeObjectURL(blobUrl);
+                                });
+                        }
                     } else {
                         // Handle error message properly
                         var errorMsg = blcAdmin.strings.exportFailed || 'Export failed';

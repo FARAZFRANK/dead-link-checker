@@ -5,7 +5,7 @@ Tags: broken links, dead links, seo, 404 error, link checker, redirects, element
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,11 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 
 == Changelog ==
 
+= 3.0.2 =
+* Improved export behavior - CSV now downloads directly without leaving dashboard
+* JSON export now opens in a new tab for easy viewing
+* Fixed export navigation issue that was redirecting users away from plugin dashboard
+
 = 3.0.1 =
 * Fixed export feature - renamed export folder from blc-exports to dlc-exports
 * Fixed export file prefix from blc-export to dlc-export for consistent branding
@@ -150,6 +155,9 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.2 =
+Improved export download behavior - CSV downloads directly, JSON opens in new tab.
 
 = 3.0.1 =
 Fixed export feature with proper branding and resolved 403 download error.
