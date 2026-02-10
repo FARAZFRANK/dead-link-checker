@@ -19,8 +19,6 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 
 ## ✨ Features
 
-### Free Version
-
 | Feature | Description |
 |---------|-------------|
 | 🔍 **Scan Posts & Pages** | Automatically scan all your content for broken links |
@@ -33,21 +31,6 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 | 📜 **Scan History** | View past scan results (last 5 scans) |
 | ⏱️ **Auto-Recheck** | Broken links are automatically rechecked weekly |
 | 🚫 **Domain Exclusions** | Exclude up to 3 domains from scanning |
-
-### Pro Version Features
-
-- Custom Post Types, Menus, Widgets, Comments, ACF
-- Page Builder Support (Elementor, Divi, WPBakery)
-- Image & YouTube link scanning
-- Direct link editing
-- 301/302/307 Redirect Manager
-- CSV/JSON Export
-- Email Notifications
-- Unlimited domain exclusions
-- Daily/Hourly scanning
-- Priority Support
-
-[Get Pro Version](https://awplife.com/) (coming soon)
 
 ## 📸 Screenshots
 
@@ -168,7 +151,7 @@ the Free Software Foundation; either version 2 of the License, or
 ## 👨‍💻 Authors
 
 - **WP Frank Team** - [wpfrank.com](https://wpfrank.com)
-- **AWP Life** - [awplife.com](https://awplife.com)
+- **AWP Life Team** - [awplife.com](https://awplife.com)
 
 ---
 
