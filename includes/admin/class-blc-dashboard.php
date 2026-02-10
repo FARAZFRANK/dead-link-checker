@@ -390,9 +390,7 @@ class BLC_Dashboard
                                             </span>
                                         <?php endif; ?>
                                         <?php if ($link->anchor_text): ?>
-                                            <span class="blc-anchor-text">"
-                                                <?php echo esc_html(wp_trim_words($link->anchor_text, 5)); ?>"
-                                            </span>
+                                            <span class="blc-anchor-text">"<?php echo esc_html(wp_trim_words($link->anchor_text, 5)); ?>"</span>
                                         <?php endif; ?>
                                     </div>
                                 </td>
