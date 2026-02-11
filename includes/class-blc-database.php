@@ -719,4 +719,91 @@ class BLC_Database
 
         return ($links_result !== false && $scans_result !== false);
     }
+
+    /**
+     * Clear only scan history (keep links data)
+     *
+     * @return bool
+     */
+    public function clear_scan_history()
+    {
+        global $wpdb;
+
+        $result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
+
+        delete_transient('blc_current_scan_id');
+        delete_transient('blc_scan_progress');
+
+        return $result !== false;
+    }
+
+    /**
+     * Clear only links data (keep scan history)
+     *
+     * @return bool
+     */
+    public function clear_links_data()
+    {
+        global $wpdb;
+
+        $result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
+
+        $this->clear_stats_cache();
+
+        return $result !== false;
+    }
+
+    /**
+     * Cleanup old scan data
+     *
+     * @param int $days Number of days to keep
+     * @return int Number of deleted records
+     */
+    public function cleanup_old_data($days = 90)
+    {
+        global $wpdb;
+
+        $threshold = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
+
+        // Delete old completed/cancelled/failed scans
+        $deleted = $wpdb->query($wpdb->prepare(
+            "DELETE FROM {$this->table_scans} WHERE status IN ('completed', 'cancelled', 'failed') AND started_at < %s",
+            $threshold
+        ));
+
+        return $deleted;
+    }
+
+    /**
+     * Get default settings
+     *
+     * @return array
+     */
+    public static function get_default_settings()
+    {
+        return array(
+            'scan_frequency'     => 'daily',
+            'scan_type'          => 'automatic',
+            'timeout'            => 30,
+            'scan_posts'         => true,
+            'scan_pages'         => true,
+            'scan_comments'      => false,
+            'scan_widgets'       => true,
+            'scan_menus'         => true,
+            'scan_custom_fields' => false,
+            'scan_custom_post_types' => array(),
+            'check_internal'     => true,
+            'check_external'     => true,
+            'check_images'       => true,
+            'excluded_domains'   => array(),
+            'email_notifications' => true,
+            'email_frequency'    => 'weekly',
+            'email_recipients'   => array(get_option('admin_email')),
+            'concurrent_requests' => 3,
+            'delay_between'      => 500,
+            'user_agent'         => 'Mozilla/5.0 (compatible; DeadLinkCheckerPro/' . BLC_VERSION . ')',
+            'verify_ssl'         => true,
+            'auto_cleanup_days'  => 90,
+        );
+    }
 }

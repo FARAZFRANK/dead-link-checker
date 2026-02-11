@@ -622,8 +622,15 @@ class BLC_Scanner
     public function stop_scan()
     {
         $scan_id = get_transient('blc_current_scan_id');
+
+        // Also check database for running scans (transient may have expired)
         if (!$scan_id) {
-            return false;
+            $running_scan = blc()->database->get_running_scan();
+            if ($running_scan) {
+                $scan_id = $running_scan->id;
+            } else {
+                return false;
+            }
         }
 
         // Update scan status to cancelled
@@ -643,6 +650,106 @@ class BLC_Scanner
         return true;
     }
 
+    /**
+     * Force stop all scans and reset scan state
+     *
+     * Used when scan is stuck or in an inconsistent state.
+     * This cancels ALL running/pending scans in the database,
+     * clears all transients, and cancels all scheduled queue tasks.
+     *
+     * @return bool True on success
+     */
+    public function force_stop_scan()
+    {
+        global $wpdb;
+
+        $table = blc()->database->get_scans_table();
+
+        // Cancel all running and pending scans in database
+        $wpdb->update(
+            $table,
+            array(
+                'status' => 'cancelled',
+                'completed_at' => current_time('mysql'),
+                'error_message' => __('Force stopped by admin', 'dead-link-checker'),
+            ),
+            array('status' => 'running'),
+            array('%s', '%s', '%s'),
+            array('%s')
+        );
+
+        $wpdb->update(
+            $table,
+            array(
+                'status' => 'cancelled',
+                'error_message' => __('Force stopped by admin', 'dead-link-checker'),
+            ),
+            array('status' => 'pending'),
+            array('%s', '%s'),
+            array('%s')
+        );
+
+        // Clear all transients
+        delete_transient('blc_current_scan_id');
+        delete_transient('blc_scan_progress');
+        delete_transient('blc_stats_cache');
+
+        // Clear all scheduled queue processing
+        BLC_Queue_Manager::cancel('blc_process_queue');
+        BLC_Queue_Manager::cancel_group('blc');
+        wp_clear_scheduled_hook('blc_process_queue');
+
+        return true;
+    }
+
+    /**
+     * Cleanup stale/stuck scans
+     *
+     * Called periodically to detect scans that have been running
+     * for longer than 30 minutes without progress, and auto-cancel them.
+     */
+    public function cleanup_stale_scans()
+    {
+        global $wpdb;
+
+        $table = blc()->database->get_scans_table();
+        $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-30 minutes'));
+
+        // Find scans that have been running for over 30 minutes
+        $stale_scans = $wpdb->get_results($wpdb->prepare(
+            "SELECT id FROM {$table} WHERE status IN ('running', 'pending') AND started_at < %s",
+            $stale_threshold
+        ));
+
+        if (!empty($stale_scans)) {
+            foreach ($stale_scans as $scan) {
+                $wpdb->update(
+                    $table,
+                    array(
+                        'status' => 'failed',
+                        'completed_at' => current_time('mysql'),
+                        'error_message' => __('Scan timed out (exceeded 30 minutes)', 'dead-link-checker'),
+                    ),
+                    array('id' => $scan->id),
+                    array('%s', '%s', '%s'),
+                    array('%d')
+                );
+            }
+
+            // Clear transients
+            delete_transient('blc_current_scan_id');
+            delete_transient('blc_scan_progress');
+
+            // Clear queue
+            BLC_Queue_Manager::cancel('blc_process_queue');
+            wp_clear_scheduled_hook('blc_process_queue');
+
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log(sprintf('[BLC] Auto-cancelled %d stale scan(s)', count($stale_scans)));
+            }
+        }
+    }
+
     public function get_progress()
     {
         $progress = get_transient('blc_scan_progress');
@@ -650,6 +757,14 @@ class BLC_Scanner
         if (!$progress) {
             $scan = blc()->database->get_running_scan();
             if ($scan) {
+                // Check if scan is stale (running for over 30 minutes)
+                $started_at = strtotime($scan->started_at);
+                if ($started_at && (time() - $started_at) > 1800) {
+                    // Auto-recover: mark as failed and return idle
+                    $this->cleanup_stale_scans();
+                    return array('status' => 'idle', 'percent' => 0);
+                }
+
                 $progress = array(
                     'scan_id' => $scan->id,
                     'status' => $scan->status,

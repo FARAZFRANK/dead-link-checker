@@ -125,6 +125,20 @@ Dead Link Checker Pro scans your entire WordPress site, identifies dead links, a
 
 ## 📝 Changelog
 
+### 3.0.3
+- Added Scan Type setting (Manual / Automatic) for controlling scheduled scans
+- Added Force Stop Scan feature to forcefully cancel stuck scans
+- Added Reset Settings to restore plugin defaults without losing data
+- Added Clear Scan History to remove old scan records
+- Added Full Plugin Reset for complete factory reset
+- Added Cleanup Exports to delete old CSV/JSON export files
+- Added action buttons to Help page Reset & Maintenance section
+- Improved Help page with comprehensive documentation
+- Stale scan auto-recovery for scans stuck over 30 minutes
+- Scan timeout watchdog for automatic cleanup
+- Enhanced uninstall cleanup with multisite support
+- Fixed BLC_VERSION constant (was stuck at 1.0.0)
+
 ### 3.0.2
 - Improved export behavior - CSV now downloads directly without leaving dashboard
 - JSON export now opens in a new tab for easy viewing

@@ -74,13 +74,30 @@ function blc_uninstall()
     // Clear any scheduled cron events
     $cron_events = array(
         'blc_scheduled_scan',
+        'blc_recheck_broken',
         'blc_send_digest',
         'blc_cleanup_old_data',
         'blc_process_queue',
+        'blc_stale_scan_watchdog',
     );
 
     foreach ($cron_events as $event) {
         wp_clear_scheduled_hook($event);
+    }
+
+    // Delete export files
+    $upload_dir = wp_upload_dir();
+    $export_dir = $upload_dir['basedir'] . '/dlc-exports';
+    if (is_dir($export_dir)) {
+        $files = glob($export_dir . '/*');
+        if ($files) {
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    wp_delete_file($file);
+                }
+            }
+        }
+        @rmdir($export_dir);
     }
 
     // Clear rewrite rules

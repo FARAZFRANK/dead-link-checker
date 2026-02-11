@@ -5,7 +5,7 @@ Tags: broken links, dead links, seo, 404 error, link checker, redirects, element
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.2
+Stable tag: 3.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,27 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 
 == Changelog ==
 
+= 3.0.4 =
+* Fixed Reset Settings and Full Plugin Reset errors (PHP TypeError in sanitize_settings)
+* Improved Recheck link feature — now detects when a link is manually fixed in the post editor
+* Recheck automatically removes stale entries when the URL no longer exists in source content
+* Fixed sanitize_settings handling of array inputs for excluded_domains and email_recipients
+* Improved table row removal animation when rechecked link is found fixed
+
+= 3.0.3 =
+* Added Scan Type setting (Manual / Automatic) for controlling scheduled scans
+* Added Force Stop Scan feature to forcefully cancel stuck scans
+* Added Reset Settings to restore plugin defaults without losing data
+* Added Clear Scan History to remove old scan records
+* Added Full Plugin Reset for complete factory reset
+* Added Cleanup Exports to delete old CSV/JSON export files
+* Added action buttons to Help page Reset & Maintenance section
+* Improved Help page with comprehensive documentation
+* Stale scan auto-recovery for scans stuck over 30 minutes
+* Scan timeout watchdog for automatic cleanup
+* Enhanced uninstall cleanup with multisite support
+* Fixed BLC_VERSION constant (was stuck at 1.0.0)
+
 = 3.0.2 =
 * Improved export behavior - CSV now downloads directly without leaving dashboard
 * JSON export now opens in a new tab for easy viewing
@@ -155,6 +176,12 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.4 =
+Fixed Reset Settings errors, improved Recheck to detect manually fixed links, and sanitize_settings array handling fix.
+
+= 3.0.3 =
+New scan controls, reset & maintenance tools, Help page improvements, and scan stability fixes.
 
 = 3.0.2 =
 Improved export download behavior - CSV downloads directly, JSON opens in new tab.

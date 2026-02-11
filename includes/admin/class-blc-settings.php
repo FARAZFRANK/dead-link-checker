@@ -24,6 +24,7 @@ class BLC_Settings
 
         // General Section
         add_settings_section('blc_general', __('General Settings', 'dead-link-checker'), null, 'blc-settings');
+        add_settings_field('scan_type', __('Scan Type', 'dead-link-checker'), array($this, 'field_scan_type'), 'blc-settings', 'blc_general');
         add_settings_field('scan_frequency', __('Scan Frequency', 'dead-link-checker'), array($this, 'field_scan_frequency'), 'blc-settings', 'blc_general');
         add_settings_field('timeout', __('Request Timeout', 'dead-link-checker'), array($this, 'field_timeout'), 'blc-settings', 'blc_general');
 
@@ -49,6 +50,7 @@ class BLC_Settings
     public function sanitize_settings($input)
     {
         $sanitized = array();
+        $sanitized['scan_type'] = in_array(($input['scan_type'] ?? 'automatic'), array('manual', 'automatic'), true) ? $input['scan_type'] : 'automatic';
         $sanitized['scan_frequency'] = sanitize_key($input['scan_frequency'] ?? 'daily');
         $sanitized['timeout'] = absint($input['timeout'] ?? 30);
         $sanitized['scan_posts'] = !empty($input['scan_posts']);
@@ -60,10 +62,12 @@ class BLC_Settings
         $sanitized['check_internal'] = !empty($input['check_internal']);
         $sanitized['check_external'] = !empty($input['check_external']);
         $sanitized['check_images'] = !empty($input['check_images']);
-        $sanitized['excluded_domains'] = array_filter(array_map('sanitize_text_field', explode("\n", $input['excluded_domains'] ?? '')));
+        $excluded_raw = $input['excluded_domains'] ?? '';
+        $sanitized['excluded_domains'] = array_filter(array_map('sanitize_text_field', is_array($excluded_raw) ? $excluded_raw : explode("\n", $excluded_raw)));
         $sanitized['email_notifications'] = !empty($input['email_notifications']);
         $sanitized['email_frequency'] = sanitize_key($input['email_frequency'] ?? 'weekly');
-        $sanitized['email_recipients'] = array_filter(array_map('sanitize_email', explode("\n", $input['email_recipients'] ?? get_option('admin_email'))));
+        $recipients_raw = $input['email_recipients'] ?? get_option('admin_email');
+        $sanitized['email_recipients'] = array_filter(array_map('sanitize_email', is_array($recipients_raw) ? $recipients_raw : explode("\n", $recipients_raw)));
         $sanitized['concurrent_requests'] = min(10, max(1, absint($input['concurrent_requests'] ?? 3)));
         $sanitized['user_agent'] = sanitize_text_field($input['user_agent'] ?? '');
         $sanitized['verify_ssl'] = !empty($input['verify_ssl']);
@@ -74,6 +78,25 @@ class BLC_Settings
     {
         $options = get_option('blc_settings', array());
         return isset($options[$key]) ? $options[$key] : $default;
+    }
+
+    public function field_scan_type()
+    {
+        $value = $this->get_option('scan_type', 'automatic');
+        ?>
+        <fieldset>
+            <label>
+                <input type="radio" name="blc_settings[scan_type]" value="automatic" <?php checked($value, 'automatic'); ?> />
+                <?php esc_html_e('Automatic', 'dead-link-checker'); ?>
+                <span class="description"><?php esc_html_e('Scans run automatically based on the frequency below.', 'dead-link-checker'); ?></span>
+            </label><br/>
+            <label>
+                <input type="radio" name="blc_settings[scan_type]" value="manual" <?php checked($value, 'manual'); ?> />
+                <?php esc_html_e('Manual', 'dead-link-checker'); ?>
+                <span class="description"><?php esc_html_e('Scans only run when you click the Scan button.', 'dead-link-checker'); ?></span>
+            </label>
+        </fieldset>
+        <?php
     }
 
     public function field_scan_frequency()
@@ -236,9 +259,7 @@ class BLC_Settings
                         <a href="#advanced">
                             <?php esc_html_e('Advanced', 'dead-link-checker'); ?>
                         </a>
-                        <a href="#help">
-                            <?php esc_html_e('Help', 'dead-link-checker'); ?>
-                        </a>
+
                     </nav>
                     <div class="blc-tabs-content">
                         <div id="general" class="blc-tab-panel active">
@@ -266,99 +287,7 @@ class BLC_Settings
                                 <?php do_settings_fields('blc-settings', 'blc_advanced'); ?>
                             </table>
                         </div>
-                        <div id="help" class="blc-tab-panel">
-                            <div class="blc-help-section">
-                                <h2><?php esc_html_e('Status Codes Explained', 'dead-link-checker'); ?></h2>
-                                <p class="blc-help-intro">
-                                    <?php esc_html_e('When checking links, the plugin reports different status codes that indicate whether a link is working, broken, or has issues.', 'dead-link-checker'); ?>
-                                </p>
 
-                                <div class="blc-status-codes-grid">
-                                    <div class="blc-status-category blc-status-category-success">
-                                        <h3><span class="dashicons dashicons-yes-alt"></span>
-                                            <?php esc_html_e('Working (2xx)', 'dead-link-checker'); ?></h3>
-                                        <dl>
-                                            <dt>200</dt>
-                                            <dd><?php esc_html_e('OK - The link is working correctly and the page exists.', 'dead-link-checker'); ?>
-                                            </dd>
-                                        </dl>
-                                    </div>
-
-                                    <div class="blc-status-category blc-status-category-redirect">
-                                        <h3><span class="dashicons dashicons-external"></span>
-                                            <?php esc_html_e('Redirects (3xx)', 'dead-link-checker'); ?></h3>
-                                        <dl>
-                                            <dt>301</dt>
-                                            <dd><?php esc_html_e('Permanent Redirect - The page has permanently moved to a new URL. Consider updating the link.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>302</dt>
-                                            <dd><?php esc_html_e('Temporary Redirect - The page is temporarily at a different URL.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>307</dt>
-                                            <dd><?php esc_html_e('Temporary Redirect (Strict) - Similar to 302, preserves the request method.', 'dead-link-checker'); ?>
-                                            </dd>
-                                        </dl>
-                                    </div>
-
-                                    <div class="blc-status-category blc-status-category-client">
-                                        <h3><span class="dashicons dashicons-warning"></span>
-                                            <?php esc_html_e('Client Errors (4xx)', 'dead-link-checker'); ?></h3>
-                                        <dl>
-                                            <dt>400</dt>
-                                            <dd><?php esc_html_e('Bad Request - The server couldn\'t understand the request. Check the URL format.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>401</dt>
-                                            <dd><?php esc_html_e('Unauthorized - The page requires authentication/login.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>403</dt>
-                                            <dd><?php esc_html_e('Forbidden - Access to the page is denied, even with authentication.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>404</dt>
-                                            <dd><?php esc_html_e('Not Found - The page doesn\'t exist. The link is broken and should be fixed.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>410</dt>
-                                            <dd><?php esc_html_e('Gone - The page has been permanently removed and won\'t return.', 'dead-link-checker'); ?>
-                                            </dd>
-                                        </dl>
-                                    </div>
-
-                                    <div class="blc-status-category blc-status-category-server">
-                                        <h3><span class="dashicons dashicons-dismiss"></span>
-                                            <?php esc_html_e('Server Errors (5xx)', 'dead-link-checker'); ?></h3>
-                                        <dl>
-                                            <dt>500</dt>
-                                            <dd><?php esc_html_e('Internal Server Error - The website has a problem on their end.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>502</dt>
-                                            <dd><?php esc_html_e('Bad Gateway - The server received an invalid response from upstream.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>503</dt>
-                                            <dd><?php esc_html_e('Service Unavailable - The server is temporarily down (maintenance or overload).', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt>504</dt>
-                                            <dd><?php esc_html_e('Gateway Timeout - The server didn\'t respond in time.', 'dead-link-checker'); ?>
-                                            </dd>
-                                        </dl>
-                                    </div>
-
-                                    <div class="blc-status-category blc-status-category-connection">
-                                        <h3><span class="dashicons dashicons-no"></span>
-                                            <?php esc_html_e('Connection Errors', 'dead-link-checker'); ?></h3>
-                                        <dl>
-                                            <dt><?php esc_html_e('Error', 'dead-link-checker'); ?></dt>
-                                            <dd><?php esc_html_e('Connection failed - The domain doesn\'t exist, DNS lookup failed, or there\'s a network issue.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt><?php esc_html_e('Timeout', 'dead-link-checker'); ?></dt>
-                                            <dd><?php esc_html_e('The server took too long to respond. Try increasing the timeout in settings.', 'dead-link-checker'); ?>
-                                            </dd>
-                                            <dt><?php esc_html_e('SSL Error', 'dead-link-checker'); ?></dt>
-                                            <dd><?php esc_html_e('The website has an invalid or expired SSL certificate.', 'dead-link-checker'); ?>
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <?php submit_button(); ?>

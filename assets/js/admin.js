@@ -23,6 +23,15 @@
             // Fresh Scan button
             $('#blc-fresh-scan-btn').on('click', this.freshScan.bind(this));
 
+            // Force Stop button
+            $('#blc-force-stop-btn').on('click', this.forceStopScan.bind(this));
+
+            // Reset & Maintenance buttons (Help/Settings page)
+            $(document).on('click', '#blc-reset-settings-btn', this.resetSettings.bind(this));
+            $(document).on('click', '#blc-clear-history-btn', this.clearScanHistory.bind(this));
+            $(document).on('click', '#blc-full-reset-btn', this.fullReset.bind(this));
+            $(document).on('click', '#blc-cleanup-exports-btn', this.cleanupExports.bind(this));
+
             // Select all checkbox
             $('#blc-select-all').on('change', function () {
                 $('.blc-link-checkbox').prop('checked', $(this).prop('checked'));
@@ -274,7 +283,14 @@
                     $btn.find('.dashicons').removeClass('spin');
                     if (response.success) {
                         BLC.showToast(response.data.message, 'success');
-                        setTimeout(function () { location.reload(); }, 1000);
+                        if (response.data.removed) {
+                            // Link was fixed/removed from source — fade out the row
+                            $row.fadeOut(400, function () {
+                                $(this).remove();
+                            });
+                        } else {
+                            setTimeout(function () { location.reload(); }, 1000);
+                        }
                     } else {
                         BLC.showToast(response.data || blcAdmin.strings.error, 'error');
                     }
@@ -607,6 +623,160 @@
             setTimeout(function () {
                 $toast.fadeOut(300, function () { $(this).remove(); });
             }, 3000);
+        },
+
+        /**
+         * Force Stop Scan
+         */
+        forceStopScan: function (e) {
+            e.preventDefault();
+            if (!confirm('This will forcefully stop ALL running and pending scans. Are you sure?')) {
+                return;
+            }
+            const $btn = $('#blc-force-stop-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Force Stopping...');
+            $.ajax({
+                url: blcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'blc_force_stop_scan', nonce: blcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        BLC.showToast(response.data || 'All scans force stopped.', 'success');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        BLC.showToast(response.data || 'Failed to force stop.', 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> Force Stop');
+                    }
+                },
+                error: function () {
+                    BLC.showToast('An error occurred.', 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> Force Stop');
+                }
+            });
+        },
+
+        /**
+         * Reset Settings to Defaults
+         */
+        resetSettings: function (e) {
+            e.preventDefault();
+            if (!confirm('This will reset ALL plugin settings to their factory defaults. Your scan data will NOT be affected. Continue?')) {
+                return;
+            }
+            const $btn = $('#blc-reset-settings-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Resetting...');
+            $.ajax({
+                url: blcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'blc_reset_settings', nonce: blcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        BLC.showToast(response.data || 'Settings reset to defaults.', 'success');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        BLC.showToast(response.data || 'Failed to reset settings.', 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> Reset Settings');
+                    }
+                },
+                error: function () {
+                    BLC.showToast('An error occurred.', 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> Reset Settings');
+                }
+            });
+        },
+
+        /**
+         * Clear Scan History
+         */
+        clearScanHistory: function (e) {
+            e.preventDefault();
+            if (!confirm('This will delete all scan history records. Your link data will NOT be affected. Continue?')) {
+                return;
+            }
+            const $btn = $('#blc-clear-history-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Clearing...');
+            $.ajax({
+                url: blcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'blc_clear_scan_history', nonce: blcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        BLC.showToast(response.data || 'Scan history cleared.', 'success');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        BLC.showToast(response.data || 'Failed to clear history.', 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Clear History');
+                    }
+                },
+                error: function () {
+                    BLC.showToast('An error occurred.', 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Clear History');
+                }
+            });
+        },
+
+        /**
+         * Full Plugin Reset
+         */
+        fullReset: function (e) {
+            e.preventDefault();
+            if (!confirm('⚠️ WARNING: This will DELETE all plugin data including links, scan history, and settings. This action cannot be undone! Are you absolutely sure?')) {
+                return;
+            }
+            // Double confirmation for destructive action
+            if (!confirm('Please confirm again: ALL data will be permanently deleted and settings reset to factory defaults.')) {
+                return;
+            }
+            const $btn = $('#blc-full-reset-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Resetting Everything...');
+            $.ajax({
+                url: blcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'blc_full_reset', nonce: blcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        BLC.showToast(response.data || 'Plugin fully reset.', 'success');
+                        setTimeout(function () { location.reload(); }, 2000);
+                    } else {
+                        BLC.showToast(response.data || 'Failed to reset plugin.', 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> Full Reset');
+                    }
+                },
+                error: function () {
+                    BLC.showToast('An error occurred.', 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> Full Reset');
+                }
+            });
+        },
+
+        /**
+         * Cleanup Export Files
+         */
+        cleanupExports: function (e) {
+            e.preventDefault();
+            if (!confirm('This will delete all exported CSV/JSON files. Continue?')) {
+                return;
+            }
+            const $btn = $('#blc-cleanup-exports-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Cleaning...');
+            $.ajax({
+                url: blcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'blc_cleanup_exports', nonce: blcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        BLC.showToast(response.data || 'Export files cleaned up.', 'success');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Cleanup Exports');
+                    } else {
+                        BLC.showToast(response.data || 'Failed to cleanup exports.', 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Cleanup Exports');
+                    }
+                },
+                error: function () {
+                    BLC.showToast('An error occurred.', 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Cleanup Exports');
+                }
+            });
         }
     };
 
