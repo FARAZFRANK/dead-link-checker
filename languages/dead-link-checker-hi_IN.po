@@ -1,0 +1,1639 @@
+# Hindi translation for Dead Link Checker Pro
+# Copyright (C) 2026 WPFrank
+# This file is distributed under the same license as the Dead Link Checker Pro plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Dead Link Checker Pro 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dead-link-checker\n"
+"POT-Creation-Date: 2026-02-13 13:18+0000\n"
+"PO-Revision-Date: 2026-02-13 13:18+0530\n"
+"Last-Translator: WPFrank <developer@wpfrank.com>\n"
+"Language-Team: Hindi <hindi@wpfrank.com>\n"
+"Language: hi_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Dead Link Checker Pro\n"
+"X-Domain: dead-link-checker\n"
+
+#: includes/admin/class-blc-admin.php:564
+msgid "%d broken links detected!"
+msgstr "%d टूटे हुए लिंक पाए गए!"
+
+#: includes/admin/class-blc-admin.php:528
+msgid "%d export file(s) deleted."
+msgstr "%d निर्यात फ़ाइल(फ़ाइलें) हटाई गईं।"
+
+#: includes/admin/class-blc-admin.php:394
+msgid "%d links processed."
+msgstr "%d लिंक प्रोसेस किए गए।"
+
+#: includes/admin/class-blc-dashboard.php:436 includes/models/class-blc-link.php:360
+msgid "%s ago"
+msgstr "%s पहले"
+
+#: includes/models/class-blc-link.php:283 includes/models/class-blc-link.php:289
+msgid "(Deleted)"
+msgstr "(हटाया गया)"
+
+#: includes/admin/class-blc-dashboard.php:560
+msgid "301 - Permanent Redirect (Recommended)"
+msgstr "301 - स्थायी रीडायरेक्ट (अनुशंसित)"
+
+#: includes/class-blc-redirects.php:506
+msgid "301 Permanent"
+msgstr "301 स्थायी"
+
+#: includes/admin/class-blc-dashboard.php:256
+msgid "301 Redirect"
+msgstr "301 रीडायरेक्ट"
+
+#: includes/admin/class-blc-dashboard.php:562
+msgid "302 - Temporary Redirect"
+msgstr "302 - अस्थायी रीडायरेक्ट"
+
+#: includes/admin/class-blc-dashboard.php:257
+msgid "302 Redirect"
+msgstr "302 रीडायरेक्ट"
+
+#: includes/class-blc-redirects.php:507
+msgid "302 Temporary"
+msgstr "302 अस्थायी"
+
+#: includes/admin/class-blc-dashboard.php:565
+msgid "307 - Temporary Redirect (Strict)"
+msgstr "307 - अस्थायी रीडायरेक्ट (सख्त)"
+
+#: includes/class-blc-redirects.php:508
+msgid "307 Temporary"
+msgstr "307 अस्थायी"
+
+#: includes/admin/class-blc-dashboard.php:258
+msgid "401 Unauthorized"
+msgstr "401 अनधिकृत"
+
+#: includes/admin/class-blc-dashboard.php:259
+msgid "403 Forbidden"
+msgstr "403 निषिद्ध"
+
+#: includes/admin/class-blc-dashboard.php:260
+msgid "404 Not Found"
+msgstr "404 नहीं मिला"
+
+#: includes/admin/class-blc-dashboard.php:261
+msgid "405 Method Not Allowed"
+msgstr "405 विधि अनुमत नहीं"
+
+#: includes/admin/class-blc-dashboard.php:262
+msgid "406 Not Acceptable"
+msgstr "406 स्वीकार्य नहीं"
+
+#: includes/admin/class-blc-dashboard.php:263
+msgid "410 Gone"
+msgstr "410 हटाया गया"
+
+#: includes/admin/class-blc-dashboard.php:264
+msgid "429 Too Many Requests"
+msgstr "429 बहुत अधिक अनुरोध"
+
+#: includes/admin/class-blc-dashboard.php:265
+msgid "500 Server Error"
+msgstr "500 सर्वर त्रुटि"
+
+#: includes/admin/class-blc-dashboard.php:266
+msgid "503 Service Unavailable"
+msgstr "503 सेवा अनुपलब्ध"
+
+#: includes/admin/class-blc-admin.php:644
+msgid "<strong>Check External Links</strong> - Enable/disable checking of external URLs."
+msgstr "<strong>बाहरी लिंक जांचें</strong> - बाहरी यूआरएल की जांच सक्षम/अक्षम करें।"
+
+#: includes/admin/class-blc-admin.php:646
+msgid "<strong>Connection Timeout</strong> - How long to wait for link responses."
+msgstr "<strong>कनेक्शन समय सीमा</strong> - लिंक प्रतिक्रिया के लिए कितनी देर प्रतीक्षा करें।"
+
+#: includes/admin/class-blc-admin.php:614
+msgid "<strong>Dismiss Links</strong> - Ignore false positives by clicking \"Dismiss\"."
+msgstr "<strong>लिंक खारिज करें</strong> - \"खारिज करें\" पर क्लिक करके गलत परिणामों को अनदेखा करें।"
+
+#: includes/admin/class-blc-admin.php:645
+msgid "<strong>Email Notifications</strong> - Configure when and how to receive alerts."
+msgstr "<strong>ईमेल सूचनाएँ</strong> - कब और कैसे अलर्ट प्राप्त करें, कॉन्फ़िगर करें।"
+
+#: includes/admin/class-blc-admin.php:600
+msgid "<strong>Email Notifications</strong> - Get notified when broken links are found."
+msgstr "<strong>ईमेल सूचनाएँ</strong> - टूटे हुए लिंक मिलने पर सूचित हों।"
+
+#: includes/admin/class-blc-admin.php:613
+msgid "<strong>Fix Links</strong> - Click \"Edit\" to update a broken link directly, or use bulk actions."
+msgstr "<strong>लिंक ठीक करें</strong> - टूटे हुए लिंक को सीधे अपडेट करने के लिए \"संपादित करें\" पर क्लिक करें, या बल्क कार्रवाइयाँ उपयोग करें।"
+
+#: includes/admin/class-blc-admin.php:598
+msgid "<strong>Link Scanning</strong> - Automatically discover and check all links on your site."
+msgstr "<strong>लिंक स्कैनिंग</strong> - अपनी साइट पर सभी लिंक स्वचालित रूप से खोजें और जांचें।"
+
+#: includes/admin/class-blc-admin.php:599
+msgid "<strong>Page Builder Support</strong> - Scan links in Elementor, Divi, WPBakery, and Gutenberg."
+msgstr "<strong>पेज बिल्डर सपोर्ट</strong> - Elementor, Divi, WPBakery और Gutenberg में लिंक स्कैन करें।"
+
+#: includes/admin/class-blc-admin.php:601
+msgid "<strong>Redirect Manager</strong> - Create 301/302/307 redirects for broken URLs."
+msgstr "<strong>रीडायरेक्ट प्रबंधक</strong> - टूटे हुए यूआरएल के लिए 301/302/307 रीडायरेक्ट बनाएं।"
+
+#: includes/admin/class-blc-admin.php:612
+msgid "<strong>Review Results</strong> - View broken, warning, and working links in the dashboard table."
+msgstr "<strong>परिणाम समीक्षा</strong> - डैशबोर्ड तालिका में टूटे, चेतावनी और काम करने वाले लिंक देखें।"
+
+#: includes/admin/class-blc-admin.php:643
+msgid "<strong>Scan Post Types</strong> - Choose which post types to include in scans."
+msgstr "<strong>पोस्ट प्रकार स्कैन करें</strong> - चुनें कि स्कैन में कौन से पोस्ट प्रकार शामिल करें।"
+
+#: includes/admin/class-blc-admin.php:611
+msgid "<strong>Start a Scan</strong> - Click the \"Scan Now\" button to scan your entire website for broken links."
+msgstr "<strong>स्कैन शुरू करें</strong> - अपनी पूरी वेबसाइट को टूटे हुए लिंक के लिए स्कैन करने के लिए \"अभी स्कैन करें\" बटन पर क्लिक करें।"
+
+#: includes/admin/class-blc-admin.php:821
+msgid "A lightweight background task that automatically rechecks links already marked as broken or warning every 6 hours. This helps detect when a previously broken link has been fixed — without running a full scan. It checks up to 50 links at a time and skips dismissed links."
+msgstr "एक हल्का बैकग्राउंड कार्य जो हर 6 घंटे में टूटे या चेतावनी वाले लिंक की स्वचालित रूप से दोबारा जांच करता है। यह बिना पूर्ण स्कैन चलाए पता लगाने में मदद करता है कि पहले का टूटा लिंक ठीक हो गया है या नहीं। यह एक बार में 50 लिंक तक जांचता है और खारिज किए गए लिंक छोड़ देता है।"
+
+#: includes/class-blc-redirects.php:180
+msgid "A redirect for this URL already exists."
+msgstr "इस यूआरएल के लिए पहले से एक रीडायरेक्ट मौजूद है।"
+
+#: includes/class-blc-notifications.php:194
+msgid "A scan has completed and found the following issues:"
+msgstr "एक स्कैन पूरा हुआ और निम्नलिखित समस्याएँ मिलीं:"
+
+#: includes/scanner/class-blc-scanner.php:31
+msgid "A scan is already in progress."
+msgstr "एक स्कैन पहले से चल रहा है।"
+
+#: includes/class-blc-queue-manager.php:209
+msgid "Action Scheduler"
+msgstr "एक्शन शेड्यूलर"
+
+#: includes/admin/class-blc-dashboard.php:378 includes/class-blc-multisite.php:131
+msgid "Actions"
+msgstr "कार्रवाइयाँ"
+
+#: includes/admin/class-blc-admin.php:1016
+msgid "Add domains that frequently block automated checks (like social media sites) to your exclusion list to reduce false positives."
+msgstr "गलत सकारात्मक परिणामों को कम करने के लिए अक्सर स्वचालित जांच को अवरुद्ध करने वाले डोमेन (जैसे सोशल मीडिया साइट्स) को अपनी बहिष्करण सूची में जोड़ें।"
+
+#: includes/admin/class-blc-admin.php:1015
+msgid "Adjust Concurrent Requests:"
+msgstr "एक साथ अनुरोध समायोजित करें:"
+
+#: includes/admin/class-blc-settings.php:45 includes/admin/class-blc-settings.php:260
+msgid "Advanced"
+msgstr "उन्नत"
+
+#: includes/admin/class-blc-admin.php:887
+msgid "Advanced Tab"
+msgstr "उन्नत टैब"
+
+#: includes/admin/class-blc-admin.php:1101
+msgid "After translating, make sure your WordPress site language is set to your target language. Go to Settings → General → Site Language and select your language. The plugin will automatically load the matching translation file."
+msgstr "अनुवाद करने के बाद, सुनिश्चित करें कि आपकी WordPress साइट की भाषा आपकी लक्ष्य भाषा पर सेट है। सेटिंग्स → सामान्य → साइट भाषा पर जाएँ और अपनी भाषा चुनें। प्लगइन स्वचालित रूप से मिलान करने वाली अनुवाद फ़ाइल लोड करेगा।"
+
+#: includes/admin/class-blc-dashboard.php:189
+msgid "All"
+msgstr "सभी"
+
+#: includes/admin/class-blc-dashboard.php:236
+msgid "All Types"
+msgstr "सभी प्रकार"
+
+#: includes/admin/class-blc-admin.php:98 includes/admin/class-blc-admin.php:437
+msgid "All data cleared. Fresh scan started."
+msgstr "सभी डेटा साफ़ किया गया। नया स्कैन शुरू किया गया।"
+
+#: includes/admin/class-blc-admin.php:452
+msgid "All scans force stopped and scan state reset."
+msgstr "सभी स्कैन बलपूर्वक रोके गए और स्कैन स्थिति रीसेट की गई।"
+
+#: includes/admin/class-blc-admin.php:137
+msgid "All scans force stopped."
+msgstr "सभी स्कैन बलपूर्वक रोके गए।"
+
+#: includes/admin/class-blc-admin.php:101
+msgid "An error occurred."
+msgstr "एक त्रुटि हुई।"
+
+#: includes/admin/class-blc-dashboard.php:514
+msgid "Anchor Text:"
+msgstr "एंकर टेक्स्ट:"
+
+#: includes/admin/class-blc-dashboard.php:254
+msgid "Any Status"
+msgstr "कोई भी स्थिति"
+
+#: includes/admin/class-blc-admin.php:113 includes/admin/class-blc-dashboard.php:308
+msgid "Apply"
+msgstr "लागू करें"
+
+#: includes/admin/class-blc-dashboard.php:279
+msgid "Apply Filters"
+msgstr "फ़िल्टर लागू करें"
+
+#: includes/admin/class-blc-admin.php:129
+msgid "Are you sure you want to remove this link? The anchor text will be kept but the link will be unlinked."
+msgstr "क्या आप वाकई इस लिंक को हटाना चाहते हैं? एंकर टेक्स्ट रखा जाएगा लेकिन लिंक हटा दिया जाएगा।"
+
+#: includes/admin/class-blc-admin.php:96
+msgid "Are you sure you want to stop the scan?"
+msgstr "क्या आप वाकई स्कैन रोकना चाहते हैं?"
+
+#: includes/admin/class-blc-admin.php:95
+msgid "Are you sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+#: includes/admin/class-blc-admin.php:897
+msgid "Auto Cleanup"
+msgstr "ऑटो क्लीनअप"
+
+#: includes/admin/class-blc-admin.php:819
+msgid "Auto-Recheck (Broken Links Only)"
+msgstr "ऑटो-पुनर्जाँच (केवल टूटे हुए लिंक)"
+
+#: includes/admin/class-blc-admin.php:842
+msgid "Auto-Recovery:"
+msgstr "ऑटो-रिकवरी:"
+
+#: includes/admin/class-blc-settings.php:90
+msgid "Automatic"
+msgstr "स्वचालित"
+
+#: includes/admin/class-blc-admin.php:814
+msgid "Automatic Scan (Scheduled)"
+msgstr "स्वचालित स्कैन (निर्धारित)"
+
+#: includes/admin/class-blc-admin.php:898
+msgid "Automatically delete old scan history records after a specified number of days. Default: 90 days."
+msgstr "निर्दिष्ट दिनों के बाद पुराने स्कैन इतिहास रिकॉर्ड स्वचालित रूप से हटाएं। डिफ़ॉल्ट: 90 दिन।"
+
+#: includes/admin/class-blc-dashboard.php:89
+msgid "Basic background processing - install Action Scheduler for better reliability"
+msgstr "बुनियादी बैकग्राउंड प्रोसेसिंग - बेहतर विश्वसनीयता के लिए Action Scheduler इंस्टॉल करें"
+
+#: includes/admin/class-blc-admin.php:630 includes/admin/class-blc-admin.php:671 includes/admin/class-blc-admin.php:727 includes/admin/class-blc-admin.php:911 includes/admin/class-blc-dashboard.php:194 includes/class-blc-multisite.php:122 includes/class-blc-notifications.php:203
+msgid "Broken"
+msgstr "टूटा हुआ"
+
+#: includes/admin/class-blc-dashboard.php:137 includes/class-blc-multisite.php:91 includes/class-blc-notifications.php:226
+msgid "Broken Links"
+msgstr "टूटे हुए लिंक"
+
+#: includes/class-blc-notifications.php:187
+msgid "Broken Links Report"
+msgstr "टूटे हुए लिंक रिपोर्ट"
+
+#: includes/admin/class-blc-dashboard.php:550
+msgid "Broken URL (From):"
+msgstr "टूटा यूआरएल (से):"
+
+#: includes/admin/class-blc-dashboard.php:292
+msgid "Bulk Actions"
+msgstr "बल्क कार्रवाई"
+
+#: includes/admin/class-blc-dashboard.php:525 includes/admin/class-blc-dashboard.php:573
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#: includes/admin/class-blc-admin.php:810
+msgid "Categorize links as Working (200 OK), Broken (4xx/5xx errors), or Warning (redirects, slow responses)."
+msgstr "लिंक को वर्गीकृत करें: कार्यशील (200 OK), टूटा (4xx/5xx त्रुटियाँ), या चेतावनी (रीडायरेक्ट, धीमी प्रतिक्रिया)।"
+
+#: includes/admin/class-blc-admin.php:809
+msgid "Check each link by sending HTTP HEAD/GET requests to verify if the URL responds correctly."
+msgstr "यह सत्यापित करने के लिए कि यूआरएल सही ढंग से प्रतिक्रिया करता है, HTTP HEAD/GET अनुरोध भेजकर प्रत्येक लिंक की जांच करें।"
+
+#: includes/class-blc-notifications.php:219
+msgid "Checked"
+msgstr "जांचा गया"
+
+#: includes/admin/class-blc-admin.php:149
+msgid "Checked %1$s of %2$s links (%3$s%%) — %4$s broken, %5$s warnings"
+msgstr "%2$s में से %1$s लिंक जांचे गए (%3$s%%) — %4$s टूटे, %5$s चेतावनियाँ"
+
+#: includes/admin/class-blc-admin.php:856
+msgid "Choose \"Manual\" (scan only when you click the button) or \"Automatic\" (scan runs on a schedule automatically)."
+msgstr "\"मैनुअल\" चुनें (बटन क्लिक करने पर ही स्कैन) या \"स्वचालित\" (स्कैन स्वचालित रूप से शेड्यूल पर चलता है)।"
+
+#: includes/admin/class-blc-admin.php:868
+msgid "Choose to check Internal Links (your own site), External Links (other websites), and/or Image URLs."
+msgstr "आंतरिक लिंक (आपकी अपनी साइट), बाहरी लिंक (अन्य वेबसाइट), और/या चित्र यूआरएल जांचने का विकल्प चुनें।"
+
+#: includes/admin/class-blc-admin.php:121
+msgid "Cleaning..."
+msgstr "साफ़ हो रहा है..."
+
+#: includes/admin/class-blc-admin.php:122 includes/admin/class-blc-admin.php:987 includes/admin/class-blc-admin.php:991
+msgid "Cleanup Exports"
+msgstr "निर्यात साफ़ करें"
+
+#: includes/admin/class-blc-dashboard.php:282
+msgid "Clear"
+msgstr "साफ़ करें"
+
+#: includes/admin/class-blc-admin.php:118 includes/admin/class-blc-admin.php:973
+msgid "Clear History"
+msgstr "इतिहास साफ़ करें"
+
+#: includes/admin/class-blc-admin.php:969
+msgid "Clear Scan History"
+msgstr "स्कैन इतिहास साफ़ करें"
+
+#: includes/admin/class-blc-dashboard.php:100
+msgid "Clear all data and start fresh"
+msgstr "सभी डेटा साफ़ करें और नया शुरू करें"
+
+#: includes/admin/class-blc-admin.php:108
+msgid "Clearing..."
+msgstr "साफ़ हो रहा है..."
+
+#: includes/admin/class-blc-admin.php:1052
+msgid "Click \"New Language\" and select your desired language."
+msgstr "\"New Language\" पर क्लिक करें और अपनी इच्छित भाषा चुनें।"
+
+#: includes/admin/class-blc-admin.php:1054
+msgid "Click \"Save\" when done. Your translations will take effect immediately."
+msgstr "पूरा होने पर \"Save\" पर क्लिक करें। आपके अनुवाद तुरंत प्रभावी होंगे।"
+
+#: includes/admin/class-blc-admin.php:840
+msgid "Click \"Stop Scan\" on the Dashboard to gracefully stop a running scan."
+msgstr "चल रहे स्कैन को रोकने के लिए डैशबोर्ड पर \"स्कैन रोकें\" पर क्लिक करें।"
+
+#: includes/admin/class-blc-admin.php:804
+msgid "Click the \"Scan Now\" button on the Dashboard to start a full scan manually. The plugin will:"
+msgstr "मैन्युअल रूप से पूर्ण स्कैन शुरू करने के लिए डैशबोर्ड पर \"अभी स्कैन करें\" बटन पर क्लिक करें। प्लगइन:"
+
+#: includes/models/class-blc-link.php:288
+msgid "Comment on \"%s\""
+msgstr "\"%s\" पर टिप्पणी"
+
+#: includes/admin/class-blc-settings.php:143
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
+#: includes/admin/class-blc-admin.php:931
+msgid "Common HTTP Status Codes"
+msgstr "सामान्य HTTP स्थिति कोड"
+
+#: includes/admin/class-blc-admin.php:721
+msgid "Completed"
+msgstr "पूरा हुआ"
+
+#: includes/admin/class-blc-admin.php:889 includes/admin/class-blc-settings.php:46
+msgid "Concurrent Requests"
+msgstr "एक साथ अनुरोध"
+
+#: includes/admin/class-blc-admin.php:641
+msgid "Configuration Options"
+msgstr "कॉन्फ़िगरेशन विकल्प"
+
+#: includes/admin/class-blc-admin.php:948
+msgid "Connection Error — A generic error occurred while trying to reach the URL (e.g., connection refused, reset, or unknown failure)."
+msgstr "कनेक्शन त्रुटि — यूआरएल तक पहुँचने का प्रयास करते समय एक सामान्य त्रुटि हुई (जैसे, कनेक्शन अस्वीकृत, रीसेट, या अज्ञात विफलता)।"
+
+#: includes/admin/class-blc-admin.php:865
+msgid "Content Types"
+msgstr "सामग्री प्रकार"
+
+#: includes/admin/class-blc-settings.php:33
+msgid "Content to Scan"
+msgstr "स्कैन करने की सामग्री"
+
+#: includes/admin/class-blc-admin.php:320
+msgid "Could not update."
+msgstr "अपडेट नहीं हो सका।"
+
+#: includes/admin/class-blc-admin.php:112 includes/admin/class-blc-dashboard.php:455 includes/admin/class-blc-dashboard.php:540 includes/admin/class-blc-dashboard.php:576
+msgid "Create Redirect"
+msgstr "रीडायरेक्ट बनाएं"
+
+#: includes/admin/class-blc-dashboard.php:547
+msgid "Create a redirect so visitors to the broken URL will be sent to a new working URL."
+msgstr "एक रीडायरेक्ट बनाएं ताकि टूटे यूआरएल पर आने वाले आगंतुकों को नए काम करने वाले यूआरएल पर भेजा जाए।"
+
+#: includes/admin/class-blc-dashboard.php:508
+msgid "Current URL:"
+msgstr "वर्तमान यूआरएल:"
+
+#: includes/admin/class-blc-settings.php:146
+msgid "Custom Fields (ACF)"
+msgstr "कस्टम फ़ील्ड (ACF)"
+
+#: includes/admin/class-blc-settings.php:114 includes/admin/class-blc-settings.php:189
+msgid "Daily"
+msgstr "दैनिक"
+
+#: includes/admin/class-blc-admin.php:72
+msgid "Dashboard"
+msgstr "डैशबोर्ड"
+
+#: includes/admin/class-blc-dashboard.php:272
+msgid "Date Range:"
+msgstr "तिथि सीमा:"
+
+#: includes/admin/class-blc-admin.php:63 includes/admin/class-blc-admin.php:594 includes/admin/class-blc-admin.php:660 includes/admin/class-blc-dashboard.php:76
+msgid "Dead Link Checker Pro"
+msgstr "डेड लिंक चेकर प्रो"
+
+#: includes/class-blc-multisite.php:73
+msgid "Dead Link Checker Pro - Network Overview"
+msgstr "डेड लिंक चेकर प्रो - नेटवर्क अवलोकन"
+
+#: includes/admin/class-blc-settings.php:239
+msgid "Dead Link Checker Pro Settings"
+msgstr "डेड लिंक चेकर प्रो सेटिंग्स"
+
+#: includes/admin/class-blc-admin.php:1030
+msgid "Dead Link Checker Pro is fully translation-ready. You can translate it into your language using any of the methods below."
+msgstr "डेड लिंक चेकर प्रो पूरी तरह अनुवाद-तैयार है। आप नीचे दिए गए किसी भी तरीके से इसे अपनी भाषा में अनुवाद कर सकते हैं।"
+
+#: includes/class-blc-activator.php:59
+msgid "Dead Link Checker Pro requires PHP 7.4 or higher."
+msgstr "डेड लिंक चेकर प्रो के लिए PHP 7.4 या उच्चतर आवश्यक है।"
+
+#: includes/class-blc-activator.php:70
+msgid "Dead Link Checker Pro requires WordPress 5.8 or higher."
+msgstr "डेड लिंक चेकर प्रो के लिए WordPress 5.8 या उच्चतर आवश्यक है।"
+
+#: includes/admin/class-blc-admin.php:791
+msgid "Dead Link Checker Pro scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:"
+msgstr "डेड लिंक चेकर प्रो आपकी पूरी WordPress वेबसाइट को स्कैन करता है टूटे हुए लिंक, रीडायरेक्ट और अन्य लिंक समस्याओं को खोजने के लिए। यह पोस्ट, पेज, मेनू, विजेट, टिप्पणियों, कस्टम फ़ील्ड और पेज बिल्डर सामग्री (Elementor, Divi, WPBakery, Gutenberg) में लिंक की जांच करता है। यह इस प्रकार काम करता है:"
+
+#: includes/admin/class-blc-admin.php:891
+msgid "Delay Between Requests"
+msgstr "अनुरोधों के बीच विलंब"
+
+#: includes/admin/class-blc-dashboard.php:304 includes/admin/class-blc-dashboard.php:471
+msgid "Delete"
+msgstr "हटाएं"
+
+#: includes/admin/class-blc-admin.php:988
+msgid "Deletes all exported CSV/JSON files from the uploads directory to free up disk space."
+msgstr "डिस्क स्थान खाली करने के लिए अपलोड डायरेक्टरी से सभी निर्यात की गई CSV/JSON फ़ाइलें हटाता है।"
+
+#: includes/admin/class-blc-admin.php:970
+msgid "Deletes all scan history records but keeps your link data intact."
+msgstr "सभी स्कैन इतिहास रिकॉर्ड हटाता है लेकिन आपका लिंक डेटा बरकरार रखता है।"
+
+#: includes/admin/class-blc-admin.php:807
+msgid "Discover all links from your selected content types (Posts, Pages, Menus, Widgets, Comments, Custom Fields)."
+msgstr "आपके चयनित सामग्री प्रकारों (पोस्ट, पेज, मेनू, विजेट, टिप्पणियाँ, कस्टम फ़ील्ड) से सभी लिंक खोजें।"
+
+#: includes/admin/class-blc-dashboard.php:298 includes/admin/class-blc-dashboard.php:466
+msgid "Dismiss"
+msgstr "खारिज करें"
+
+#: includes/admin/class-blc-admin.php:633 includes/admin/class-blc-admin.php:926 includes/admin/class-blc-dashboard.php:209
+msgid "Dismissed"
+msgstr "खारिज किया गया"
+
+#: includes/admin/class-blc-admin.php:811
+msgid "Display results on the Dashboard with filters for easy review."
+msgstr "आसान समीक्षा के लिए फ़िल्टर के साथ डैशबोर्ड पर परिणाम प्रदर्शित करें।"
+
+#: includes/admin/class-blc-admin.php:946
+msgid "Domain does not exist — The domain name could not be resolved."
+msgstr "डोमेन मौजूद नहीं है — डोमेन नाम हल नहीं किया जा सका।"
+
+#: includes/admin/class-blc-admin.php:1064
+msgid "Download and install %s on your computer (free desktop application)."
+msgstr "अपने कंप्यूटर पर %s डाउनलोड और इंस्टॉल करें (मुफ्त डेस्कटॉप एप्लिकेशन)।"
+
+#: includes/admin/class-blc-dashboard.php:450 includes/admin/class-blc-dashboard.php:502
+msgid "Edit Link"
+msgstr "लिंक संपादित करें"
+
+#: includes/admin/class-blc-admin.php:881
+msgid "Email Frequency"
+msgstr "ईमेल आवृत्ति"
+
+#: includes/admin/class-blc-admin.php:879 includes/admin/class-blc-settings.php:42
+msgid "Email Notifications"
+msgstr "ईमेल सूचनाएँ"
+
+#: includes/admin/class-blc-admin.php:884
+msgid "Email addresses to receive notifications (one per line). Defaults to the admin email."
+msgstr "सूचनाएँ प्राप्त करने के लिए ईमेल पते (प्रति पंक्ति एक)। डिफ़ॉल्ट: व्यवस्थापक ईमेल।"
+
+#: includes/admin/class-blc-settings.php:182
+msgid "Enable email notifications"
+msgstr "ईमेल सूचनाएँ सक्षम करें"
+
+#: includes/admin/class-blc-admin.php:880
+msgid "Enable to receive email alerts when broken links are found."
+msgstr "टूटे हुए लिंक मिलने पर ईमेल अलर्ट प्राप्त करने के लिए सक्षम करें।"
+
+#: includes/admin/class-blc-admin.php:874
+msgid "Enter domain names (one per line) that should be skipped during scanning. For example: facebook.com, twitter.com. Links to these domains will not be checked."
+msgstr "वे डोमेन नाम दर्ज करें (प्रति पंक्ति एक) जिन्हें स्कैनिंग के दौरान छोड़ना चाहिए। उदाहरण: facebook.com, twitter.com। इन डोमेन के लिंक की जांच नहीं की जाएगी।"
+
+#: includes/admin/class-blc-settings.php:170
+msgid "Enter one domain per line (e.g., example.com). Links to these domains will be ignored."
+msgstr "प्रति पंक्ति एक डोमेन दर्ज करें (जैसे, example.com)। इन डोमेन के लिंक अनदेखा किए जाएंगे।"
+
+#: includes/models/class-blc-link.php:234
+msgid "Error"
+msgstr "त्रुटि"
+
+#: includes/admin/class-blc-dashboard.php:267
+msgid "Error (No Response)"
+msgstr "त्रुटि (कोई प्रतिक्रिया नहीं)"
+
+#: includes/admin/class-blc-admin.php:873 includes/admin/class-blc-settings.php:38
+msgid "Excluded Domains"
+msgstr "बहिष्कृत डोमेन"
+
+#: includes/admin/class-blc-settings.php:37 includes/admin/class-blc-settings.php:254
+msgid "Exclusions"
+msgstr "बहिष्करण"
+
+#: includes/admin/class-blc-admin.php:871
+msgid "Exclusions Tab"
+msgstr "बहिष्करण टैब"
+
+#: includes/admin/class-blc-dashboard.php:111
+msgid "Export"
+msgstr "निर्यात"
+
+#: includes/admin/class-blc-admin.php:1018
+msgid "Export Regularly:"
+msgstr "नियमित निर्यात करें:"
+
+#: includes/admin/class-blc-dashboard.php:117
+msgid "Export as CSV"
+msgstr "CSV के रूप में निर्यात करें"
+
+#: includes/admin/class-blc-dashboard.php:121
+msgid "Export as JSON"
+msgstr "JSON के रूप में निर्यात करें"
+
+#: includes/admin/class-blc-admin.php:103
+msgid "Export created successfully!"
+msgstr "निर्यात सफलतापूर्वक बनाया गया!"
+
+#: includes/admin/class-blc-admin.php:104
+msgid "Export failed."
+msgstr "निर्यात विफल।"
+
+#: includes/admin/class-blc-admin.php:145
+msgid "Export files cleaned up."
+msgstr "निर्यात फ़ाइलें साफ़ की गईं।"
+
+#: includes/admin/class-blc-admin.php:1018
+msgid "Export your broken link reports as CSV for record-keeping or to share with your team."
+msgstr "रिकॉर्ड रखने या अपनी टीम के साथ साझा करने के लिए अपनी टूटे हुए लिंक रिपोर्ट CSV के रूप में निर्यात करें।"
+
+#: includes/admin/class-blc-admin.php:620
+msgid "Export your link data for external analysis."
+msgstr "बाहरी विश्लेषण के लिए अपना लिंक डेटा निर्यात करें।"
+
+#: includes/admin/class-blc-admin.php:102
+msgid "Exporting..."
+msgstr "निर्यात हो रहा है..."
+
+#: includes/admin/class-blc-dashboard.php:242 includes/models/class-blc-link.php:263
+msgid "External"
+msgstr "बाहरी"
+
+#: includes/admin/class-blc-settings.php:156
+msgid "External Links"
+msgstr "बाहरी लिंक"
+
+#: includes/admin/class-blc-admin.php:146
+msgid "Failed to cleanup exports."
+msgstr "निर्यात साफ़ करने में विफल।"
+
+#: includes/admin/class-blc-admin.php:426
+msgid "Failed to clear existing data."
+msgstr "मौजूदा डेटा साफ़ करने में विफल।"
+
+#: includes/admin/class-blc-admin.php:142
+msgid "Failed to clear history."
+msgstr "इतिहास साफ़ करने में विफल।"
+
+#: includes/admin/class-blc-admin.php:482
+msgid "Failed to clear scan history."
+msgstr "स्कैन इतिहास साफ़ करने में विफल।"
+
+#: includes/class-blc-export.php:49
+msgid "Failed to create export file."
+msgstr "निर्यात फ़ाइल बनाने में विफल।"
+
+#: includes/class-blc-redirects.php:200
+msgid "Failed to create redirect."
+msgstr "रीडायरेक्ट बनाने में विफल।"
+
+#: includes/scanner/class-blc-scanner.php:36
+msgid "Failed to create scan record."
+msgstr "स्कैन रिकॉर्ड बनाने में विफल।"
+
+#: includes/class-blc-redirects.php:433
+msgid "Failed to delete redirect."
+msgstr "रीडायरेक्ट हटाने में विफल।"
+
+#: includes/admin/class-blc-admin.php:138
+msgid "Failed to force stop."
+msgstr "बलपूर्वक रोकने में विफल।"
+
+#: includes/admin/class-blc-admin.php:144
+msgid "Failed to reset plugin."
+msgstr "प्लगइन रीसेट करने में विफल।"
+
+#: includes/admin/class-blc-admin.php:140
+msgid "Failed to reset settings."
+msgstr "सेटिंग्स रीसेट करने में विफल।"
+
+#: includes/admin/class-blc-admin.php:199 includes/admin/class-blc-admin.php:211 includes/admin/class-blc-admin.php:257
+msgid "Failed."
+msgstr "विफल।"
+
+#: includes/admin/class-blc-admin.php:596
+msgid "Features:"
+msgstr "विशेषताएँ:"
+
+#: includes/admin/class-blc-admin.php:1051
+msgid "Find \"Dead Link Checker\" in the list and click on it."
+msgstr "सूची में \"Dead Link Checker\" खोजें और उस पर क्लिक करें।"
+
+#: includes/admin/class-blc-admin.php:652
+msgid "For more help:"
+msgstr "अधिक सहायता के लिए:"
+
+#: includes/admin/class-blc-admin.php:937
+msgid "Forbidden — Access denied. The server refuses to serve this URL."
+msgstr "निषिद्ध — पहुँच अस्वीकृत। सर्वर इस यूआरएल को सेवा देने से इनकार करता है।"
+
+#: includes/admin/class-blc-admin.php:114 includes/admin/class-blc-admin.php:964
+msgid "Force Stop"
+msgstr "बलपूर्वक रोकें"
+
+#: includes/admin/class-blc-admin.php:960
+msgid "Force Stop Scan"
+msgstr "स्कैन बलपूर्वक रोकें"
+
+#: includes/admin/class-blc-admin.php:841
+msgid "Force Stop:"
+msgstr "बलपूर्वक रोकें:"
+
+#: includes/admin/class-blc-admin.php:115
+msgid "Force Stopping..."
+msgstr "बलपूर्वक रोका जा रहा है..."
+
+#: includes/scanner/class-blc-scanner.php:674 includes/scanner/class-blc-scanner.php:685
+msgid "Force stopped by admin"
+msgstr "व्यवस्थापक द्वारा बलपूर्वक रोका गया"
+
+#: includes/admin/class-blc-admin.php:961
+msgid "Forcefully stops all running/pending scans, clears the scan queue, and resets the scan state. Use when a scan appears stuck."
+msgstr "सभी चल रहे/लंबित स्कैन को बलपूर्वक रोकता है, स्कैन कतार साफ़ करता है, और स्कैन स्थिति रीसेट करता है। जब स्कैन अटका हुआ लगे तब उपयोग करें।"
+
+#: includes/admin/class-blc-admin.php:935
+msgid "Found — Temporary redirect. The URL is temporarily pointing elsewhere."
+msgstr "मिला — अस्थायी रीडायरेक्ट। यूआरएल अस्थायी रूप से कहीं और इंगित कर रहा है।"
+
+#: includes/admin/class-blc-settings.php:186
+msgid "Frequency:"
+msgstr "आवृत्ति:"
+
+#: includes/admin/class-blc-admin.php:109 includes/admin/class-blc-admin.php:824 includes/admin/class-blc-dashboard.php:102
+msgid "Fresh Scan"
+msgstr "नया स्कैन"
+
+#: includes/admin/class-blc-admin.php:996
+msgid "Full Plugin Reset"
+msgstr "पूर्ण प्लगइन रीसेट"
+
+#: includes/admin/class-blc-admin.php:119 includes/admin/class-blc-admin.php:1000
+msgid "Full Reset"
+msgstr "पूर्ण रीसेट"
+
+#: includes/admin/class-blc-settings.php:248
+msgid "General"
+msgstr "सामान्य"
+
+#: includes/admin/class-blc-settings.php:26
+msgid "General Settings"
+msgstr "सामान्य सेटिंग्स"
+
+#: includes/admin/class-blc-admin.php:853
+msgid "General Tab"
+msgstr "सामान्य टैब"
+
+#: includes/admin/class-blc-admin.php:609
+msgid "Getting Started"
+msgstr "शुरुआत करें"
+
+#: includes/admin/class-blc-admin.php:1047
+msgid "Go to %s in your WordPress admin menu."
+msgstr "अपने WordPress व्यवस्थापक मेनू में %s पर जाएँ।"
+
+#: includes/admin/class-blc-admin.php:941
+msgid "Gone — The page has been permanently removed. Unlike 404, the server knows it was intentionally deleted."
+msgstr "हटाया गया — पृष्ठ स्थायी रूप से हटा दिया गया है। 404 के विपरीत, सर्वर जानता है कि इसे जानबूझकर हटाया गया था।"
+
+#: includes/admin/class-blc-admin.php:632
+msgid "HTTP 200 OK - Link is working properly."
+msgstr "HTTP 200 OK - लिंक सही ढंग से काम कर रहा है।"
+
+#: includes/admin/class-blc-admin.php:922
+msgid "HTTP 200 OK. The link is working perfectly — no action needed."
+msgstr "HTTP 200 OK। लिंक पूरी तरह से काम कर रहा है — कोई कार्रवाई आवश्यक नहीं।"
+
+#: includes/admin/class-blc-admin.php:912
+msgid "HTTP 4xx or 5xx error. The link is dead or the server returned an error. Common codes: 404 (Not Found), 403 (Forbidden), 500 (Server Error)."
+msgstr "HTTP 4xx या 5xx त्रुटि। लिंक मृत है या सर्वर ने त्रुटि दी। सामान्य कोड: 404 (नहीं मिला), 403 (निषिद्ध), 500 (सर्वर त्रुटि)।"
+
+#: includes/admin/class-blc-admin.php:630
+msgid "HTTP 4xx/5xx errors - Link is not working."
+msgstr "HTTP 4xx/5xx त्रुटियाँ - लिंक काम नहीं कर रहा।"
+
+#: includes/admin/class-blc-dashboard.php:251
+msgid "HTTP Status:"
+msgstr "HTTP स्थिति:"
+
+#: includes/admin/class-blc-admin.php:75
+msgid "Help"
+msgstr "सहायता"
+
+#: includes/admin/class-blc-admin.php:779
+msgid "Help & Documentation"
+msgstr "सहायता और दस्तावेज़"
+
+#: includes/admin/class-blc-settings.php:108
+msgid "Hourly"
+msgstr "प्रति घंटा"
+
+#: includes/admin/class-blc-admin.php:788
+msgid "How Plugin Works?"
+msgstr "प्लगइन कैसे काम करता है?"
+
+#: includes/admin/class-blc-admin.php:858
+msgid "How often automatic scans run: Hourly, Twice Daily, Daily, or Weekly. Only applies when Scan Type is \"Automatic\"."
+msgstr "स्वचालित स्कैन कितनी बार चलते हैं: प्रति घंटा, दिन में दो बार, दैनिक, या साप्ताहिक। केवल तब लागू होता है जब स्कैन प्रकार \"स्वचालित\" हो।"
+
+#: includes/admin/class-blc-admin.php:882
+msgid "How often to send notification emails: Immediately, Daily, or Weekly digest."
+msgstr "सूचना ईमेल कितनी बार भेजें: तुरंत, दैनिक, या साप्ताहिक सारांश।"
+
+#: includes/admin/class-blc-admin.php:1027
+msgid "How to Translate This Plugin"
+msgstr "इस प्लगइन का अनुवाद कैसे करें"
+
+#: includes/admin/class-blc-admin.php:608
+msgid "How to Use"
+msgstr "उपयोग कैसे करें"
+
+#: includes/admin/class-blc-admin.php:709
+msgid "ID"
+msgstr "आईडी"
+
+#: includes/admin/class-blc-admin.php:841
+msgid "If the Stop button does not work, use \"Force Stop\" from the Dashboard Tools section. This forcefully cancels all running scans, clears the scan queue, and resets the scan state."
+msgstr "यदि रोकें बटन काम नहीं करता, तो डैशबोर्ड उपकरण अनुभाग से \"बलपूर्वक रोकें\" का उपयोग करें। यह सभी चल रहे स्कैन को बलपूर्वक रद्द करता है, स्कैन कतार साफ़ करता है, और स्कैन स्थिति रीसेट करता है।"
+
+#: includes/admin/class-blc-admin.php:1112
+msgid "If you have questions or need support, please visit:"
+msgstr "यदि आपके कोई प्रश्न हैं या सहायता चाहिए, तो कृपया यहाँ जाएँ:"
+
+#: includes/admin/class-blc-admin.php:1015
+msgid "If your server is slow or shared hosting, reduce concurrent requests to 1–2. For dedicated servers, you can increase to 5–10."
+msgstr "यदि आपका सर्वर धीमा है या शेयर्ड होस्टिंग है, तो एक साथ अनुरोध 1-2 तक कम करें। समर्पित सर्वर के लिए, 5-10 तक बढ़ा सकते हैं।"
+
+#: includes/admin/class-blc-dashboard.php:245 includes/models/class-blc-link.php:264
+msgid "Image"
+msgstr "चित्र"
+
+#: includes/admin/class-blc-settings.php:156
+msgid "Images"
+msgstr "चित्र"
+
+#: includes/admin/class-blc-admin.php:1075
+msgid "In Poedit, go to \"Create New Translation\" and select your language."
+msgstr "Poedit में, \"Create New Translation\" पर जाएँ और अपनी भाषा चुनें।"
+
+#: includes/class-blc-queue-manager.php:221
+msgid "Install WooCommerce or Action Scheduler plugin for more reliable background processing."
+msgstr "अधिक विश्वसनीय बैकग्राउंड प्रोसेसिंग के लिए WooCommerce या Action Scheduler प्लगइन इंस्टॉल करें।"
+
+#: includes/admin/class-blc-admin.php:1040
+msgid "Install and activate the %s plugin from the WordPress plugin repository."
+msgstr "WordPress प्लगइन रिपॉजिटरी से %s प्लगइन इंस्टॉल और सक्रिय करें।"
+
+#: includes/admin/class-blc-dashboard.php:239 includes/models/class-blc-link.php:262
+msgid "Internal"
+msgstr "आंतरिक"
+
+#: includes/admin/class-blc-settings.php:156
+msgid "Internal Links"
+msgstr "आंतरिक लिंक"
+
+#: includes/scanner/class-blc-checker.php:41
+msgid "Invalid URL format"
+msgstr "अमान्य यूआरएल प्रारूप"
+
+#: includes/admin/class-blc-admin.php:197 includes/admin/class-blc-admin.php:209 includes/admin/class-blc-admin.php:221 includes/admin/class-blc-admin.php:255 includes/admin/class-blc-admin.php:331
+msgid "Invalid link ID."
+msgstr "अमान्य लिंक आईडी।"
+
+#: includes/admin/class-blc-admin.php:271 includes/admin/class-blc-admin.php:367
+msgid "Invalid parameters."
+msgstr "अमान्य पैरामीटर।"
+
+#: includes/class-blc-redirects.php:397 includes/class-blc-redirects.php:427 includes/class-blc-redirects.php:453
+msgid "Invalid redirect ID."
+msgstr "अमान्य रीडायरेक्ट आईडी।"
+
+#: includes/admin/class-blc-dashboard.php:373
+msgid "Last Check"
+msgstr "अंतिम जांच"
+
+#: includes/class-blc-multisite.php:128
+msgid "Last Scan"
+msgstr "अंतिम स्कैन"
+
+#: includes/admin/class-blc-dashboard.php:80
+msgid "Last scan: %s ago"
+msgstr "अंतिम स्कैन: %s पहले"
+
+#: includes/admin/class-blc-dashboard.php:515
+msgid "Leave empty to keep current"
+msgstr "वर्तमान रखने के लिए खाली छोड़ें"
+
+#: includes/admin/class-blc-admin.php:64 includes/class-blc-multisite.php:38
+msgid "Link Checker"
+msgstr "लिंक चेकर"
+
+#: includes/class-blc-multisite.php:37
+msgid "Link Checker Network"
+msgstr "लिंक चेकर नेटवर्क"
+
+#: includes/admin/class-blc-admin.php:627
+msgid "Link Status"
+msgstr "लिंक स्थिति"
+
+#: includes/admin/class-blc-dashboard.php:233
+msgid "Link Type:"
+msgstr "लिंक प्रकार:"
+
+#: includes/admin/class-blc-admin.php:867 includes/admin/class-blc-settings.php:34
+msgid "Link Types"
+msgstr "लिंक प्रकार"
+
+#: includes/admin/class-blc-admin.php:257
+msgid "Link deleted."
+msgstr "लिंक हटाया गया।"
+
+#: includes/admin/class-blc-admin.php:199
+msgid "Link dismissed."
+msgstr "लिंक खारिज किया गया।"
+
+#: includes/admin/class-blc-admin.php:224 includes/admin/class-blc-admin.php:275 includes/admin/class-blc-admin.php:335
+msgid "Link not found."
+msgstr "लिंक नहीं मिला।"
+
+#: includes/admin/class-blc-admin.php:245
+msgid "Link rechecked."
+msgstr "लिंक की फिर से जांच की गई।"
+
+#: includes/admin/class-blc-admin.php:356
+msgid "Link removed."
+msgstr "लिंक हटाया गया।"
+
+#: includes/admin/class-blc-admin.php:211
+msgid "Link restored."
+msgstr "लिंक पुनर्स्थापित किया गया।"
+
+#: includes/admin/class-blc-admin.php:317
+msgid "Link updated."
+msgstr "लिंक अपडेट किया गया।"
+
+#: includes/admin/class-blc-admin.php:235
+msgid "Link was fixed/removed from the source. Entry deleted."
+msgstr "लिंक स्रोत से ठीक/हटाया गया। प्रविष्टि हटाई गई।"
+
+#: includes/admin/class-blc-admin.php:724
+msgid "Links"
+msgstr "लिंक"
+
+#: includes/admin/class-blc-admin.php:1048
+msgid "Loco Translate → Plugins"
+msgstr "Loco Translate → प्लगइन्स"
+
+#: includes/admin/class-blc-settings.php:95
+msgid "Manual"
+msgstr "मैनुअल"
+
+#: includes/admin/class-blc-settings.php:120
+msgid "Manual Only"
+msgstr "केवल मैनुअल"
+
+#: includes/admin/class-blc-admin.php:802
+msgid "Manual Scan (Scan Now)"
+msgstr "मैनुअल स्कैन (अभी स्कैन करें)"
+
+#: includes/admin/class-blc-admin.php:633
+msgid "Manually ignored by admin."
+msgstr "व्यवस्थापक द्वारा मैन्युअल रूप से अनदेखा किया गया।"
+
+#: includes/admin/class-blc-admin.php:927
+msgid "Manually ignored by admin. These links are excluded from broken/warning counts and are not rechecked automatically."
+msgstr "व्यवस्थापक द्वारा मैन्युअल रूप से अनदेखा किया गया। ये लिंक टूटे/चेतावनी की गिनती से बाहर हैं और स्वचालित रूप से पुनः जांचे नहीं जाते।"
+
+#: includes/admin/class-blc-admin.php:860
+msgid "Maximum time (in seconds) to wait for a URL response before marking it as timed out. Default: 30 seconds. Range: 5–120 seconds."
+msgstr "समय समाप्त के रूप में चिह्नित करने से पहले यूआरएल प्रतिक्रिया की प्रतीक्षा करने का अधिकतम समय (सेकंड में)। डिफ़ॉल्ट: 30 सेकंड। सीमा: 5-120 सेकंड।"
+
+#: includes/admin/class-blc-settings.php:133
+msgid "Maximum time to wait for a response from a link."
+msgstr "किसी लिंक से प्रतिक्रिया की प्रतीक्षा करने का अधिकतम समय।"
+
+#: includes/models/class-blc-link.php:295
+msgid "Menu"
+msgstr "मेनू"
+
+#: includes/admin/class-blc-settings.php:145
+msgid "Menus"
+msgstr "मेनू"
+
+#: includes/admin/class-blc-admin.php:1034
+msgid "Method 1: Using Loco Translate Plugin (Recommended)"
+msgstr "तरीका 1: Loco Translate प्लगइन का उपयोग करके (अनुशंसित)"
+
+#: includes/admin/class-blc-admin.php:1058
+msgid "Method 2: Using Poedit (Manual PO/MO Files)"
+msgstr "तरीका 2: Poedit का उपयोग करके (मैनुअल PO/MO फ़ाइलें)"
+
+#: includes/admin/class-blc-admin.php:1089
+msgid "Method 3: Contribute on translate.wordpress.org"
+msgstr "तरीका 3: translate.wordpress.org पर योगदान करें"
+
+#: includes/admin/class-blc-admin.php:939
+msgid "Method Not Allowed — The HTTP method used is not supported by this URL."
+msgstr "विधि अनुमत नहीं — इस यूआरएल द्वारा उपयोग की गई HTTP विधि समर्थित नहीं है।"
+
+#: includes/admin/class-blc-admin.php:892
+msgid "Milliseconds to wait between checking each link (0–5000). Helps prevent overloading your server or getting rate-limited by external sites. Default: 500ms."
+msgstr "प्रत्येक लिंक की जांच के बीच प्रतीक्षा करने के लिए मिलीसेकंड (0-5000)। आपके सर्वर पर अधिक भार या बाहरी साइटों द्वारा दर-सीमित होने से रोकने में मदद करता है। डिफ़ॉल्ट: 500ms।"
+
+#: includes/admin/class-blc-admin.php:934
+msgid "Moved Permanently — The URL has been permanently redirected to a new location."
+msgstr "स्थायी रूप से स्थानांतरित — यूआरएल को नए स्थान पर स्थायी रूप से रीडायरेक्ट किया गया है।"
+
+#: includes/admin/class-blc-admin.php:1110
+msgid "Need Help?"
+msgstr "सहायता चाहिए?"
+
+#: includes/admin/class-blc-dashboard.php:439 includes/class-blc-multisite.php:181 includes/models/class-blc-link.php:357
+msgid "Never"
+msgstr "कभी नहीं"
+
+#: includes/admin/class-blc-dashboard.php:511
+msgid "New URL:"
+msgstr "नया यूआरएल:"
+
+#: includes/admin/class-blc-dashboard.php:388
+msgid "No broken links found. Great job!"
+msgstr "कोई टूटा हुआ लिंक नहीं मिला। बहुत बढ़िया!"
+
+#: includes/class-blc-redirects.php:241
+msgid "No data to update."
+msgstr "अपडेट करने के लिए कोई डेटा नहीं।"
+
+#: includes/admin/class-blc-dashboard.php:390
+msgid "No links found. Run a scan to discover links."
+msgstr "कोई लिंक नहीं मिला। लिंक खोजने के लिए स्कैन चलाएं।"
+
+#: includes/class-blc-export.php:28
+msgid "No links to export."
+msgstr "निर्यात करने के लिए कोई लिंक नहीं।"
+
+#: includes/admin/class-blc-admin.php:945
+msgid "No response — The server did not respond within the configured timeout period."
+msgstr "कोई प्रतिक्रिया नहीं — सर्वर ने कॉन्फ़िगर की गई समय सीमा के भीतर प्रतिक्रिया नहीं दी।"
+
+#: includes/admin/class-blc-admin.php:177
+msgid "No scan is running."
+msgstr "कोई स्कैन नहीं चल रहा।"
+
+#: includes/admin/class-blc-admin.php:735
+msgid "No scans yet."
+msgstr "अभी तक कोई स्कैन नहीं।"
+
+#: includes/class-blc-multisite.php:139
+msgid "No sites found."
+msgstr "कोई साइट नहीं मिली।"
+
+#: includes/admin/class-blc-admin.php:940
+msgid "Not Acceptable — The server cannot produce a response matching the request headers."
+msgstr "स्वीकार्य नहीं — सर्वर अनुरोध हेडर से मिलान करने वाली प्रतिक्रिया उत्पन्न नहीं कर सकता।"
+
+#: includes/admin/class-blc-admin.php:938
+msgid "Not Found — The page does not exist. This is the most common broken link."
+msgstr "नहीं मिला — पृष्ठ मौजूद नहीं है। यह सबसे आम टूटा हुआ लिंक है।"
+
+#: includes/admin/class-blc-admin.php:1100
+msgid "Note:"
+msgstr "नोट:"
+
+#: includes/admin/class-blc-settings.php:41 includes/admin/class-blc-settings.php:257
+msgid "Notifications"
+msgstr "सूचनाएँ"
+
+#: includes/admin/class-blc-admin.php:877
+msgid "Notifications Tab"
+msgstr "सूचनाएँ टैब"
+
+#: includes/admin/class-blc-admin.php:890
+msgid "Number of links to check simultaneously (1–10). Higher values speed up scanning but use more server resources. Default: 3."
+msgstr "एक साथ जांचने वाले लिंक की संख्या (1-10)। अधिक मान स्कैनिंग तेज करते हैं लेकिन अधिक सर्वर संसाधन उपयोग करते हैं। डिफ़ॉल्ट: 3।"
+
+#: includes/admin/class-blc-settings.php:213
+msgid "Number of links to check simultaneously. Higher values are faster but may overload your server."
+msgstr "एक साथ जांचने वाले लिंक की संख्या। अधिक मान तेज़ हैं लेकिन सर्वर पर अधिक भार डाल सकते हैं।"
+
+#: includes/admin/class-blc-admin.php:933
+msgid "OK — Link is working."
+msgstr "OK — लिंक काम कर रहा है।"
+
+#: includes/admin/class-blc-settings.php:202
+msgid "One email per line."
+msgstr "प्रति पंक्ति एक ईमेल।"
+
+#: includes/admin/class-blc-admin.php:1071
+msgid "Open the POT template file located at: %s"
+msgstr "यहाँ स्थित POT टेम्पलेट फ़ाइल खोलें: %s"
+
+#: includes/admin/class-blc-admin.php:593
+msgid "Overview"
+msgstr "अवलोकन"
+
+#: includes/admin/class-blc-settings.php:142
+msgid "Pages"
+msgstr "पेज"
+
+#: includes/admin/class-blc-admin.php:808
+msgid "Parse page builder content (Elementor, Divi, WPBakery, Gutenberg blocks) to find embedded links."
+msgstr "एम्बेडेड लिंक खोजने के लिए पेज बिल्डर सामग्री (Elementor, Divi, WPBakery, Gutenberg ब्लॉक) को पार्स करें।"
+
+#: includes/models/class-blc-link.php:241
+msgid "Pending"
+msgstr "लंबित"
+
+#: includes/admin/class-blc-admin.php:158 includes/admin/class-blc-admin.php:171 includes/admin/class-blc-admin.php:185 includes/admin/class-blc-admin.php:194 includes/admin/class-blc-admin.php:206 includes/admin/class-blc-admin.php:218 includes/admin/class-blc-admin.php:252 includes/admin/class-blc-admin.php:264 includes/admin/class-blc-admin.php:327 includes/admin/class-blc-admin.php:363 includes/admin/class-blc-admin.php:401 includes/admin/class-blc-admin.php:419 includes/admin/class-blc-admin.php:449 includes/admin/class-blc-admin.php:462 includes/admin/class-blc-admin.php:476 includes/admin/class-blc-admin.php:493 includes/admin/class-blc-admin.php:525 includes/class-blc-redirects.php:362 includes/class-blc-redirects.php:391 includes/class-blc-redirects.php:421 includes/class-blc-redirects.php:447 includes/class-blc-redirects.php:482
+msgid "Permission denied."
+msgstr "अनुमति अस्वीकृत।"
+
+#: includes/admin/class-blc-admin.php:134
+msgid "Please confirm again: ALL data will be permanently deleted and settings reset to factory defaults."
+msgstr "कृपया फिर से पुष्टि करें: सभी डेटा स्थायी रूप से हटा दिया जाएगा और सेटिंग्स फ़ैक्टरी डिफ़ॉल्ट पर रीसेट हो जाएंगी।"
+
+#: includes/admin/class-blc-admin.php:124
+msgid "Please enter a new URL or anchor text"
+msgstr "कृपया एक नया यूआरएल या एंकर टेक्स्ट दर्ज करें"
+
+#: includes/admin/class-blc-admin.php:125
+msgid "Please enter a target URL"
+msgstr "कृपया एक लक्ष्य यूआरएल दर्ज करें"
+
+#: includes/admin/class-blc-admin.php:126
+msgid "Please select an action"
+msgstr "कृपया एक कार्रवाई चुनें"
+
+#: includes/admin/class-blc-admin.php:127
+msgid "Please select at least one link"
+msgstr "कृपया कम से कम एक लिंक चुनें"
+
+#: includes/class-blc-activator.php:60 includes/class-blc-activator.php:71
+msgid "Plugin Activation Error"
+msgstr "प्लगइन सक्रियण त्रुटि"
+
+#: includes/admin/class-blc-admin.php:653
+msgid "Plugin Documentation"
+msgstr "प्लगइन दस्तावेज़"
+
+#: includes/admin/class-blc-admin.php:515
+msgid "Plugin fully reset to factory defaults."
+msgstr "प्लगइन पूरी तरह फ़ैक्टरी डिफ़ॉल्ट पर रीसेट।"
+
+#: includes/admin/class-blc-admin.php:143
+msgid "Plugin fully reset."
+msgstr "प्लगइन पूरी तरह रीसेट।"
+
+#: includes/admin/class-blc-admin.php:1080
+msgid "Poedit will generate two files (e.g., %1$s and %2$s). Upload both to: %3$s"
+msgstr "Poedit दो फ़ाइलें बनाएगा (जैसे, %1$s और %2$s)। दोनों को यहाँ अपलोड करें: %3$s"
+
+#: includes/admin/class-blc-settings.php:141
+msgid "Posts"
+msgstr "पोस्ट"
+
+#: includes/admin/class-blc-admin.php:99
+msgid "Processing..."
+msgstr "प्रोसेस हो रहा है..."
+
+#: includes/admin/class-blc-dashboard.php:295 includes/admin/class-blc-dashboard.php:446
+msgid "Recheck"
+msgstr "फिर से जांचें"
+
+#: includes/admin/class-blc-admin.php:883
+msgid "Recipients"
+msgstr "प्राप्तकर्ता"
+
+#: includes/admin/class-blc-settings.php:198
+msgid "Recipients:"
+msgstr "प्राप्तकर्ता:"
+
+#: includes/admin/class-blc-dashboard.php:556
+msgid "Redirect Type:"
+msgstr "रीडायरेक्ट प्रकार:"
+
+#: includes/admin/class-blc-admin.php:147
+msgid "Redirect created successfully!"
+msgstr "रीडायरेक्ट सफलतापूर्वक बनाया गया!"
+
+#: includes/class-blc-redirects.php:378
+msgid "Redirect created successfully."
+msgstr "रीडायरेक्ट सफलतापूर्वक बनाया गया।"
+
+#: includes/class-blc-redirects.php:436
+msgid "Redirect deleted successfully."
+msgstr "रीडायरेक्ट सफलतापूर्वक हटाया गया।"
+
+#: includes/class-blc-redirects.php:469
+msgid "Redirect disabled."
+msgstr "रीडायरेक्ट अक्षम किया गया।"
+
+#: includes/class-blc-redirects.php:469
+msgid "Redirect enabled."
+msgstr "रीडायरेक्ट सक्षम किया गया।"
+
+#: includes/class-blc-redirects.php:458
+msgid "Redirect not found."
+msgstr "रीडायरेक्ट नहीं मिला।"
+
+#: includes/class-blc-redirects.php:410
+msgid "Redirect updated successfully."
+msgstr "रीडायरेक्ट सफलतापूर्वक अपडेट किया गया।"
+
+#: includes/admin/class-blc-admin.php:631
+msgid "Redirects, timeouts, or suspicious responses."
+msgstr "रीडायरेक्ट, समय समाप्त, या संदिग्ध प्रतिक्रियाएँ।"
+
+#: includes/admin/class-blc-dashboard.php:89
+msgid "Reliable background processing"
+msgstr "विश्वसनीय बैकग्राउंड प्रोसेसिंग"
+
+#: includes/admin/class-blc-admin.php:111 includes/admin/class-blc-dashboard.php:521
+msgid "Remove Link"
+msgstr "लिंक हटाएं"
+
+#: includes/admin/class-blc-admin.php:859 includes/admin/class-blc-settings.php:29
+msgid "Request Timeout"
+msgstr "अनुरोध समय सीमा"
+
+#: includes/admin/class-blc-admin.php:956
+msgid "Reset & Maintenance Options"
+msgstr "रीसेट और रखरखाव विकल्प"
+
+#: includes/admin/class-blc-admin.php:117 includes/admin/class-blc-admin.php:978 includes/admin/class-blc-admin.php:982
+msgid "Reset Settings"
+msgstr "सेटिंग्स रीसेट करें"
+
+#: includes/admin/class-blc-admin.php:997
+msgid "Resets EVERYTHING — link data, scan history, settings, and export files — back to factory defaults. Use with caution!"
+msgstr "सब कुछ रीसेट करता है — लिंक डेटा, स्कैन इतिहास, सेटिंग्स, और निर्यात फ़ाइलें — फ़ैक्टरी डिफ़ॉल्ट पर वापस। सावधानी से उपयोग करें!"
+
+#: includes/admin/class-blc-admin.php:979
+msgid "Resets all plugin settings to their default values without affecting link data or scan history."
+msgstr "लिंक डेटा या स्कैन इतिहास को प्रभावित किए बिना सभी प्लगइन सेटिंग्स को उनके डिफ़ॉल्ट मानों पर रीसेट करता है।"
+
+#: includes/admin/class-blc-admin.php:120
+msgid "Resetting Everything..."
+msgstr "सब कुछ रीसेट हो रहा है..."
+
+#: includes/admin/class-blc-admin.php:116
+msgid "Resetting..."
+msgstr "रीसेट हो रहा है..."
+
+#: includes/admin/class-blc-dashboard.php:301 includes/admin/class-blc-dashboard.php:461
+msgid "Restore"
+msgstr "पुनर्स्थापित करें"
+
+#: includes/admin/class-blc-admin.php:1017
+msgid "Review Warnings:"
+msgstr "चेतावनियाँ समीक्षा करें:"
+
+#: includes/admin/class-blc-admin.php:564
+msgid "Review and fix them."
+msgstr "उनकी समीक्षा करें और ठीक करें।"
+
+#: includes/admin/class-blc-dashboard.php:313
+msgid "Rows per page:"
+msgstr "प्रति पृष्ठ पंक्तियाँ:"
+
+#: includes/admin/class-blc-admin.php:1014
+msgid "Run your first scan manually to see how long it takes on your site before enabling automatic scanning."
+msgstr "स्वचालित स्कैनिंग सक्षम करने से पहले मैन्युअल रूप से अपना पहला स्कैन चलाएं और देखें कि आपकी साइट पर कितना समय लगता है।"
+
+#: includes/admin/class-blc-admin.php:947
+msgid "SSL certificate issue — The website has an invalid or expired SSL certificate."
+msgstr "SSL प्रमाणपत्र समस्या — वेबसाइट का SSL प्रमाणपत्र अमान्य या समाप्त हो गया है।"
+
+#: includes/admin/class-blc-admin.php:857 includes/admin/class-blc-settings.php:28
+msgid "Scan Frequency"
+msgstr "स्कैन आवृत्ति"
+
+#: includes/admin/class-blc-admin.php:74 includes/admin/class-blc-admin.php:702
+msgid "Scan History"
+msgstr "स्कैन इतिहास"
+
+#: includes/admin/class-blc-dashboard.php:97
+msgid "Scan Now"
+msgstr "अभी स्कैन करें"
+
+#: includes/admin/class-blc-settings.php:32 includes/admin/class-blc-settings.php:251
+msgid "Scan Scope"
+msgstr "स्कैन सीमा"
+
+#: includes/admin/class-blc-admin.php:863
+msgid "Scan Scope Tab"
+msgstr "स्कैन सीमा टैब"
+
+#: includes/admin/class-blc-admin.php:855 includes/admin/class-blc-settings.php:27
+msgid "Scan Type"
+msgstr "स्कैन प्रकार"
+
+#: includes/class-blc-deactivator.php:98 includes/class-blc-deactivator.php:110
+msgid "Scan cancelled: Plugin deactivated"
+msgstr "स्कैन रद्द: प्लगइन निष्क्रिय किया गया"
+
+#: includes/admin/class-blc-admin.php:92
+msgid "Scan complete!"
+msgstr "स्कैन पूर्ण!"
+
+#: includes/admin/class-blc-admin.php:93
+msgid "Scan failed."
+msgstr "स्कैन विफल।"
+
+#: includes/admin/class-blc-admin.php:141 includes/admin/class-blc-admin.php:480
+msgid "Scan history cleared."
+msgstr "स्कैन इतिहास साफ़ किया गया।"
+
+#: includes/admin/class-blc-admin.php:164
+msgid "Scan started."
+msgstr "स्कैन शुरू हुआ।"
+
+#: includes/admin/class-blc-admin.php:94 includes/admin/class-blc-admin.php:175
+msgid "Scan stopped."
+msgstr "स्कैन रोका गया।"
+
+#: includes/scanner/class-blc-scanner.php:731
+msgid "Scan timed out (exceeded 30 minutes)"
+msgstr "स्कैन का समय समाप्त (30 मिनट से अधिक)"
+
+#: includes/admin/class-blc-admin.php:799
+msgid "Scanning Modes"
+msgstr "स्कैनिंग मोड"
+
+#: includes/admin/class-blc-admin.php:91
+msgid "Scanning..."
+msgstr "स्कैन हो रहा है..."
+
+#: includes/admin/class-blc-settings.php:96
+msgid "Scans only run when you click the Scan button."
+msgstr "स्कैन तभी चलता है जब आप स्कैन बटन पर क्लिक करें।"
+
+#: includes/admin/class-blc-settings.php:91
+msgid "Scans run automatically based on the frequency below."
+msgstr "आवृत्ति के अनुसार स्कैन स्वचालित रूप से चलते हैं।"
+
+#: includes/admin/class-blc-dashboard.php:218
+msgid "Search URLs..."
+msgstr "यूआरएल खोजें..."
+
+#: includes/admin/class-blc-admin.php:1019
+msgid "Select multiple links with checkboxes and use bulk Dismiss, Delete, or Recheck to manage them efficiently."
+msgstr "चेकबॉक्स से कई लिंक चुनें और कुशलता से प्रबंधित करने के लिए बल्क खारिज, हटाएं, या पुनः जांच का उपयोग करें।"
+
+#: includes/admin/class-blc-admin.php:866
+msgid "Select which content types to scan: Posts, Pages, Comments, Widgets, Menus, Custom Fields, and Custom Post Types (if any registered)."
+msgstr "चुनें कि कौन से सामग्री प्रकार स्कैन करने हैं: पोस्ट, पेज, टिप्पणियाँ, विजेट, मेनू, कस्टम फ़ील्ड, और कस्टम पोस्ट प्रकार (यदि कोई पंजीकृत हो)।"
+
+#: includes/admin/class-blc-admin.php:943
+msgid "Server Error — Something went wrong on the target server."
+msgstr "सर्वर त्रुटि — लक्ष्य सर्वर पर कुछ गलत हो गया।"
+
+#: includes/admin/class-blc-admin.php:944
+msgid "Service Unavailable — The server is temporarily down, often for maintenance."
+msgstr "सेवा अनुपलब्ध — सर्वर अस्थायी रूप से बंद है, अक्सर रखरखाव के लिए।"
+
+#: includes/admin/class-blc-admin.php:73 includes/admin/class-blc-admin.php:640
+msgid "Settings"
+msgstr "सेटिंग्स"
+
+#: includes/admin/class-blc-admin.php:850
+msgid "Settings Explained"
+msgstr "सेटिंग्स विवरण"
+
+#: includes/admin/class-blc-admin.php:139 includes/admin/class-blc-admin.php:466
+msgid "Settings reset to defaults."
+msgstr "सेटिंग्स डिफ़ॉल्ट पर रीसेट की गईं।"
+
+#: includes/class-blc-multisite.php:113
+msgid "Site"
+msgstr "साइट"
+
+#: includes/class-blc-multisite.php:99
+msgid "Sites"
+msgstr "साइट्स"
+
+#: includes/class-blc-multisite.php:107
+msgid "Sites Overview"
+msgstr "साइट अवलोकन"
+
+#: includes/admin/class-blc-admin.php:837
+msgid "Sometimes a scan may appear stuck due to slow server responses, timeout issues, or server restarts. Here is what the plugin does to handle this:"
+msgstr "कभी-कभी धीमी सर्वर प्रतिक्रिया, समय सीमा समस्याओं, या सर्वर पुनः शुरू होने के कारण स्कैन अटका हुआ लग सकता है। प्लगइन इसे संभालने के लिए यह करता है:"
+
+#: includes/admin/class-blc-dashboard.php:363 includes/class-blc-notifications.php:238
+msgid "Source"
+msgstr "स्रोत"
+
+#: includes/class-blc-redirects.php:163
+msgid "Source and target URLs are required."
+msgstr "स्रोत और लक्ष्य यूआरएल आवश्यक हैं।"
+
+#: includes/admin/class-blc-admin.php:1014
+msgid "Start with a Manual Scan:"
+msgstr "मैनुअल स्कैन से शुरू करें:"
+
+#: includes/admin/class-blc-admin.php:718
+msgid "Started"
+msgstr "शुरू हुआ"
+
+#: includes/admin/class-blc-admin.php:715 includes/admin/class-blc-dashboard.php:352 includes/class-blc-notifications.php:235
+msgid "Status"
+msgstr "स्थिति"
+
+#: includes/admin/class-blc-admin.php:106 includes/admin/class-blc-dashboard.php:106
+msgid "Stop Scan"
+msgstr "स्कैन रोकें"
+
+#: includes/admin/class-blc-admin.php:840
+msgid "Stop Scan Button:"
+msgstr "स्कैन रोकें बटन:"
+
+#: includes/admin/class-blc-admin.php:107
+msgid "Stopping..."
+msgstr "रोका जा रहा है..."
+
+#: includes/admin/class-blc-admin.php:100
+msgid "Success!"
+msgstr "सफल!"
+
+#: includes/admin/class-blc-admin.php:654
+msgid "Support Forums"
+msgstr "सपोर्ट फ़ोरम"
+
+#: includes/admin/class-blc-dashboard.php:553
+msgid "Target URL (To):"
+msgstr "लक्ष्य यूआरएल (को):"
+
+#: includes/admin/class-blc-admin.php:894
+msgid "The User-Agent string sent with HTTP requests. Some websites may block requests from unknown user agents. The default mimics a standard browser."
+msgstr "HTTP अनुरोधों के साथ भेजी गई User-Agent स्ट्रिंग। कुछ वेबसाइटें अज्ञात यूजर एजेंट से अनुरोध ब्लॉक कर सकती हैं। डिफ़ॉल्ट एक मानक ब्राउज़र की नकल करता है।"
+
+#: includes/admin/class-blc-admin.php:917
+msgid "The link works but has issues: it redirects (301/302), responds slowly (over 5 seconds), or returned a suspicious status code. Review these to decide if action is needed."
+msgstr "लिंक काम करता है लेकिन समस्याएँ हैं: यह रीडायरेक्ट करता है (301/302), धीमी प्रतिक्रिया देता है (5 सेकंड से अधिक), या संदिग्ध स्थिति कोड लौटाता है। कार्रवाई आवश्यक है या नहीं यह तय करने के लिए इनकी समीक्षा करें।"
+
+#: includes/admin/class-blc-admin.php:842
+msgid "The plugin automatically detects scans that have been running for over 30 minutes without progress and marks them as \"timed out\". This prevents stuck scans from blocking new ones."
+msgstr "प्लगइन स्वचालित रूप से उन स्कैन का पता लगाता है जो 30 मिनट से अधिक समय से बिना प्रगति के चल रहे हैं और उन्हें \"समय समाप्त\" के रूप में चिह्नित करता है। यह अटके हुए स्कैन को नए स्कैन को अवरुद्ध करने से रोकता है।"
+
+#: includes/class-blc-notifications.php:269
+msgid "This email was sent by Dead Link Checker Pro plugin on %s"
+msgstr "यह ईमेल डेड लिंक चेकर प्रो प्लगइन द्वारा %s पर भेजा गया"
+
+#: includes/admin/class-blc-admin.php:595
+msgid "This plugin scans your website for broken links and helps you fix them quickly. It checks all links in your posts, pages, comments, and custom fields."
+msgstr "यह प्लगइन आपकी वेबसाइट को टूटे हुए लिंक के लिए स्कैन करता है और उन्हें जल्दी ठीक करने में मदद करता है। यह आपके पोस्ट, पेज, टिप्पणियों और कस्टम फ़ील्ड में सभी लिंक की जांच करता है।"
+
+#: includes/admin/class-blc-admin.php:97
+msgid "This will DELETE all existing link data and scan history, then start a fresh scan. Are you sure?"
+msgstr "इससे सभी मौजूदा लिंक डेटा और स्कैन इतिहास हटा दिया जाएगा, फिर एक नया स्कैन शुरू होगा। क्या आप सुनिश्चित हैं?"
+
+#: includes/admin/class-blc-admin.php:135
+msgid "This will delete all exported CSV/JSON files. Continue?"
+msgstr "इससे सभी निर्यात की गई CSV/JSON फ़ाइलें हटा दी जाएंगी। जारी रखें?"
+
+#: includes/admin/class-blc-admin.php:132
+msgid "This will delete all scan history records. Your link data will NOT be affected. Continue?"
+msgstr "इससे सभी स्कैन इतिहास रिकॉर्ड हटा दिए जाएंगे। आपका लिंक डेटा प्रभावित नहीं होगा। जारी रखें?"
+
+#: includes/admin/class-blc-admin.php:130
+msgid "This will forcefully stop ALL running and pending scans. Are you sure?"
+msgstr "इससे सभी चल रहे और लंबित स्कैन बलपूर्वक रोक दिए जाएंगे। क्या आप सुनिश्चित हैं?"
+
+#: includes/admin/class-blc-admin.php:131
+msgid "This will reset ALL plugin settings to their factory defaults. Your scan data will NOT be affected. Continue?"
+msgstr "इससे सभी प्लगइन सेटिंग्स उनके फ़ैक्टरी डिफ़ॉल्ट पर रीसेट हो जाएंगी। आपका स्कैन डेटा प्रभावित नहीं होगा। जारी रखें?"
+
+#: includes/admin/class-blc-admin.php:1011
+msgid "Tips & Best Practices"
+msgstr "सुझाव और सर्वोत्तम प्रक्रियाएँ"
+
+#: includes/admin/class-blc-admin.php:616
+msgid "Tips:"
+msgstr "सुझाव:"
+
+#: includes/admin/class-blc-admin.php:942
+msgid "Too Many Requests — Rate limit exceeded. The server is blocking requests due to too many in a short time."
+msgstr "बहुत अधिक अनुरोध — दर सीमा पार। कम समय में बहुत अधिक अनुरोधों के कारण सर्वर अनुरोधों को अवरुद्ध कर रहा है।"
+
+#: includes/admin/class-blc-admin.php:677
+msgid "Total"
+msgstr "कुल"
+
+#: includes/admin/class-blc-dashboard.php:170 includes/class-blc-multisite.php:83 includes/class-blc-multisite.php:119
+msgid "Total Links"
+msgstr "कुल लिंक"
+
+#: includes/admin/class-blc-admin.php:1076
+msgid "Translate each string, then save the file."
+msgstr "प्रत्येक स्ट्रिंग का अनुवाद करें, फिर फ़ाइल सेव करें।"
+
+#: includes/admin/class-blc-admin.php:1053
+msgid "Translate the strings one by one using the visual editor. You can search and filter strings to find them quickly."
+msgstr "विजुअल एडिटर का उपयोग करके स्ट्रिंग्स का एक-एक करके अनुवाद करें। आप स्ट्रिंग्स को जल्दी से खोजने के लिए खोज और फ़िल्टर कर सकते हैं।"
+
+#: includes/admin/class-blc-settings.php:111
+msgid "Twice Daily"
+msgstr "दिन में दो बार"
+
+#: includes/admin/class-blc-admin.php:712 includes/admin/class-blc-dashboard.php:367
+msgid "Type"
+msgstr "प्रकार"
+
+#: includes/admin/class-blc-dashboard.php:358 includes/class-blc-multisite.php:116 includes/class-blc-notifications.php:232
+msgid "URL"
+msgstr "यूआरएल"
+
+#: includes/admin/class-blc-admin.php:936
+msgid "Unauthorized — Authentication is required. The server needs valid credentials to access this URL."
+msgstr "अनधिकृत — प्रमाणीकरण आवश्यक है। इस यूआरएल तक पहुँचने के लिए सर्वर को वैध क्रेडेंशियल चाहिए।"
+
+#: includes/admin/class-blc-admin.php:628 includes/admin/class-blc-admin.php:906
+msgid "Understanding Link Status"
+msgstr "लिंक स्थिति को समझना"
+
+#: includes/class-blc-queue-manager.php:218 includes/class-blc-redirects.php:511
+msgid "Unknown"
+msgstr "अज्ञात"
+
+#: includes/admin/class-blc-admin.php:110 includes/admin/class-blc-dashboard.php:528
+msgid "Update Link"
+msgstr "लिंक अपडेट करें"
+
+#: includes/admin/class-blc-admin.php:618
+msgid "Use \"Fresh Scan\" to clear all data and start from scratch."
+msgstr "सभी डेटा साफ़ करने और शुरू से शुरू करने के लिए \"नया स्कैन\" का उपयोग करें।"
+
+#: includes/admin/class-blc-admin.php:1019
+msgid "Use Bulk Actions:"
+msgstr "बल्क कार्रवाइयाँ उपयोग करें:"
+
+#: includes/admin/class-blc-admin.php:1016
+msgid "Use Exclusions:"
+msgstr "बहिष्करण उपयोग करें:"
+
+#: includes/admin/class-blc-admin.php:619
+msgid "Use filters to narrow down results by status, type, or date."
+msgstr "स्थिति, प्रकार, या तिथि के अनुसार परिणामों को सीमित करने के लिए फ़िल्टर का उपयोग करें।"
+
+#: includes/admin/class-blc-admin.php:826
+msgid "Use the \"Fresh Scan\" button to clear ALL existing link data and scan history, then start a completely new scan from scratch. This is useful when you want a clean slate — for example, after making major changes to your website structure."
+msgstr "सभी मौजूदा लिंक डेटा और स्कैन इतिहास साफ़ करने के लिए \"नया स्कैन\" बटन का उपयोग करें, फिर शुरू से एक पूरी तरह से नया स्कैन शुरू करें। यह तब उपयोगी होता है जब आप एक साफ़ शुरुआत चाहते हैं — उदाहरण के लिए, अपनी वेबसाइट संरचना में बड़े बदलाव करने के बाद।"
+
+#: includes/admin/class-blc-admin.php:893 includes/admin/class-blc-settings.php:47
+msgid "User Agent"
+msgstr "यूजर एजेंट"
+
+#: includes/admin/class-blc-settings.php:225
+msgid "User agent string sent with HTTP requests."
+msgstr "एचटीटीपी अनुरोधों के साथ भेजी गई यूजर एजेंट स्ट्रिंग।"
+
+#: includes/admin/class-blc-admin.php:895
+msgid "Verify SSL"
+msgstr "SSL सत्यापित करें"
+
+#: includes/admin/class-blc-settings.php:229
+msgid "Verify SSL certificates"
+msgstr "एसएसएल प्रमाणपत्र सत्यापित करें"
+
+#: includes/class-blc-notifications.php:263
+msgid "View All Broken Links"
+msgstr "सभी टूटे हुए लिंक देखें"
+
+#: includes/class-blc-multisite.php:186
+msgid "View Dashboard"
+msgstr "डैशबोर्ड देखें"
+
+#: includes/admin/class-blc-dashboard.php:251
+msgid "View HTTP Status Codes Reference"
+msgstr "HTTP स्थिति कोड संदर्भ देखें"
+
+#: includes/admin/class-blc-admin.php:680
+msgid "View Links"
+msgstr "लिंक देखें"
+
+#: includes/admin/class-blc-admin.php:1096
+msgid "Visit translate.wordpress.org"
+msgstr "translate.wordpress.org पर जाएँ"
+
+#: includes/class-blc-queue-manager.php:210
+msgid "WP-Cron"
+msgstr "डब्ल्यूपी-क्रॉन"
+
+#: includes/admin/class-blc-admin.php:631 includes/admin/class-blc-admin.php:916 includes/models/class-blc-link.php:238
+msgid "Warning"
+msgstr "चेतावनी"
+
+#: includes/admin/class-blc-admin.php:1017
+msgid "Warning links (redirects) are not broken, but you may want to update them to point directly to the final URL for better SEO."
+msgstr "चेतावनी लिंक (रीडायरेक्ट) टूटे नहीं हैं, लेकिन बेहतर SEO के लिए आप उन्हें सीधे अंतिम यूआरएल पर इंगित करने के लिए अपडेट कर सकते हैं।"
+
+#: includes/admin/class-blc-admin.php:674 includes/admin/class-blc-dashboard.php:148 includes/admin/class-blc-dashboard.php:199 includes/class-blc-multisite.php:125 includes/class-blc-notifications.php:211
+msgid "Warnings"
+msgstr "चेतावनियाँ"
+
+#: includes/admin/class-blc-settings.php:117 includes/admin/class-blc-settings.php:192
+msgid "Weekly"
+msgstr "साप्ताहिक"
+
+#: includes/admin/class-blc-admin.php:834
+msgid "What If a Scan Gets Stuck?"
+msgstr "यदि स्कैन अटक जाए तो?"
+
+#: includes/admin/class-blc-admin.php:816
+msgid "When Scan Type is set to \"Automatic\" in Settings, the plugin will automatically scan your website at the frequency you choose (Hourly, Twice Daily, Daily, or Weekly). This runs in the background using WordPress Cron — no manual action needed. Set Scan Type to \"Manual\" to disable automatic scanning entirely."
+msgstr "जब सेटिंग्स में स्कैन प्रकार \"स्वचालित\" पर सेट होता है, तो प्लगइन आपकी चुनी गई आवृत्ति (प्रति घंटा, दिन में दो बार, दैनिक, या साप्ताहिक) पर स्वचालित रूप से आपकी वेबसाइट स्कैन करेगा। यह WordPress Cron का उपयोग करके बैकग्राउंड में चलता है — कोई मैनुअल कार्रवाई आवश्यक नहीं। स्वचालित स्कैनिंग पूरी तरह से अक्षम करने के लिए स्कैन प्रकार \"मैनुअल\" पर सेट करें।"
+
+#: includes/admin/class-blc-admin.php:896
+msgid "When enabled, the plugin verifies SSL certificates. Disable only if you are experiencing SSL-related false positives."
+msgstr "सक्षम होने पर, प्लगइन SSL प्रमाणपत्र सत्यापित करता है। केवल तभी अक्षम करें जब आप SSL-संबंधित गलत सकारात्मक परिणामों का अनुभव कर रहे हों।"
+
+#: includes/models/class-blc-link.php:292
+msgid "Widget"
+msgstr "विजेट"
+
+#: includes/admin/class-blc-settings.php:144
+msgid "Widgets"
+msgstr "विजेट"
+
+#: includes/admin/class-blc-admin.php:1115
+msgid "WordPress Support Forums"
+msgstr "WordPress सपोर्ट फ़ोरम"
+
+#: includes/admin/class-blc-admin.php:632 includes/admin/class-blc-admin.php:921 includes/admin/class-blc-dashboard.php:159 includes/admin/class-blc-dashboard.php:204
+msgid "Working"
+msgstr "कार्यशील"
+
+#: includes/admin/class-blc-admin.php:1092
+msgid "You can also contribute translations to the official WordPress translation platform. Your translations will be available to all users of this plugin who speak your language."
+msgstr "आप आधिकारिक WordPress अनुवाद प्लेटफ़ॉर्म पर भी अनुवाद में योगदान कर सकते हैं। आपके अनुवाद इस प्लगइन के सभी उपयोगकर्ताओं के लिए उपलब्ध होंगे जो आपकी भाषा बोलते हैं।"
+
+#: includes/models/class-blc-link.php:265
+msgid "YouTube"
+msgstr "यूट्यूब"
+
+#: includes/class-blc-notifications.php:51
+msgid "[%2$s] %1$d Broken Links Detected"
+msgstr "[%2$s] %1$d टूटे हुए लिंक पाए गए"
+
+#: includes/class-blc-notifications.php:296
+msgid "[%s] Weekly Broken Links Digest"
+msgstr "[%s] साप्ताहिक टूटे हुए लिंक सारांश"
+
+#: includes/class-blc-multisite.php:179
+msgid "ago"
+msgstr "पहले"
+
+#: includes/models/class-blc-link.php:266
+msgid "iFrame"
+msgstr "आईफ्रेम"
+
+#: includes/admin/class-blc-settings.php:131
+msgid "seconds"
+msgstr "सेकंड"
+
+#: includes/admin/class-blc-admin.php:133
+msgid "⚠️ WARNING: This will DELETE all plugin data including links, scan history, and settings. This action cannot be undone! Are you absolutely sure?"
+msgstr "⚠️ चेतावनी: इससे लिंक, स्कैन इतिहास और सेटिंग्स सहित सभी प्लगइन डेटा हटा दिया जाएगा। यह कार्रवाई पूर्ववत नहीं की जा सकती! क्या आप पूरी तरह सुनिश्चित हैं?"
+

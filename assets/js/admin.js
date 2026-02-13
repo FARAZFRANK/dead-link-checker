@@ -8,10 +8,36 @@
 
     const BLC = {
         init: function () {
+            this.relocateNotices();
             this.bindEvents();
             this.initTabs();
             this.checkScanStatus();
         },
+
+        /**
+         * Move third-party admin notices out of our layout
+         * WordPress injects notices inside .wrap, which breaks our flexbox header
+         */
+        relocateNotices: function () {
+            var $wrap = $('.blc-wrap');
+            var $header = $wrap.find('.blc-header');
+            if (!$wrap.length || !$header.length) return;
+
+            // Create a container for notices right after the header
+            var $noticeContainer = $('<div class="blc-notices-container"></div>');
+            $header.after($noticeContainer);
+
+            // Move all notice elements from .blc-wrap into the container
+            $wrap.children('.notice, .updated, .error, .update-nag, div[class*="notice"]').not('.blc-notices-container').each(function () {
+                $noticeContainer.append($(this));
+            });
+
+            // Remove container if empty
+            if ($noticeContainer.children().length === 0) {
+                $noticeContainer.remove();
+            }
+        },
+
 
         bindEvents: function () {
             // Scan button
@@ -60,6 +86,7 @@
             // Modal
             $(document).on('click', '.blc-modal-close, .blc-modal-cancel', this.closeModal.bind(this));
             $('#blc-edit-save').on('click', this.saveEdit.bind(this));
+            $('#blc-remove-link').on('click', this.removeLink.bind(this));
             $('#blc-redirect-save').on('click', this.saveRedirect.bind(this));
 
             // Close modal on outside click
@@ -125,11 +152,11 @@
             e.preventDefault();
             const $stopBtn = $('#blc-stop-btn');
 
-            if (!confirm(blcAdmin.strings.confirmStop || 'Are you sure you want to stop the scan?')) {
+            if (!confirm(blcAdmin.strings.confirmStop)) {
                 return;
             }
 
-            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Stopping...');
+            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.stopping);
 
             $.ajax({
                 url: blcAdmin.ajaxUrl,
@@ -140,18 +167,18 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(blcAdmin.strings.scanStopped || 'Scan stopped.', 'success');
+                        BLC.showToast(blcAdmin.strings.scanStopped, 'success');
                         BLC.resetScanButton();
                         $('#blc-scan-progress').fadeOut();
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
                         BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                        $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> Stop Scan');
+                        $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + blcAdmin.strings.stopScan);
                     }
                 },
                 error: function () {
                     BLC.showToast(blcAdmin.strings.error, 'error');
-                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> Stop Scan');
+                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + blcAdmin.strings.stopScan);
                 }
             });
         },
@@ -160,7 +187,7 @@
             e.preventDefault();
 
             // Show confirmation dialog
-            if (!confirm(blcAdmin.strings.confirmFreshScan || 'This will DELETE all existing link data and scan history, then start a fresh scan. Are you sure?')) {
+            if (!confirm(blcAdmin.strings.confirmFreshScan)) {
                 return;
             }
 
@@ -169,7 +196,7 @@
             const $stopBtn = $('#blc-stop-btn');
 
             // Disable buttons and show loading state
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Clearing...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.clearing);
             $scanBtn.hide();
 
             $.ajax({
@@ -181,20 +208,20 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(blcAdmin.strings.freshScanStarted || 'All data cleared. Fresh scan started.', 'success');
+                        BLC.showToast(blcAdmin.strings.freshScanStarted, 'success');
                         $btn.hide();
                         $stopBtn.show();
                         $('#blc-scan-progress').show();
                         BLC.pollProgress();
                     } else {
                         BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> Fresh Scan');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + blcAdmin.strings.freshScan);
                         $scanBtn.show();
                     }
                 },
                 error: function () {
                     BLC.showToast(blcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> Fresh Scan');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + blcAdmin.strings.freshScan);
                     $scanBtn.show();
                 }
             });
@@ -221,8 +248,12 @@
                             // Update progress bar
                             $('.blc-progress-fill').css('width', data.percent + '%');
                             $('.blc-progress-text').text(
-                                'Checked ' + data.checked + ' of ' + data.total + ' links (' + data.percent + '%) - ' +
-                                data.broken + ' broken, ' + data.warnings + ' warnings'
+                                blcAdmin.strings.progressText
+                                    .replace('%1$s', data.checked)
+                                    .replace('%2$s', data.total)
+                                    .replace('%3$s', data.percent)
+                                    .replace('%4$s', data.broken)
+                                    .replace('%5$s', data.warnings)
                             );
 
                             // Poll again
@@ -261,7 +292,7 @@
 
         resetScanButton: function () {
             $('#blc-scan-btn').show();
-            $('#blc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> Stop Scan');
+            $('#blc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + blcAdmin.strings.stopScan);
         },
 
         recheckLink: function (e) {
@@ -389,11 +420,14 @@
             const $btn = $(e.currentTarget);
             const linkId = $btn.data('id');
             const url = $btn.data('url');
+            const anchor = $btn.data('anchor') || '';
 
             $('#blc-edit-link-id').val(linkId);
             $('#blc-edit-old-url').val(url);
-            $('#blc-edit-new-url').val('').focus();
+            $('#blc-edit-new-url').val('');
+            $('#blc-edit-anchor-text').val(anchor);
             $('#blc-edit-modal').fadeIn(200);
+            $('#blc-edit-new-url').focus();
         },
 
         closeModal: function () {
@@ -403,9 +437,10 @@
         saveEdit: function () {
             const linkId = $('#blc-edit-link-id').val();
             const newUrl = $('#blc-edit-new-url').val();
+            const newAnchor = $('#blc-edit-anchor-text').val();
 
-            if (!newUrl) {
-                BLC.showToast('Please enter a new URL', 'error');
+            if (!newUrl && !newAnchor) {
+                BLC.showToast(blcAdmin.strings.enterUrlOrAnchor, 'error');
                 return;
             }
 
@@ -418,10 +453,11 @@
                     action: 'blc_edit_link',
                     nonce: blcAdmin.nonce,
                     link_id: linkId,
-                    new_url: newUrl
+                    new_url: newUrl,
+                    new_anchor_text: newAnchor
                 },
                 success: function (response) {
-                    $('#blc-edit-save').prop('disabled', false).text('Update Link');
+                    $('#blc-edit-save').prop('disabled', false).text(blcAdmin.strings.updateLink);
                     if (response.success) {
                         BLC.closeModal();
                         BLC.showToast(response.data, 'success');
@@ -431,7 +467,40 @@
                     }
                 },
                 error: function () {
-                    $('#blc-edit-save').prop('disabled', false).text('Update Link');
+                    $('#blc-edit-save').prop('disabled', false).text(blcAdmin.strings.updateLink);
+                    BLC.showToast(blcAdmin.strings.error, 'error');
+                }
+            });
+        },
+
+        removeLink: function () {
+            if (!confirm(blcAdmin.strings.confirmRemoveLink)) {
+                return;
+            }
+
+            const linkId = $('#blc-edit-link-id').val();
+            $('#blc-remove-link').prop('disabled', true).text(blcAdmin.strings.processing);
+
+            $.ajax({
+                url: blcAdmin.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'blc_remove_link',
+                    nonce: blcAdmin.nonce,
+                    link_id: linkId
+                },
+                success: function (response) {
+                    $('#blc-remove-link').prop('disabled', false).text(blcAdmin.strings.removeLink);
+                    if (response.success) {
+                        BLC.closeModal();
+                        BLC.showToast(response.data, 'success');
+                        setTimeout(function () { location.reload(); }, 1000);
+                    } else {
+                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
+                    }
+                },
+                error: function () {
+                    $('#blc-remove-link').prop('disabled', false).text(blcAdmin.strings.removeLink);
                     BLC.showToast(blcAdmin.strings.error, 'error');
                 }
             });
@@ -456,7 +525,7 @@
             const redirectType = $('#blc-redirect-type').val();
 
             if (!targetUrl) {
-                BLC.showToast('Please enter a target URL', 'error');
+                BLC.showToast(blcAdmin.strings.enterTargetUrl, 'error');
                 return;
             }
 
@@ -474,16 +543,16 @@
                     redirect_type: redirectType
                 },
                 success: function (response) {
-                    $('#blc-redirect-save').prop('disabled', false).text('Create Redirect');
+                    $('#blc-redirect-save').prop('disabled', false).text(blcAdmin.strings.createRedirect);
                     if (response.success) {
                         BLC.closeModal();
-                        BLC.showToast(response.data.message || 'Redirect created successfully!', 'success');
+                        BLC.showToast(response.data.message || blcAdmin.strings.redirectSuccess, 'success');
                     } else {
                         BLC.showToast(response.data || blcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#blc-redirect-save').prop('disabled', false).text('Create Redirect');
+                    $('#blc-redirect-save').prop('disabled', false).text(blcAdmin.strings.createRedirect);
                     BLC.showToast(blcAdmin.strings.error, 'error');
                 }
             });
@@ -498,12 +567,12 @@
             });
 
             if (!action) {
-                BLC.showToast('Please select an action', 'error');
+                BLC.showToast(blcAdmin.strings.selectAction, 'error');
                 return;
             }
 
             if (linkIds.length === 0) {
-                BLC.showToast('Please select at least one link', 'error');
+                BLC.showToast(blcAdmin.strings.selectLink, 'error');
                 return;
             }
 
@@ -523,7 +592,7 @@
                     link_ids: linkIds
                 },
                 success: function (response) {
-                    $('#blc-bulk-apply').prop('disabled', false).text('Apply');
+                    $('#blc-bulk-apply').prop('disabled', false).text(blcAdmin.strings.apply);
                     if (response.success) {
                         BLC.showToast(response.data.message, 'success');
                         setTimeout(function () { location.reload(); }, 1000);
@@ -532,7 +601,7 @@
                     }
                 },
                 error: function () {
-                    $('#blc-bulk-apply').prop('disabled', false).text('Apply');
+                    $('#blc-bulk-apply').prop('disabled', false).text(blcAdmin.strings.apply);
                     BLC.showToast(blcAdmin.strings.error, 'error');
                 }
             });
@@ -565,7 +634,7 @@
                 },
                 success: function (response) {
                     if (response.success && response.data && response.data.download_url) {
-                        BLC.showToast(blcAdmin.strings.exportSuccess || 'Export created successfully!', 'success');
+                        BLC.showToast(blcAdmin.strings.exportSuccess, 'success');
                         var downloadUrl = response.data.download_url;
 
                         if (format === 'json') {
@@ -590,7 +659,7 @@
                         }
                     } else {
                         // Handle error message properly
-                        var errorMsg = blcAdmin.strings.exportFailed || 'Export failed';
+                        var errorMsg = blcAdmin.strings.exportFailed;
                         if (response.data) {
                             if (typeof response.data === 'string') {
                                 errorMsg = response.data;
@@ -602,7 +671,7 @@
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.exportFailed || 'Export failed', 'error');
+                    BLC.showToast(blcAdmin.strings.exportFailed, 'error');
                 },
                 complete: function () {
                     $btn.html(originalText);
@@ -630,27 +699,27 @@
          */
         forceStopScan: function (e) {
             e.preventDefault();
-            if (!confirm('This will forcefully stop ALL running and pending scans. Are you sure?')) {
+            if (!confirm(blcAdmin.strings.confirmForceStop)) {
                 return;
             }
             const $btn = $('#blc-force-stop-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Force Stopping...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.forceStopping);
             $.ajax({
                 url: blcAdmin.ajaxUrl,
                 type: 'POST',
                 data: { action: 'blc_force_stop_scan', nonce: blcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(response.data || 'All scans force stopped.', 'success');
+                        BLC.showToast(response.data || blcAdmin.strings.allScansForceStopped, 'success');
                         setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        BLC.showToast(response.data || 'Failed to force stop.', 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> Force Stop');
+                        BLC.showToast(response.data || blcAdmin.strings.failedForceStop, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + blcAdmin.strings.forceStop);
                     }
                 },
                 error: function () {
-                    BLC.showToast('An error occurred.', 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> Force Stop');
+                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + blcAdmin.strings.forceStop);
                 }
             });
         },
@@ -660,27 +729,27 @@
          */
         resetSettings: function (e) {
             e.preventDefault();
-            if (!confirm('This will reset ALL plugin settings to their factory defaults. Your scan data will NOT be affected. Continue?')) {
+            if (!confirm(blcAdmin.strings.confirmResetSettings)) {
                 return;
             }
             const $btn = $('#blc-reset-settings-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Resetting...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.resetting);
             $.ajax({
                 url: blcAdmin.ajaxUrl,
                 type: 'POST',
                 data: { action: 'blc_reset_settings', nonce: blcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(response.data || 'Settings reset to defaults.', 'success');
+                        BLC.showToast(response.data || blcAdmin.strings.settingsResetDefaults, 'success');
                         setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        BLC.showToast(response.data || 'Failed to reset settings.', 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> Reset Settings');
+                        BLC.showToast(response.data || blcAdmin.strings.failedResetSettings, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + blcAdmin.strings.resetSettings);
                     }
                 },
                 error: function () {
-                    BLC.showToast('An error occurred.', 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> Reset Settings');
+                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + blcAdmin.strings.resetSettings);
                 }
             });
         },
@@ -690,27 +759,27 @@
          */
         clearScanHistory: function (e) {
             e.preventDefault();
-            if (!confirm('This will delete all scan history records. Your link data will NOT be affected. Continue?')) {
+            if (!confirm(blcAdmin.strings.confirmClearHistory)) {
                 return;
             }
             const $btn = $('#blc-clear-history-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Clearing...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.clearing);
             $.ajax({
                 url: blcAdmin.ajaxUrl,
                 type: 'POST',
                 data: { action: 'blc_clear_scan_history', nonce: blcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(response.data || 'Scan history cleared.', 'success');
+                        BLC.showToast(response.data || blcAdmin.strings.scanHistoryCleared, 'success');
                         setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        BLC.showToast(response.data || 'Failed to clear history.', 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Clear History');
+                        BLC.showToast(response.data || blcAdmin.strings.failedClearHistory, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + blcAdmin.strings.clearHistory);
                     }
                 },
                 error: function () {
-                    BLC.showToast('An error occurred.', 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Clear History');
+                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + blcAdmin.strings.clearHistory);
                 }
             });
         },
@@ -720,31 +789,31 @@
          */
         fullReset: function (e) {
             e.preventDefault();
-            if (!confirm('⚠️ WARNING: This will DELETE all plugin data including links, scan history, and settings. This action cannot be undone! Are you absolutely sure?')) {
+            if (!confirm(blcAdmin.strings.confirmFullReset)) {
                 return;
             }
             // Double confirmation for destructive action
-            if (!confirm('Please confirm again: ALL data will be permanently deleted and settings reset to factory defaults.')) {
+            if (!confirm(blcAdmin.strings.confirmFullResetDouble)) {
                 return;
             }
             const $btn = $('#blc-full-reset-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Resetting Everything...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.resettingEverything);
             $.ajax({
                 url: blcAdmin.ajaxUrl,
                 type: 'POST',
                 data: { action: 'blc_full_reset', nonce: blcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(response.data || 'Plugin fully reset.', 'success');
+                        BLC.showToast(response.data || blcAdmin.strings.pluginFullyReset, 'success');
                         setTimeout(function () { location.reload(); }, 2000);
                     } else {
-                        BLC.showToast(response.data || 'Failed to reset plugin.', 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> Full Reset');
+                        BLC.showToast(response.data || blcAdmin.strings.failedResetPlugin, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + blcAdmin.strings.fullReset);
                     }
                 },
                 error: function () {
-                    BLC.showToast('An error occurred.', 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> Full Reset');
+                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + blcAdmin.strings.fullReset);
                 }
             });
         },
@@ -754,27 +823,27 @@
          */
         cleanupExports: function (e) {
             e.preventDefault();
-            if (!confirm('This will delete all exported CSV/JSON files. Continue?')) {
+            if (!confirm(blcAdmin.strings.confirmCleanupExports)) {
                 return;
             }
             const $btn = $('#blc-cleanup-exports-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Cleaning...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.cleaning);
             $.ajax({
                 url: blcAdmin.ajaxUrl,
                 type: 'POST',
                 data: { action: 'blc_cleanup_exports', nonce: blcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(response.data || 'Export files cleaned up.', 'success');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Cleanup Exports');
+                        BLC.showToast(response.data || blcAdmin.strings.exportFilesCleaned, 'success');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + blcAdmin.strings.cleanupExports);
                     } else {
-                        BLC.showToast(response.data || 'Failed to cleanup exports.', 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Cleanup Exports');
+                        BLC.showToast(response.data || blcAdmin.strings.failedCleanupExports, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + blcAdmin.strings.cleanupExports);
                     }
                 },
                 error: function () {
-                    BLC.showToast('An error occurred.', 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> Cleanup Exports');
+                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + blcAdmin.strings.cleanupExports);
                 }
             });
         }

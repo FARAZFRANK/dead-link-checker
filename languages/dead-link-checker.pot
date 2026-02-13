@@ -1,0 +1,1639 @@
+# Translation file for Dead Link Checker Pro
+# Copyright (C) 2026 WPFrank
+# This file is distributed under the same license as the Dead Link Checker Pro plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Dead Link Checker Pro 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dead-link-checker\n"
+"POT-Creation-Date: 2026-02-13 13:18+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Dead Link Checker Pro\n"
+"X-Domain: dead-link-checker\n"
+
+#: includes/admin/class-blc-admin.php:564
+msgid "%d broken links detected!"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:528
+msgid "%d export file(s) deleted."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:394
+msgid "%d links processed."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:436 includes/models/class-blc-link.php:360
+msgid "%s ago"
+msgstr ""
+
+#: includes/models/class-blc-link.php:283 includes/models/class-blc-link.php:289
+msgid "(Deleted)"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:560
+msgid "301 - Permanent Redirect (Recommended)"
+msgstr ""
+
+#: includes/class-blc-redirects.php:506
+msgid "301 Permanent"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:256
+msgid "301 Redirect"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:562
+msgid "302 - Temporary Redirect"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:257
+msgid "302 Redirect"
+msgstr ""
+
+#: includes/class-blc-redirects.php:507
+msgid "302 Temporary"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:565
+msgid "307 - Temporary Redirect (Strict)"
+msgstr ""
+
+#: includes/class-blc-redirects.php:508
+msgid "307 Temporary"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:258
+msgid "401 Unauthorized"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:259
+msgid "403 Forbidden"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:260
+msgid "404 Not Found"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:261
+msgid "405 Method Not Allowed"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:262
+msgid "406 Not Acceptable"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:263
+msgid "410 Gone"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:264
+msgid "429 Too Many Requests"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:265
+msgid "500 Server Error"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:266
+msgid "503 Service Unavailable"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:644
+msgid "<strong>Check External Links</strong> - Enable/disable checking of external URLs."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:646
+msgid "<strong>Connection Timeout</strong> - How long to wait for link responses."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:614
+msgid "<strong>Dismiss Links</strong> - Ignore false positives by clicking \"Dismiss\"."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:645
+msgid "<strong>Email Notifications</strong> - Configure when and how to receive alerts."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:600
+msgid "<strong>Email Notifications</strong> - Get notified when broken links are found."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:613
+msgid "<strong>Fix Links</strong> - Click \"Edit\" to update a broken link directly, or use bulk actions."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:598
+msgid "<strong>Link Scanning</strong> - Automatically discover and check all links on your site."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:599
+msgid "<strong>Page Builder Support</strong> - Scan links in Elementor, Divi, WPBakery, and Gutenberg."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:601
+msgid "<strong>Redirect Manager</strong> - Create 301/302/307 redirects for broken URLs."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:612
+msgid "<strong>Review Results</strong> - View broken, warning, and working links in the dashboard table."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:643
+msgid "<strong>Scan Post Types</strong> - Choose which post types to include in scans."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:611
+msgid "<strong>Start a Scan</strong> - Click the \"Scan Now\" button to scan your entire website for broken links."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:821
+msgid "A lightweight background task that automatically rechecks links already marked as broken or warning every 6 hours. This helps detect when a previously broken link has been fixed — without running a full scan. It checks up to 50 links at a time and skips dismissed links."
+msgstr ""
+
+#: includes/class-blc-redirects.php:180
+msgid "A redirect for this URL already exists."
+msgstr ""
+
+#: includes/class-blc-notifications.php:194
+msgid "A scan has completed and found the following issues:"
+msgstr ""
+
+#: includes/scanner/class-blc-scanner.php:31
+msgid "A scan is already in progress."
+msgstr ""
+
+#: includes/class-blc-queue-manager.php:209
+msgid "Action Scheduler"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:378 includes/class-blc-multisite.php:131
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1016
+msgid "Add domains that frequently block automated checks (like social media sites) to your exclusion list to reduce false positives."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1015
+msgid "Adjust Concurrent Requests:"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:45 includes/admin/class-blc-settings.php:260
+msgid "Advanced"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:887
+msgid "Advanced Tab"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1101
+msgid "After translating, make sure your WordPress site language is set to your target language. Go to Settings → General → Site Language and select your language. The plugin will automatically load the matching translation file."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:189
+msgid "All"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:236
+msgid "All Types"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:98 includes/admin/class-blc-admin.php:437
+msgid "All data cleared. Fresh scan started."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:452
+msgid "All scans force stopped and scan state reset."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:137
+msgid "All scans force stopped."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:101
+msgid "An error occurred."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:514
+msgid "Anchor Text:"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:254
+msgid "Any Status"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:113 includes/admin/class-blc-dashboard.php:308
+msgid "Apply"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:279
+msgid "Apply Filters"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:129
+msgid "Are you sure you want to remove this link? The anchor text will be kept but the link will be unlinked."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:96
+msgid "Are you sure you want to stop the scan?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:95
+msgid "Are you sure?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:897
+msgid "Auto Cleanup"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:819
+msgid "Auto-Recheck (Broken Links Only)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:842
+msgid "Auto-Recovery:"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:90
+msgid "Automatic"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:814
+msgid "Automatic Scan (Scheduled)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:898
+msgid "Automatically delete old scan history records after a specified number of days. Default: 90 days."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:89
+msgid "Basic background processing - install Action Scheduler for better reliability"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:630 includes/admin/class-blc-admin.php:671 includes/admin/class-blc-admin.php:727 includes/admin/class-blc-admin.php:911 includes/admin/class-blc-dashboard.php:194 includes/class-blc-multisite.php:122 includes/class-blc-notifications.php:203
+msgid "Broken"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:137 includes/class-blc-multisite.php:91 includes/class-blc-notifications.php:226
+msgid "Broken Links"
+msgstr ""
+
+#: includes/class-blc-notifications.php:187
+msgid "Broken Links Report"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:550
+msgid "Broken URL (From):"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:292
+msgid "Bulk Actions"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:525 includes/admin/class-blc-dashboard.php:573
+msgid "Cancel"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:810
+msgid "Categorize links as Working (200 OK), Broken (4xx/5xx errors), or Warning (redirects, slow responses)."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:809
+msgid "Check each link by sending HTTP HEAD/GET requests to verify if the URL responds correctly."
+msgstr ""
+
+#: includes/class-blc-notifications.php:219
+msgid "Checked"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:149
+msgid "Checked %1$s of %2$s links (%3$s%%) — %4$s broken, %5$s warnings"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:856
+msgid "Choose \"Manual\" (scan only when you click the button) or \"Automatic\" (scan runs on a schedule automatically)."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:868
+msgid "Choose to check Internal Links (your own site), External Links (other websites), and/or Image URLs."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:121
+msgid "Cleaning..."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:122 includes/admin/class-blc-admin.php:987 includes/admin/class-blc-admin.php:991
+msgid "Cleanup Exports"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:282
+msgid "Clear"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:118 includes/admin/class-blc-admin.php:973
+msgid "Clear History"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:969
+msgid "Clear Scan History"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:100
+msgid "Clear all data and start fresh"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:108
+msgid "Clearing..."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1052
+msgid "Click \"New Language\" and select your desired language."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1054
+msgid "Click \"Save\" when done. Your translations will take effect immediately."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:840
+msgid "Click \"Stop Scan\" on the Dashboard to gracefully stop a running scan."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:804
+msgid "Click the \"Scan Now\" button on the Dashboard to start a full scan manually. The plugin will:"
+msgstr ""
+
+#: includes/models/class-blc-link.php:288
+msgid "Comment on \"%s\""
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:143
+msgid "Comments"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:931
+msgid "Common HTTP Status Codes"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:721
+msgid "Completed"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:889 includes/admin/class-blc-settings.php:46
+msgid "Concurrent Requests"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:641
+msgid "Configuration Options"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:948
+msgid "Connection Error — A generic error occurred while trying to reach the URL (e.g., connection refused, reset, or unknown failure)."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:865
+msgid "Content Types"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:33
+msgid "Content to Scan"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:320
+msgid "Could not update."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:112 includes/admin/class-blc-dashboard.php:455 includes/admin/class-blc-dashboard.php:540 includes/admin/class-blc-dashboard.php:576
+msgid "Create Redirect"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:547
+msgid "Create a redirect so visitors to the broken URL will be sent to a new working URL."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:508
+msgid "Current URL:"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:146
+msgid "Custom Fields (ACF)"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:114 includes/admin/class-blc-settings.php:189
+msgid "Daily"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:72
+msgid "Dashboard"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:272
+msgid "Date Range:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:63 includes/admin/class-blc-admin.php:594 includes/admin/class-blc-admin.php:660 includes/admin/class-blc-dashboard.php:76
+msgid "Dead Link Checker Pro"
+msgstr ""
+
+#: includes/class-blc-multisite.php:73
+msgid "Dead Link Checker Pro - Network Overview"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:239
+msgid "Dead Link Checker Pro Settings"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1030
+msgid "Dead Link Checker Pro is fully translation-ready. You can translate it into your language using any of the methods below."
+msgstr ""
+
+#: includes/class-blc-activator.php:59
+msgid "Dead Link Checker Pro requires PHP 7.4 or higher."
+msgstr ""
+
+#: includes/class-blc-activator.php:70
+msgid "Dead Link Checker Pro requires WordPress 5.8 or higher."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:791
+msgid "Dead Link Checker Pro scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:891
+msgid "Delay Between Requests"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:304 includes/admin/class-blc-dashboard.php:471
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:988
+msgid "Deletes all exported CSV/JSON files from the uploads directory to free up disk space."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:970
+msgid "Deletes all scan history records but keeps your link data intact."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:807
+msgid "Discover all links from your selected content types (Posts, Pages, Menus, Widgets, Comments, Custom Fields)."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:298 includes/admin/class-blc-dashboard.php:466
+msgid "Dismiss"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:633 includes/admin/class-blc-admin.php:926 includes/admin/class-blc-dashboard.php:209
+msgid "Dismissed"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:811
+msgid "Display results on the Dashboard with filters for easy review."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:946
+msgid "Domain does not exist — The domain name could not be resolved."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1064
+msgid "Download and install %s on your computer (free desktop application)."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:450 includes/admin/class-blc-dashboard.php:502
+msgid "Edit Link"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:881
+msgid "Email Frequency"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:879 includes/admin/class-blc-settings.php:42
+msgid "Email Notifications"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:884
+msgid "Email addresses to receive notifications (one per line). Defaults to the admin email."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:182
+msgid "Enable email notifications"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:880
+msgid "Enable to receive email alerts when broken links are found."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:874
+msgid "Enter domain names (one per line) that should be skipped during scanning. For example: facebook.com, twitter.com. Links to these domains will not be checked."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:170
+msgid "Enter one domain per line (e.g., example.com). Links to these domains will be ignored."
+msgstr ""
+
+#: includes/models/class-blc-link.php:234
+msgid "Error"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:267
+msgid "Error (No Response)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:873 includes/admin/class-blc-settings.php:38
+msgid "Excluded Domains"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:37 includes/admin/class-blc-settings.php:254
+msgid "Exclusions"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:871
+msgid "Exclusions Tab"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:111
+msgid "Export"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1018
+msgid "Export Regularly:"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:117
+msgid "Export as CSV"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:121
+msgid "Export as JSON"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:103
+msgid "Export created successfully!"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:104
+msgid "Export failed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:145
+msgid "Export files cleaned up."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1018
+msgid "Export your broken link reports as CSV for record-keeping or to share with your team."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:620
+msgid "Export your link data for external analysis."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:102
+msgid "Exporting..."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:242 includes/models/class-blc-link.php:263
+msgid "External"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:156
+msgid "External Links"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:146
+msgid "Failed to cleanup exports."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:426
+msgid "Failed to clear existing data."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:142
+msgid "Failed to clear history."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:482
+msgid "Failed to clear scan history."
+msgstr ""
+
+#: includes/class-blc-export.php:49
+msgid "Failed to create export file."
+msgstr ""
+
+#: includes/class-blc-redirects.php:200
+msgid "Failed to create redirect."
+msgstr ""
+
+#: includes/scanner/class-blc-scanner.php:36
+msgid "Failed to create scan record."
+msgstr ""
+
+#: includes/class-blc-redirects.php:433
+msgid "Failed to delete redirect."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:138
+msgid "Failed to force stop."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:144
+msgid "Failed to reset plugin."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:140
+msgid "Failed to reset settings."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:199 includes/admin/class-blc-admin.php:211 includes/admin/class-blc-admin.php:257
+msgid "Failed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:596
+msgid "Features:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1051
+msgid "Find \"Dead Link Checker\" in the list and click on it."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:652
+msgid "For more help:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:937
+msgid "Forbidden — Access denied. The server refuses to serve this URL."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:114 includes/admin/class-blc-admin.php:964
+msgid "Force Stop"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:960
+msgid "Force Stop Scan"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:841
+msgid "Force Stop:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:115
+msgid "Force Stopping..."
+msgstr ""
+
+#: includes/scanner/class-blc-scanner.php:674 includes/scanner/class-blc-scanner.php:685
+msgid "Force stopped by admin"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:961
+msgid "Forcefully stops all running/pending scans, clears the scan queue, and resets the scan state. Use when a scan appears stuck."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:935
+msgid "Found — Temporary redirect. The URL is temporarily pointing elsewhere."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:186
+msgid "Frequency:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:109 includes/admin/class-blc-admin.php:824 includes/admin/class-blc-dashboard.php:102
+msgid "Fresh Scan"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:996
+msgid "Full Plugin Reset"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:119 includes/admin/class-blc-admin.php:1000
+msgid "Full Reset"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:248
+msgid "General"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:26
+msgid "General Settings"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:853
+msgid "General Tab"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:609
+msgid "Getting Started"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1047
+msgid "Go to %s in your WordPress admin menu."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:941
+msgid "Gone — The page has been permanently removed. Unlike 404, the server knows it was intentionally deleted."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:632
+msgid "HTTP 200 OK - Link is working properly."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:922
+msgid "HTTP 200 OK. The link is working perfectly — no action needed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:912
+msgid "HTTP 4xx or 5xx error. The link is dead or the server returned an error. Common codes: 404 (Not Found), 403 (Forbidden), 500 (Server Error)."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:630
+msgid "HTTP 4xx/5xx errors - Link is not working."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:251
+msgid "HTTP Status:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:75
+msgid "Help"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:779
+msgid "Help & Documentation"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:108
+msgid "Hourly"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:788
+msgid "How Plugin Works?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:858
+msgid "How often automatic scans run: Hourly, Twice Daily, Daily, or Weekly. Only applies when Scan Type is \"Automatic\"."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:882
+msgid "How often to send notification emails: Immediately, Daily, or Weekly digest."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1027
+msgid "How to Translate This Plugin"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:608
+msgid "How to Use"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:709
+msgid "ID"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:841
+msgid "If the Stop button does not work, use \"Force Stop\" from the Dashboard Tools section. This forcefully cancels all running scans, clears the scan queue, and resets the scan state."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1112
+msgid "If you have questions or need support, please visit:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1015
+msgid "If your server is slow or shared hosting, reduce concurrent requests to 1–2. For dedicated servers, you can increase to 5–10."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:245 includes/models/class-blc-link.php:264
+msgid "Image"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:156
+msgid "Images"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1075
+msgid "In Poedit, go to \"Create New Translation\" and select your language."
+msgstr ""
+
+#: includes/class-blc-queue-manager.php:221
+msgid "Install WooCommerce or Action Scheduler plugin for more reliable background processing."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1040
+msgid "Install and activate the %s plugin from the WordPress plugin repository."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:239 includes/models/class-blc-link.php:262
+msgid "Internal"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:156
+msgid "Internal Links"
+msgstr ""
+
+#: includes/scanner/class-blc-checker.php:41
+msgid "Invalid URL format"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:197 includes/admin/class-blc-admin.php:209 includes/admin/class-blc-admin.php:221 includes/admin/class-blc-admin.php:255 includes/admin/class-blc-admin.php:331
+msgid "Invalid link ID."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:271 includes/admin/class-blc-admin.php:367
+msgid "Invalid parameters."
+msgstr ""
+
+#: includes/class-blc-redirects.php:397 includes/class-blc-redirects.php:427 includes/class-blc-redirects.php:453
+msgid "Invalid redirect ID."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:373
+msgid "Last Check"
+msgstr ""
+
+#: includes/class-blc-multisite.php:128
+msgid "Last Scan"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:80
+msgid "Last scan: %s ago"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:515
+msgid "Leave empty to keep current"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:64 includes/class-blc-multisite.php:38
+msgid "Link Checker"
+msgstr ""
+
+#: includes/class-blc-multisite.php:37
+msgid "Link Checker Network"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:627
+msgid "Link Status"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:233
+msgid "Link Type:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:867 includes/admin/class-blc-settings.php:34
+msgid "Link Types"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:257
+msgid "Link deleted."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:199
+msgid "Link dismissed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:224 includes/admin/class-blc-admin.php:275 includes/admin/class-blc-admin.php:335
+msgid "Link not found."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:245
+msgid "Link rechecked."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:356
+msgid "Link removed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:211
+msgid "Link restored."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:317
+msgid "Link updated."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:235
+msgid "Link was fixed/removed from the source. Entry deleted."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:724
+msgid "Links"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1048
+msgid "Loco Translate → Plugins"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:95
+msgid "Manual"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:120
+msgid "Manual Only"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:802
+msgid "Manual Scan (Scan Now)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:633
+msgid "Manually ignored by admin."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:927
+msgid "Manually ignored by admin. These links are excluded from broken/warning counts and are not rechecked automatically."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:860
+msgid "Maximum time (in seconds) to wait for a URL response before marking it as timed out. Default: 30 seconds. Range: 5–120 seconds."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:133
+msgid "Maximum time to wait for a response from a link."
+msgstr ""
+
+#: includes/models/class-blc-link.php:295
+msgid "Menu"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:145
+msgid "Menus"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1034
+msgid "Method 1: Using Loco Translate Plugin (Recommended)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1058
+msgid "Method 2: Using Poedit (Manual PO/MO Files)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1089
+msgid "Method 3: Contribute on translate.wordpress.org"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:939
+msgid "Method Not Allowed — The HTTP method used is not supported by this URL."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:892
+msgid "Milliseconds to wait between checking each link (0–5000). Helps prevent overloading your server or getting rate-limited by external sites. Default: 500ms."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:934
+msgid "Moved Permanently — The URL has been permanently redirected to a new location."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1110
+msgid "Need Help?"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:439 includes/class-blc-multisite.php:181 includes/models/class-blc-link.php:357
+msgid "Never"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:511
+msgid "New URL:"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:388
+msgid "No broken links found. Great job!"
+msgstr ""
+
+#: includes/class-blc-redirects.php:241
+msgid "No data to update."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:390
+msgid "No links found. Run a scan to discover links."
+msgstr ""
+
+#: includes/class-blc-export.php:28
+msgid "No links to export."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:945
+msgid "No response — The server did not respond within the configured timeout period."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:177
+msgid "No scan is running."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:735
+msgid "No scans yet."
+msgstr ""
+
+#: includes/class-blc-multisite.php:139
+msgid "No sites found."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:940
+msgid "Not Acceptable — The server cannot produce a response matching the request headers."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:938
+msgid "Not Found — The page does not exist. This is the most common broken link."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1100
+msgid "Note:"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:41 includes/admin/class-blc-settings.php:257
+msgid "Notifications"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:877
+msgid "Notifications Tab"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:890
+msgid "Number of links to check simultaneously (1–10). Higher values speed up scanning but use more server resources. Default: 3."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:213
+msgid "Number of links to check simultaneously. Higher values are faster but may overload your server."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:933
+msgid "OK — Link is working."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:202
+msgid "One email per line."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1071
+msgid "Open the POT template file located at: %s"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:593
+msgid "Overview"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:142
+msgid "Pages"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:808
+msgid "Parse page builder content (Elementor, Divi, WPBakery, Gutenberg blocks) to find embedded links."
+msgstr ""
+
+#: includes/models/class-blc-link.php:241
+msgid "Pending"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:158 includes/admin/class-blc-admin.php:171 includes/admin/class-blc-admin.php:185 includes/admin/class-blc-admin.php:194 includes/admin/class-blc-admin.php:206 includes/admin/class-blc-admin.php:218 includes/admin/class-blc-admin.php:252 includes/admin/class-blc-admin.php:264 includes/admin/class-blc-admin.php:327 includes/admin/class-blc-admin.php:363 includes/admin/class-blc-admin.php:401 includes/admin/class-blc-admin.php:419 includes/admin/class-blc-admin.php:449 includes/admin/class-blc-admin.php:462 includes/admin/class-blc-admin.php:476 includes/admin/class-blc-admin.php:493 includes/admin/class-blc-admin.php:525 includes/class-blc-redirects.php:362 includes/class-blc-redirects.php:391 includes/class-blc-redirects.php:421 includes/class-blc-redirects.php:447 includes/class-blc-redirects.php:482
+msgid "Permission denied."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:134
+msgid "Please confirm again: ALL data will be permanently deleted and settings reset to factory defaults."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:124
+msgid "Please enter a new URL or anchor text"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:125
+msgid "Please enter a target URL"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:126
+msgid "Please select an action"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:127
+msgid "Please select at least one link"
+msgstr ""
+
+#: includes/class-blc-activator.php:60 includes/class-blc-activator.php:71
+msgid "Plugin Activation Error"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:653
+msgid "Plugin Documentation"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:515
+msgid "Plugin fully reset to factory defaults."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:143
+msgid "Plugin fully reset."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1080
+msgid "Poedit will generate two files (e.g., %1$s and %2$s). Upload both to: %3$s"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:141
+msgid "Posts"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:99
+msgid "Processing..."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:295 includes/admin/class-blc-dashboard.php:446
+msgid "Recheck"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:883
+msgid "Recipients"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:198
+msgid "Recipients:"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:556
+msgid "Redirect Type:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:147
+msgid "Redirect created successfully!"
+msgstr ""
+
+#: includes/class-blc-redirects.php:378
+msgid "Redirect created successfully."
+msgstr ""
+
+#: includes/class-blc-redirects.php:436
+msgid "Redirect deleted successfully."
+msgstr ""
+
+#: includes/class-blc-redirects.php:469
+msgid "Redirect disabled."
+msgstr ""
+
+#: includes/class-blc-redirects.php:469
+msgid "Redirect enabled."
+msgstr ""
+
+#: includes/class-blc-redirects.php:458
+msgid "Redirect not found."
+msgstr ""
+
+#: includes/class-blc-redirects.php:410
+msgid "Redirect updated successfully."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:631
+msgid "Redirects, timeouts, or suspicious responses."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:89
+msgid "Reliable background processing"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:111 includes/admin/class-blc-dashboard.php:521
+msgid "Remove Link"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:859 includes/admin/class-blc-settings.php:29
+msgid "Request Timeout"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:956
+msgid "Reset & Maintenance Options"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:117 includes/admin/class-blc-admin.php:978 includes/admin/class-blc-admin.php:982
+msgid "Reset Settings"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:997
+msgid "Resets EVERYTHING — link data, scan history, settings, and export files — back to factory defaults. Use with caution!"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:979
+msgid "Resets all plugin settings to their default values without affecting link data or scan history."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:120
+msgid "Resetting Everything..."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:116
+msgid "Resetting..."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:301 includes/admin/class-blc-dashboard.php:461
+msgid "Restore"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1017
+msgid "Review Warnings:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:564
+msgid "Review and fix them."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:313
+msgid "Rows per page:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1014
+msgid "Run your first scan manually to see how long it takes on your site before enabling automatic scanning."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:947
+msgid "SSL certificate issue — The website has an invalid or expired SSL certificate."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:857 includes/admin/class-blc-settings.php:28
+msgid "Scan Frequency"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:74 includes/admin/class-blc-admin.php:702
+msgid "Scan History"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:97
+msgid "Scan Now"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:32 includes/admin/class-blc-settings.php:251
+msgid "Scan Scope"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:863
+msgid "Scan Scope Tab"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:855 includes/admin/class-blc-settings.php:27
+msgid "Scan Type"
+msgstr ""
+
+#: includes/class-blc-deactivator.php:98 includes/class-blc-deactivator.php:110
+msgid "Scan cancelled: Plugin deactivated"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:92
+msgid "Scan complete!"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:93
+msgid "Scan failed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:141 includes/admin/class-blc-admin.php:480
+msgid "Scan history cleared."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:164
+msgid "Scan started."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:94 includes/admin/class-blc-admin.php:175
+msgid "Scan stopped."
+msgstr ""
+
+#: includes/scanner/class-blc-scanner.php:731
+msgid "Scan timed out (exceeded 30 minutes)"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:799
+msgid "Scanning Modes"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:91
+msgid "Scanning..."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:96
+msgid "Scans only run when you click the Scan button."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:91
+msgid "Scans run automatically based on the frequency below."
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:218
+msgid "Search URLs..."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1019
+msgid "Select multiple links with checkboxes and use bulk Dismiss, Delete, or Recheck to manage them efficiently."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:866
+msgid "Select which content types to scan: Posts, Pages, Comments, Widgets, Menus, Custom Fields, and Custom Post Types (if any registered)."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:943
+msgid "Server Error — Something went wrong on the target server."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:944
+msgid "Service Unavailable — The server is temporarily down, often for maintenance."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:73 includes/admin/class-blc-admin.php:640
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:850
+msgid "Settings Explained"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:139 includes/admin/class-blc-admin.php:466
+msgid "Settings reset to defaults."
+msgstr ""
+
+#: includes/class-blc-multisite.php:113
+msgid "Site"
+msgstr ""
+
+#: includes/class-blc-multisite.php:99
+msgid "Sites"
+msgstr ""
+
+#: includes/class-blc-multisite.php:107
+msgid "Sites Overview"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:837
+msgid "Sometimes a scan may appear stuck due to slow server responses, timeout issues, or server restarts. Here is what the plugin does to handle this:"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:363 includes/class-blc-notifications.php:238
+msgid "Source"
+msgstr ""
+
+#: includes/class-blc-redirects.php:163
+msgid "Source and target URLs are required."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1014
+msgid "Start with a Manual Scan:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:718
+msgid "Started"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:715 includes/admin/class-blc-dashboard.php:352 includes/class-blc-notifications.php:235
+msgid "Status"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:106 includes/admin/class-blc-dashboard.php:106
+msgid "Stop Scan"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:840
+msgid "Stop Scan Button:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:107
+msgid "Stopping..."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:100
+msgid "Success!"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:654
+msgid "Support Forums"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:553
+msgid "Target URL (To):"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:894
+msgid "The User-Agent string sent with HTTP requests. Some websites may block requests from unknown user agents. The default mimics a standard browser."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:917
+msgid "The link works but has issues: it redirects (301/302), responds slowly (over 5 seconds), or returned a suspicious status code. Review these to decide if action is needed."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:842
+msgid "The plugin automatically detects scans that have been running for over 30 minutes without progress and marks them as \"timed out\". This prevents stuck scans from blocking new ones."
+msgstr ""
+
+#: includes/class-blc-notifications.php:269
+msgid "This email was sent by Dead Link Checker Pro plugin on %s"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:595
+msgid "This plugin scans your website for broken links and helps you fix them quickly. It checks all links in your posts, pages, comments, and custom fields."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:97
+msgid "This will DELETE all existing link data and scan history, then start a fresh scan. Are you sure?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:135
+msgid "This will delete all exported CSV/JSON files. Continue?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:132
+msgid "This will delete all scan history records. Your link data will NOT be affected. Continue?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:130
+msgid "This will forcefully stop ALL running and pending scans. Are you sure?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:131
+msgid "This will reset ALL plugin settings to their factory defaults. Your scan data will NOT be affected. Continue?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1011
+msgid "Tips & Best Practices"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:616
+msgid "Tips:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:942
+msgid "Too Many Requests — Rate limit exceeded. The server is blocking requests due to too many in a short time."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:677
+msgid "Total"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:170 includes/class-blc-multisite.php:83 includes/class-blc-multisite.php:119
+msgid "Total Links"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1076
+msgid "Translate each string, then save the file."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1053
+msgid "Translate the strings one by one using the visual editor. You can search and filter strings to find them quickly."
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:111
+msgid "Twice Daily"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:712 includes/admin/class-blc-dashboard.php:367
+msgid "Type"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:358 includes/class-blc-multisite.php:116 includes/class-blc-notifications.php:232
+msgid "URL"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:936
+msgid "Unauthorized — Authentication is required. The server needs valid credentials to access this URL."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:628 includes/admin/class-blc-admin.php:906
+msgid "Understanding Link Status"
+msgstr ""
+
+#: includes/class-blc-queue-manager.php:218 includes/class-blc-redirects.php:511
+msgid "Unknown"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:110 includes/admin/class-blc-dashboard.php:528
+msgid "Update Link"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:618
+msgid "Use \"Fresh Scan\" to clear all data and start from scratch."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1019
+msgid "Use Bulk Actions:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1016
+msgid "Use Exclusions:"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:619
+msgid "Use filters to narrow down results by status, type, or date."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:826
+msgid "Use the \"Fresh Scan\" button to clear ALL existing link data and scan history, then start a completely new scan from scratch. This is useful when you want a clean slate — for example, after making major changes to your website structure."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:893 includes/admin/class-blc-settings.php:47
+msgid "User Agent"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:225
+msgid "User agent string sent with HTTP requests."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:895
+msgid "Verify SSL"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:229
+msgid "Verify SSL certificates"
+msgstr ""
+
+#: includes/class-blc-notifications.php:263
+msgid "View All Broken Links"
+msgstr ""
+
+#: includes/class-blc-multisite.php:186
+msgid "View Dashboard"
+msgstr ""
+
+#: includes/admin/class-blc-dashboard.php:251
+msgid "View HTTP Status Codes Reference"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:680
+msgid "View Links"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1096
+msgid "Visit translate.wordpress.org"
+msgstr ""
+
+#: includes/class-blc-queue-manager.php:210
+msgid "WP-Cron"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:631 includes/admin/class-blc-admin.php:916 includes/models/class-blc-link.php:238
+msgid "Warning"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1017
+msgid "Warning links (redirects) are not broken, but you may want to update them to point directly to the final URL for better SEO."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:674 includes/admin/class-blc-dashboard.php:148 includes/admin/class-blc-dashboard.php:199 includes/class-blc-multisite.php:125 includes/class-blc-notifications.php:211
+msgid "Warnings"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:117 includes/admin/class-blc-settings.php:192
+msgid "Weekly"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:834
+msgid "What If a Scan Gets Stuck?"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:816
+msgid "When Scan Type is set to \"Automatic\" in Settings, the plugin will automatically scan your website at the frequency you choose (Hourly, Twice Daily, Daily, or Weekly). This runs in the background using WordPress Cron — no manual action needed. Set Scan Type to \"Manual\" to disable automatic scanning entirely."
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:896
+msgid "When enabled, the plugin verifies SSL certificates. Disable only if you are experiencing SSL-related false positives."
+msgstr ""
+
+#: includes/models/class-blc-link.php:292
+msgid "Widget"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:144
+msgid "Widgets"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1115
+msgid "WordPress Support Forums"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:632 includes/admin/class-blc-admin.php:921 includes/admin/class-blc-dashboard.php:159 includes/admin/class-blc-dashboard.php:204
+msgid "Working"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:1092
+msgid "You can also contribute translations to the official WordPress translation platform. Your translations will be available to all users of this plugin who speak your language."
+msgstr ""
+
+#: includes/models/class-blc-link.php:265
+msgid "YouTube"
+msgstr ""
+
+#: includes/class-blc-notifications.php:51
+msgid "[%2$s] %1$d Broken Links Detected"
+msgstr ""
+
+#: includes/class-blc-notifications.php:296
+msgid "[%s] Weekly Broken Links Digest"
+msgstr ""
+
+#: includes/class-blc-multisite.php:179
+msgid "ago"
+msgstr ""
+
+#: includes/models/class-blc-link.php:266
+msgid "iFrame"
+msgstr ""
+
+#: includes/admin/class-blc-settings.php:131
+msgid "seconds"
+msgstr ""
+
+#: includes/admin/class-blc-admin.php:133
+msgid "⚠️ WARNING: This will DELETE all plugin data including links, scan history, and settings. This action cannot be undone! Are you absolutely sure?"
+msgstr ""
+

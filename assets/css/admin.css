@@ -42,6 +42,34 @@
     box-sizing: border-box;
 }
 
+/* Move WordPress admin notices outside our layout flow */
+.blc-wrap>.notice,
+.blc-wrap>.updated,
+.blc-wrap>.error,
+.blc-wrap>.update-nag,
+.blc-wrap>div.notice,
+.blc-wrap>div[class*="notice"]:not(.blc-notices-container),
+.blc-header .notice,
+.blc-header .updated,
+.blc-header .error,
+.blc-header div[class*="notice"] {
+    display: none !important;
+}
+
+/* Container for relocated notices - shown below header */
+.blc-notices-container {
+    margin-bottom: 16px;
+}
+
+.blc-notices-container>.notice,
+.blc-notices-container>.updated,
+.blc-notices-container>.error,
+.blc-notices-container>div[class*="notice"] {
+    display: block !important;
+    margin: 0 0 10px 0;
+    border-radius: var(--blc-radius);
+}
+
 .blc-wrap h1 {
     font-size: 28px;
     font-weight: 600;

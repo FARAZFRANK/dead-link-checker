@@ -42,6 +42,7 @@ class BLC_Admin
         add_action('wp_ajax_blc_recheck_link', array($this, 'ajax_recheck_link'));
         add_action('wp_ajax_blc_delete_link', array($this, 'ajax_delete_link'));
         add_action('wp_ajax_blc_edit_link', array($this, 'ajax_edit_link'));
+        add_action('wp_ajax_blc_remove_link', array($this, 'ajax_remove_link'));
         add_action('wp_ajax_blc_bulk_action', array($this, 'ajax_bulk_action'));
         add_action('wp_ajax_blc_export_links', array($this, 'ajax_export_links'));
         add_action('wp_ajax_blc_fresh_scan', array($this, 'ajax_fresh_scan'));
@@ -101,6 +102,51 @@ class BLC_Admin
                 'exporting' => __('Exporting...', 'dead-link-checker'),
                 'exportSuccess' => __('Export created successfully!', 'dead-link-checker'),
                 'exportFailed' => __('Export failed.', 'dead-link-checker'),
+                // Button labels
+                'stopScan' => __('Stop Scan', 'dead-link-checker'),
+                'stopping' => __('Stopping...', 'dead-link-checker'),
+                'clearing' => __('Clearing...', 'dead-link-checker'),
+                'freshScan' => __('Fresh Scan', 'dead-link-checker'),
+                'updateLink' => __('Update Link', 'dead-link-checker'),
+                'removeLink' => __('Remove Link', 'dead-link-checker'),
+                'createRedirect' => __('Create Redirect', 'dead-link-checker'),
+                'apply' => __('Apply', 'dead-link-checker'),
+                'forceStop' => __('Force Stop', 'dead-link-checker'),
+                'forceStopping' => __('Force Stopping...', 'dead-link-checker'),
+                'resetting' => __('Resetting...', 'dead-link-checker'),
+                'resetSettings' => __('Reset Settings', 'dead-link-checker'),
+                'clearHistory' => __('Clear History', 'dead-link-checker'),
+                'fullReset' => __('Full Reset', 'dead-link-checker'),
+                'resettingEverything' => __('Resetting Everything...', 'dead-link-checker'),
+                'cleaning' => __('Cleaning...', 'dead-link-checker'),
+                'cleanupExports' => __('Cleanup Exports', 'dead-link-checker'),
+                // Validation messages
+                'enterUrlOrAnchor' => __('Please enter a new URL or anchor text', 'dead-link-checker'),
+                'enterTargetUrl' => __('Please enter a target URL', 'dead-link-checker'),
+                'selectAction' => __('Please select an action', 'dead-link-checker'),
+                'selectLink' => __('Please select at least one link', 'dead-link-checker'),
+                // Confirm dialogs
+                'confirmRemoveLink' => __('Are you sure you want to remove this link? The anchor text will be kept but the link will be unlinked.', 'dead-link-checker'),
+                'confirmForceStop' => __('This will forcefully stop ALL running and pending scans. Are you sure?', 'dead-link-checker'),
+                'confirmResetSettings' => __('This will reset ALL plugin settings to their factory defaults. Your scan data will NOT be affected. Continue?', 'dead-link-checker'),
+                'confirmClearHistory' => __('This will delete all scan history records. Your link data will NOT be affected. Continue?', 'dead-link-checker'),
+                'confirmFullReset' => __('⚠️ WARNING: This will DELETE all plugin data including links, scan history, and settings. This action cannot be undone! Are you absolutely sure?', 'dead-link-checker'),
+                'confirmFullResetDouble' => __('Please confirm again: ALL data will be permanently deleted and settings reset to factory defaults.', 'dead-link-checker'),
+                'confirmCleanupExports' => __('This will delete all exported CSV/JSON files. Continue?', 'dead-link-checker'),
+                // Toast fallbacks
+                'allScansForceStopped' => __('All scans force stopped.', 'dead-link-checker'),
+                'failedForceStop' => __('Failed to force stop.', 'dead-link-checker'),
+                'settingsResetDefaults' => __('Settings reset to defaults.', 'dead-link-checker'),
+                'failedResetSettings' => __('Failed to reset settings.', 'dead-link-checker'),
+                'scanHistoryCleared' => __('Scan history cleared.', 'dead-link-checker'),
+                'failedClearHistory' => __('Failed to clear history.', 'dead-link-checker'),
+                'pluginFullyReset' => __('Plugin fully reset.', 'dead-link-checker'),
+                'failedResetPlugin' => __('Failed to reset plugin.', 'dead-link-checker'),
+                'exportFilesCleaned' => __('Export files cleaned up.', 'dead-link-checker'),
+                'failedCleanupExports' => __('Failed to cleanup exports.', 'dead-link-checker'),
+                'redirectSuccess' => __('Redirect created successfully!', 'dead-link-checker'),
+                /* translators: 1: checked count, 2: total count, 3: percentage, 4: broken count, 5: warnings count */
+                'progressText' => __('Checked %1$s of %2$s links (%3$s%%) — %4$s broken, %5$s warnings', 'dead-link-checker'),
             ),
         ));
     }
@@ -216,23 +262,98 @@ class BLC_Admin
         check_ajax_referer('blc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
+
         $link_id = absint($_POST['link_id'] ?? 0);
-        $new_url = esc_url_raw($_POST['new_url'] ?? '');
-        if (!$link_id || !$new_url)
+        $new_url = isset($_POST['new_url']) ? esc_url_raw($_POST['new_url']) : '';
+        $new_anchor_text = isset($_POST['new_anchor_text']) ? sanitize_text_field(wp_unslash($_POST['new_anchor_text'])) : '';
+
+        if (!$link_id || (!$new_url && $new_anchor_text === ''))
             wp_send_json_error(__('Invalid parameters.', 'dead-link-checker'));
+
         $link = blc()->database->get_link($link_id);
         if (!$link)
             wp_send_json_error(__('Link not found.', 'dead-link-checker'));
-        if (in_array($link->source_type, array('post', 'page'), true)) {
+
+        if (!in_array($link->source_type, array('menu', 'widget', 'comment', 'custom_field'), true)) {
             $post = get_post($link->source_id);
             if ($post) {
-                $content = str_replace($link->url, $new_url, $post->post_content);
+                $content = $post->post_content;
+                $old_url_escaped = preg_quote($link->url, '/');
+
+                // Build replacement based on what changed
+                if ($new_url && $new_anchor_text !== '') {
+                    // Replace both URL and anchor text
+                    $content = preg_replace(
+                        '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'][^>]*>)(.*?)(<\/a>)/si',
+                        '${1}' . $new_url . '${2}' . esc_html($new_anchor_text) . '${4}',
+                        $content
+                    );
+                } elseif ($new_url) {
+                    // Replace URL only
+                    $content = str_replace($link->url, $new_url, $content);
+                } elseif ($new_anchor_text !== '') {
+                    // Replace anchor text only
+                    $content = preg_replace(
+                        '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'][^>]*>)(.*?)(<\/a>)/si',
+                        '${1}' . $link->url . '${2}' . esc_html($new_anchor_text) . '${4}',
+                        $content
+                    );
+                }
+
                 wp_update_post(array('ID' => $post->ID, 'post_content' => $content));
-                blc()->database->delete_link($link_id);
+
+                // Update database record
+                $update_data = array();
+                if ($new_url) {
+                    $update_data['url'] = $new_url;
+                }
+                if ($new_anchor_text !== '') {
+                    $update_data['anchor_text'] = $new_anchor_text;
+                }
+                if (!empty($update_data)) {
+                    blc()->database->update_link($link_id, $update_data);
+                }
+
                 wp_send_json_success(__('Link updated.', 'dead-link-checker'));
             }
         }
         wp_send_json_error(__('Could not update.', 'dead-link-checker'));
+    }
+
+    public function ajax_remove_link()
+    {
+        check_ajax_referer('blc_admin_nonce', 'nonce');
+        if (!current_user_can('manage_options'))
+            wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
+
+        $link_id = absint($_POST['link_id'] ?? 0);
+        if (!$link_id)
+            wp_send_json_error(__('Invalid link ID.', 'dead-link-checker'));
+
+        $link = blc()->database->get_link($link_id);
+        if (!$link)
+            wp_send_json_error(__('Link not found.', 'dead-link-checker'));
+
+        // Try to remove the link from post content if source is a post type
+        if (!in_array($link->source_type, array('menu', 'widget', 'comment', 'custom_field'), true)) {
+            if (!empty($link->source_id)) {
+                $post = get_post($link->source_id);
+                if ($post) {
+                    $old_url_escaped = preg_quote($link->url, '/');
+                    // Replace <a href="URL">text</a> with just the text (unwrap the link)
+                    $content = preg_replace(
+                        '/<a\s[^>]*href=["\']' . $old_url_escaped . '["\'][^>]*>(.*?)<\/a>/si',
+                        '$1',
+                        $post->post_content
+                    );
+                    wp_update_post(array('ID' => $post->ID, 'post_content' => $content));
+                }
+            }
+        }
+
+        // Always delete the link record from the database
+        blc()->database->delete_link($link_id);
+        wp_send_json_success(__('Link removed.', 'dead-link-checker'));
     }
 
     public function ajax_bulk_action()
@@ -807,18 +928,24 @@ class BLC_Admin
                         </tr>
                     </table>
 
-                    <h3 style="margin-top: 20px; color: #555;"><?php esc_html_e('Common HTTP Status Codes', 'dead-link-checker'); ?></h3>
+                    <h3 id="blc-http-status-codes" style="margin-top: 20px; color: #555;"><?php esc_html_e('Common HTTP Status Codes', 'dead-link-checker'); ?></h3>
                     <table class="widefat">
                         <tr><td style="width:80px;"><strong>200</strong></td><td><?php esc_html_e('OK — Link is working.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>301</strong></td><td><?php esc_html_e('Moved Permanently — The URL has been permanently redirected to a new location.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>302</strong></td><td><?php esc_html_e('Found — Temporary redirect. The URL is temporarily pointing elsewhere.', 'dead-link-checker'); ?></td></tr>
+                        <tr><td><strong>401</strong></td><td><?php esc_html_e('Unauthorized — Authentication is required. The server needs valid credentials to access this URL.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>403</strong></td><td><?php esc_html_e('Forbidden — Access denied. The server refuses to serve this URL.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>404</strong></td><td><?php esc_html_e('Not Found — The page does not exist. This is the most common broken link.', 'dead-link-checker'); ?></td></tr>
+                        <tr><td><strong>405</strong></td><td><?php esc_html_e('Method Not Allowed — The HTTP method used is not supported by this URL.', 'dead-link-checker'); ?></td></tr>
+                        <tr><td><strong>406</strong></td><td><?php esc_html_e('Not Acceptable — The server cannot produce a response matching the request headers.', 'dead-link-checker'); ?></td></tr>
+                        <tr><td><strong>410</strong></td><td><?php esc_html_e('Gone — The page has been permanently removed. Unlike 404, the server knows it was intentionally deleted.', 'dead-link-checker'); ?></td></tr>
+                        <tr><td><strong>429</strong></td><td><?php esc_html_e('Too Many Requests — Rate limit exceeded. The server is blocking requests due to too many in a short time.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>500</strong></td><td><?php esc_html_e('Server Error — Something went wrong on the target server.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>503</strong></td><td><?php esc_html_e('Service Unavailable — The server is temporarily down, often for maintenance.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>Timeout</strong></td><td><?php esc_html_e('No response — The server did not respond within the configured timeout period.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>DNS Error</strong></td><td><?php esc_html_e('Domain does not exist — The domain name could not be resolved.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>SSL Error</strong></td><td><?php esc_html_e('SSL certificate issue — The website has an invalid or expired SSL certificate.', 'dead-link-checker'); ?></td></tr>
+                        <tr><td><strong>Error</strong></td><td><?php esc_html_e('Connection Error — A generic error occurred while trying to reach the URL (e.g., connection refused, reset, or unknown failure).', 'dead-link-checker'); ?></td></tr>
                     </table>
                 </div>
 
@@ -891,6 +1018,88 @@ class BLC_Admin
                         <li><strong><?php esc_html_e('Export Regularly:', 'dead-link-checker'); ?></strong> <?php esc_html_e('Export your broken link reports as CSV for record-keeping or to share with your team.', 'dead-link-checker'); ?></li>
                         <li><strong><?php esc_html_e('Use Bulk Actions:', 'dead-link-checker'); ?></strong> <?php esc_html_e('Select multiple links with checkboxes and use bulk Dismiss, Delete, or Recheck to manage them efficiently.', 'dead-link-checker'); ?></li>
                     </ul>
+                </div>
+
+                <!-- How to Translate -->
+                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <span class="dashicons dashicons-translation" style="color: #00BCD4;"></span>
+                        <?php esc_html_e('How to Translate This Plugin', 'dead-link-checker'); ?>
+                    </h2>
+                    <p style="color: #555; line-height: 1.7;">
+                        <?php esc_html_e('Dead Link Checker Pro is fully translation-ready. You can translate it into your language using any of the methods below.', 'dead-link-checker'); ?>
+                    </p>
+
+                    <h3 style="color: #444; background: #e0f7fa; padding: 8px 12px; border-radius: 4px;">
+                        <?php esc_html_e('Method 1: Using Loco Translate Plugin (Recommended)', 'dead-link-checker'); ?>
+                    </h3>
+                    <ol style="line-height: 2; color: #555;">
+                        <li><?php
+                            printf(
+                                /* translators: %s: link to Loco Translate plugin page */
+                                esc_html__('Install and activate the %s plugin from the WordPress plugin repository.', 'dead-link-checker'),
+                                '<a href="' . esc_url(admin_url('plugin-install.php?s=loco+translate&tab=search&type=term')) . '" target="_blank"><strong>Loco Translate</strong></a>'
+                            );
+                        ?></li>
+                        <li><?php
+                            printf(
+                                /* translators: %s: menu path */
+                                esc_html__('Go to %s in your WordPress admin menu.', 'dead-link-checker'),
+                                '<strong>' . esc_html__('Loco Translate → Plugins', 'dead-link-checker') . '</strong>'
+                            );
+                        ?></li>
+                        <li><?php esc_html_e('Find "Dead Link Checker" in the list and click on it.', 'dead-link-checker'); ?></li>
+                        <li><?php esc_html_e('Click "New Language" and select your desired language.', 'dead-link-checker'); ?></li>
+                        <li><?php esc_html_e('Translate the strings one by one using the visual editor. You can search and filter strings to find them quickly.', 'dead-link-checker'); ?></li>
+                        <li><?php esc_html_e('Click "Save" when done. Your translations will take effect immediately.', 'dead-link-checker'); ?></li>
+                    </ol>
+
+                    <h3 style="color: #444; background: #e0f7fa; padding: 8px 12px; border-radius: 4px; margin-top: 20px;">
+                        <?php esc_html_e('Method 2: Using Poedit (Manual PO/MO Files)', 'dead-link-checker'); ?>
+                    </h3>
+                    <ol style="line-height: 2; color: #555;">
+                        <li><?php
+                            printf(
+                                /* translators: %s: link to Poedit website */
+                                esc_html__('Download and install %s on your computer (free desktop application).', 'dead-link-checker'),
+                                '<a href="https://poedit.net/" target="_blank"><strong>Poedit</strong></a>'
+                            );
+                        ?></li>
+                        <li><?php
+                            printf(
+                                /* translators: %s: file path */
+                                esc_html__('Open the POT template file located at: %s', 'dead-link-checker'),
+                                '<code>wp-content/plugins/dead-link-checker-pro/languages/dead-link-checker.pot</code>'
+                            );
+                        ?></li>
+                        <li><?php esc_html_e('In Poedit, go to "Create New Translation" and select your language.', 'dead-link-checker'); ?></li>
+                        <li><?php esc_html_e('Translate each string, then save the file.', 'dead-link-checker'); ?></li>
+                        <li><?php
+                            printf(
+                                /* translators: %1$s: example PO filename, %2$s: example MO filename, %3$s: directory path */
+                                esc_html__('Poedit will generate two files (e.g., %1$s and %2$s). Upload both to: %3$s', 'dead-link-checker'),
+                                '<code>dead-link-checker-fr_FR.po</code>',
+                                '<code>dead-link-checker-fr_FR.mo</code>',
+                                '<code>wp-content/languages/plugins/</code>'
+                            );
+                        ?></li>
+                    </ol>
+
+                    <h3 style="color: #444; background: #e0f7fa; padding: 8px 12px; border-radius: 4px; margin-top: 20px;">
+                        <?php esc_html_e('Method 3: Contribute on translate.wordpress.org', 'dead-link-checker'); ?>
+                    </h3>
+                    <p style="color: #555; line-height: 1.7;">
+                        <?php esc_html_e('You can also contribute translations to the official WordPress translation platform. Your translations will be available to all users of this plugin who speak your language.', 'dead-link-checker'); ?>
+                    </p>
+                    <a href="https://translate.wordpress.org/" target="_blank"
+                        style="display: inline-block; background: #00BCD4; color: #fff; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: 500;">
+                        <?php esc_html_e('Visit translate.wordpress.org', 'dead-link-checker'); ?>
+                    </a>
+
+                    <div style="margin-top: 20px; padding: 12px 16px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
+                        <strong><?php esc_html_e('Note:', 'dead-link-checker'); ?></strong>
+                        <?php esc_html_e('After translating, make sure your WordPress site language is set to your target language. Go to Settings → General → Site Language and select your language. The plugin will automatically load the matching translation file.', 'dead-link-checker'); ?>
+                    </div>
                 </div>
 
                 <!-- Support -->

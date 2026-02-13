@@ -126,6 +126,15 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 
 == Changelog ==
 
+= 3.0.6 =
+* Added full internationalization (i18n) support — plugin is now translation-ready
+* Generated POT template file with 405 translatable strings
+* Added complete Hindi (hi_IN) translation — PO and MO files (100% coverage)
+* Localized all JavaScript strings via wp_localize_script for proper translation
+* Wrapped remaining hardcoded PHP strings with translation functions (__(), esc_html__(), etc.)
+* Added "How to Translate This Plugin" section to Help page with Loco Translate, Poedit, and WordPress.org instructions
+* Fixed third-party admin notices breaking plugin header layout
+
 = 3.0.5 =
 * Fixed dashboard stats cache not clearing when link status changes — broken link count now updates immediately
 * Fixed Fresh Scan not clearing stats cache — stale broken link counts no longer persist after clearing all data
@@ -184,6 +193,9 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.6 =
+Full translation support added. POT template and Hindi translation included. JS strings localized. Help page now has translation instructions.
 
 = 3.0.5 =
 Fixed broken link count sync issue, stats cache improvements, and corrected help page link.

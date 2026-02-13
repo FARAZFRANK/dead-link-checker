@@ -215,7 +215,7 @@ class BLC_Queue_Manager
             $status['pending_actions'] = self::get_pending_count('blc_process_queue');
             $status['version'] = defined('ActionScheduler_Versions::LATEST_VERSION')
                 ? ActionScheduler_Versions::LATEST_VERSION
-                : 'Unknown';
+                : __('Unknown', 'dead-link-checker');
         } else {
             $status['pending_actions'] = 0;
             $status['note'] = __('Install WooCommerce or Action Scheduler plugin for more reliable background processing.', 'dead-link-checker');

@@ -357,7 +357,7 @@ class BLC_Link
             return __('Never', 'dead-link-checker');
         }
 
-        return human_time_diff(strtotime($this->last_check), current_time('timestamp')) . ' ' . __('ago', 'dead-link-checker');
+        return sprintf(__('%s ago', 'dead-link-checker'), human_time_diff(strtotime($this->last_check), current_time('timestamp')));
     }
 
     /**

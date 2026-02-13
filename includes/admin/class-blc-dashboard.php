@@ -74,10 +74,11 @@ class BLC_Dashboard
                 <div class="blc-header-left">
                     <h1>
                         <?php esc_html_e('Dead Link Checker Pro', 'dead-link-checker'); ?>
+                        <span style="font-size: 13px; font-weight: 500; background: #e8f0fe; color: #1a73e8; padding: 3px 10px; border-radius: 12px; vertical-align: middle; margin-left: 8px;">v<?php echo esc_html(BLC_VERSION); ?></span>
                     </h1>
                     <?php if ($latest_scan && $latest_scan->completed_at): ?>
                         <span class="blc-last-scan">
-                            <?php printf(esc_html__('Last scan: %s', 'dead-link-checker'), human_time_diff(strtotime($latest_scan->completed_at)) . ' ago'); ?>
+                            <?php printf(esc_html__('Last scan: %s ago', 'dead-link-checker'), human_time_diff(strtotime($latest_scan->completed_at))); ?>
                         </span>
                     <?php endif; ?>
                     <?php
@@ -253,17 +254,17 @@ class BLC_Dashboard
                             <option value="" <?php selected($http_status, ''); ?>>
                                 <?php esc_html_e('Any Status', 'dead-link-checker'); ?>
                             </option>
-                            <option value="301" <?php selected($http_status, '301'); ?>>301 Redirect</option>
-                            <option value="302" <?php selected($http_status, '302'); ?>>302 Redirect</option>
-                            <option value="401" <?php selected($http_status, '401'); ?>>401 Unauthorized</option>
-                            <option value="403" <?php selected($http_status, '403'); ?>>403 Forbidden</option>
-                            <option value="404" <?php selected($http_status, '404'); ?>>404 Not Found</option>
-                            <option value="405" <?php selected($http_status, '405'); ?>>405 Method Not Allowed</option>
-                            <option value="406" <?php selected($http_status, '406'); ?>>406 Not Acceptable</option>
-                            <option value="410" <?php selected($http_status, '410'); ?>>410 Gone</option>
-                            <option value="429" <?php selected($http_status, '429'); ?>>429 Too Many Requests</option>
-                            <option value="500" <?php selected($http_status, '500'); ?>>500 Server Error</option>
-                            <option value="503" <?php selected($http_status, '503'); ?>>503 Service Unavailable</option>
+                            <option value="301" <?php selected($http_status, '301'); ?>><?php esc_html_e('301 Redirect', 'dead-link-checker'); ?></option>
+                            <option value="302" <?php selected($http_status, '302'); ?>><?php esc_html_e('302 Redirect', 'dead-link-checker'); ?></option>
+                            <option value="401" <?php selected($http_status, '401'); ?>><?php esc_html_e('401 Unauthorized', 'dead-link-checker'); ?></option>
+                            <option value="403" <?php selected($http_status, '403'); ?>><?php esc_html_e('403 Forbidden', 'dead-link-checker'); ?></option>
+                            <option value="404" <?php selected($http_status, '404'); ?>><?php esc_html_e('404 Not Found', 'dead-link-checker'); ?></option>
+                            <option value="405" <?php selected($http_status, '405'); ?>><?php esc_html_e('405 Method Not Allowed', 'dead-link-checker'); ?></option>
+                            <option value="406" <?php selected($http_status, '406'); ?>><?php esc_html_e('406 Not Acceptable', 'dead-link-checker'); ?></option>
+                            <option value="410" <?php selected($http_status, '410'); ?>><?php esc_html_e('410 Gone', 'dead-link-checker'); ?></option>
+                            <option value="429" <?php selected($http_status, '429'); ?>><?php esc_html_e('429 Too Many Requests', 'dead-link-checker'); ?></option>
+                            <option value="500" <?php selected($http_status, '500'); ?>><?php esc_html_e('500 Server Error', 'dead-link-checker'); ?></option>
+                            <option value="503" <?php selected($http_status, '503'); ?>><?php esc_html_e('503 Service Unavailable', 'dead-link-checker'); ?></option>
                             <option value="error" <?php selected($http_status, 'error'); ?>><?php esc_html_e('Error (No Response)', 'dead-link-checker'); ?></option>
                         </select>
                     </div>
@@ -408,7 +409,7 @@ class BLC_Dashboard
                                         </a>
                                         <?php if ($link->redirect_url): ?>
                                             <span class="blc-redirect-info">→
-                                                <?php echo esc_html($link->redirect_count); ?> redirects
+                                                <?php echo esc_html(sprintf(_n('%d redirect', '%d redirects', $link->redirect_count, 'dead-link-checker'), $link->redirect_count)); ?>
                                             </span>
                                         <?php endif; ?>
                                         <?php if ($link->anchor_text): ?>
@@ -433,7 +434,7 @@ class BLC_Dashboard
                                 <td class="blc-col-checked">
                                     <?php if ($link->last_check): ?>
                                         <span title="<?php echo esc_attr($link->last_check); ?>">
-                                            <?php echo esc_html(human_time_diff(strtotime($link->last_check)) . ' ago'); ?>
+                                            <?php echo esc_html(sprintf(__('%s ago', 'dead-link-checker'), human_time_diff(strtotime($link->last_check)))); ?>
                                         </span>
                                     <?php else: ?>
                                         <span class="blc-unchecked"><?php esc_html_e('Never', 'dead-link-checker'); ?></span>

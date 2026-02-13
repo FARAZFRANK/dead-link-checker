@@ -184,7 +184,7 @@ class BLC_Notifications
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>🔗 Broken Links Report</h1>
+                    <h1>🔗 <?php esc_html_e('Broken Links Report', 'dead-link-checker'); ?></h1>
                     <p>
                         <?php echo esc_html($site_name); ?>
                     </p>
