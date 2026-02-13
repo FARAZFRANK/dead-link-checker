@@ -158,11 +158,16 @@ class BLC_Database
             )
         );
 
-        return (bool) $wpdb->update(
+        $update_success = (bool) $wpdb->update(
             $this->table_links,
             $data,
             array('id' => $link_id)
         );
+
+        // Clear stats cache so dashboard shows updated counts immediately
+        $this->clear_stats_cache();
+
+        return $update_success;
     }
 
     /**
@@ -304,8 +309,12 @@ class BLC_Database
 
         // HTTP status code filter
         if (!empty($args['http_status'])) {
-            $where[] = 'status_code = %d';
-            $values[] = intval($args['http_status']);
+            if ($args['http_status'] === 'error') {
+                $where[] = '(status_code IS NULL OR status_code = 0)';
+            } else {
+                $where[] = 'status_code = %d';
+                $values[] = intval($args['http_status']);
+            }
         }
 
         // Build query
@@ -508,6 +517,50 @@ class BLC_Database
         $this->clear_stats_cache();
 
         return (bool) $result;
+    }
+
+    /**
+     * Update a link's data
+     *
+     * @param int   $link_id Link ID
+     * @param array $data    Associative array of columns to update (e.g. url, anchor_text)
+     * @return bool
+     */
+    public function update_link($link_id, $data)
+    {
+        global $wpdb;
+
+        if (empty($data)) {
+            return false;
+        }
+
+        $update = array();
+        $format = array();
+
+        if (isset($data['url'])) {
+            $update['url'] = $data['url'];
+            $format[] = '%s';
+        }
+        if (isset($data['anchor_text'])) {
+            $update['anchor_text'] = $data['anchor_text'];
+            $format[] = '%s';
+        }
+
+        if (empty($update)) {
+            return false;
+        }
+
+        $result = $wpdb->update(
+            $this->table_links,
+            $update,
+            array('id' => $link_id),
+            $format,
+            array('%d')
+        );
+
+        $this->clear_stats_cache();
+
+        return $result !== false;
     }
 
     /**
@@ -716,6 +769,7 @@ class BLC_Database
         // Clear any transients
         delete_transient('blc_current_scan_id');
         delete_transient('blc_scan_progress');
+        $this->clear_stats_cache();
 
         return ($links_result !== false && $scans_result !== false);
     }

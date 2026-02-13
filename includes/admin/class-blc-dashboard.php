@@ -28,7 +28,11 @@ class BLC_Dashboard
         }
 
         $paged = isset($_GET['paged']) ? absint($_GET['paged']) : 1;
-        $per_page = 20;
+        $allowed_per_page = array(10, 20, 50, 100, 200);
+        $per_page = isset($_GET['per_page']) ? absint($_GET['per_page']) : 10;
+        if (!in_array($per_page, $allowed_per_page, true)) {
+            $per_page = 10;
+        }
 
         // Sorting params
         $orderby = isset($_GET['orderby']) ? sanitize_key($_GET['orderby']) : 'last_check';
@@ -244,16 +248,23 @@ class BLC_Dashboard
                     </div>
 
                     <div class="blc-filter-group">
-                        <label><?php esc_html_e('HTTP Status:', 'dead-link-checker'); ?></label>
+                        <label><a href="<?php echo esc_url(admin_url('admin.php?page=blc-help#blc-http-status-codes')); ?>" target="_blank" title="<?php esc_attr_e('View HTTP Status Codes Reference', 'dead-link-checker'); ?>" style="text-decoration:none; color:inherit;"><?php esc_html_e('HTTP Status:', 'dead-link-checker'); ?> <span class="dashicons dashicons-editor-help" style="font-size:14px; width:14px; height:14px; vertical-align:middle; color:#999;"></span></a></label>
                         <select name="http_status">
                             <option value="" <?php selected($http_status, ''); ?>>
                                 <?php esc_html_e('Any Status', 'dead-link-checker'); ?>
                             </option>
-                            <option value="404" <?php selected($http_status, '404'); ?>>404 Not Found</option>
-                            <option value="403" <?php selected($http_status, '403'); ?>>403 Forbidden</option>
-                            <option value="500" <?php selected($http_status, '500'); ?>>500 Server Error</option>
                             <option value="301" <?php selected($http_status, '301'); ?>>301 Redirect</option>
                             <option value="302" <?php selected($http_status, '302'); ?>>302 Redirect</option>
+                            <option value="401" <?php selected($http_status, '401'); ?>>401 Unauthorized</option>
+                            <option value="403" <?php selected($http_status, '403'); ?>>403 Forbidden</option>
+                            <option value="404" <?php selected($http_status, '404'); ?>>404 Not Found</option>
+                            <option value="405" <?php selected($http_status, '405'); ?>>405 Method Not Allowed</option>
+                            <option value="406" <?php selected($http_status, '406'); ?>>406 Not Acceptable</option>
+                            <option value="410" <?php selected($http_status, '410'); ?>>410 Gone</option>
+                            <option value="429" <?php selected($http_status, '429'); ?>>429 Too Many Requests</option>
+                            <option value="500" <?php selected($http_status, '500'); ?>>500 Server Error</option>
+                            <option value="503" <?php selected($http_status, '503'); ?>>503 Service Unavailable</option>
+                            <option value="error" <?php selected($http_status, 'error'); ?>><?php esc_html_e('Error (No Response)', 'dead-link-checker'); ?></option>
                         </select>
                     </div>
 
@@ -274,34 +285,44 @@ class BLC_Dashboard
             </div>
 
             <!-- Bulk Actions -->
-            <div class="blc-bulk-actions">
-                <select id="blc-bulk-action">
-                    <option value="">
-                        <?php esc_html_e('Bulk Actions', 'dead-link-checker'); ?>
-                    </option>
-                    <option value="recheck">
-                        <?php esc_html_e('Recheck', 'dead-link-checker'); ?>
-                    </option>
-                    <option value="dismiss">
-                        <?php esc_html_e('Dismiss', 'dead-link-checker'); ?>
-                    </option>
-                    <option value="undismiss">
-                        <?php esc_html_e('Restore', 'dead-link-checker'); ?>
-                    </option>
-                    <option value="delete">
-                        <?php esc_html_e('Delete', 'dead-link-checker'); ?>
-                    </option>
-                </select>
-                <button type="button" id="blc-bulk-apply" class="button">
-                    <?php esc_html_e('Apply', 'dead-link-checker'); ?>
-                </button>
-                <span class="blc-bulk-result"></span>
+            <div class="blc-bulk-actions" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <select id="blc-bulk-action">
+                        <option value="">
+                            <?php esc_html_e('Bulk Actions', 'dead-link-checker'); ?>
+                        </option>
+                        <option value="recheck">
+                            <?php esc_html_e('Recheck', 'dead-link-checker'); ?>
+                        </option>
+                        <option value="dismiss">
+                            <?php esc_html_e('Dismiss', 'dead-link-checker'); ?>
+                        </option>
+                        <option value="undismiss">
+                            <?php esc_html_e('Restore', 'dead-link-checker'); ?>
+                        </option>
+                        <option value="delete">
+                            <?php esc_html_e('Delete', 'dead-link-checker'); ?>
+                        </option>
+                    </select>
+                    <button type="button" id="blc-bulk-apply" class="button">
+                        <?php esc_html_e('Apply', 'dead-link-checker'); ?>
+                    </button>
+                    <span class="blc-bulk-result"></span>
+                </div>
+                <div class="blc-per-page" style="display:flex; align-items:center; gap:6px;">
+                    <label for="blc-per-page-select" style="font-size:13px; white-space:nowrap;"><?php esc_html_e('Rows per page:', 'dead-link-checker'); ?></label>
+                    <select id="blc-per-page-select" style="width:auto; min-width:60px;" onchange="var url=new window.URL(window.location.href); url.searchParams.set('per_page',this.value); url.searchParams.set('paged','1'); window.location.href=url.toString();">
+                        <?php foreach (array(10, 20, 50, 100, 200) as $pp): ?>
+                            <option value="<?php echo $pp; ?>" <?php selected($per_page, $pp); ?>><?php echo $pp; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
 
             <!-- Links Table -->
             <?php
             // Helper function to build sortable header
-            $build_sort_url = function ($column) use ($orderby, $order, $current_status, $current_type, $search, $date_from, $date_to, $http_status) {
+            $build_sort_url = function ($column) use ($orderby, $order, $current_status, $current_type, $search, $date_from, $date_to, $http_status, $per_page) {
                 $new_order = ($orderby === $column && $order === 'ASC') ? 'DESC' : 'ASC';
                 return add_query_arg(array(
                     'page' => 'dead-link-checker',
@@ -313,6 +334,7 @@ class BLC_Dashboard
                     'date_from' => $date_from,
                     'date_to' => $date_to,
                     'http_status' => $http_status,
+                    'per_page' => $per_page,
                 ));
             };
             $sort_class = function ($column) use ($orderby, $order) {
@@ -424,8 +446,8 @@ class BLC_Dashboard
                                             title="<?php esc_attr_e('Recheck', 'dead-link-checker'); ?>"><span
                                                 class="dashicons dashicons-update"></span></button>
                                         <button type="button" class="blc-action-btn blc-edit"
-                                            data-id="<?php echo esc_attr($link->id); ?>" data-url="<?php echo esc_attr($link->url); ?>"
-                                            title="<?php esc_attr_e('Edit URL', 'dead-link-checker'); ?>"><span
+                                            data-id="<?php echo esc_attr($link->id); ?>" data-url="<?php echo esc_attr($link->url); ?>" data-anchor="<?php echo esc_attr($link->anchor_text); ?>"
+                                            title="<?php esc_attr_e('Edit Link', 'dead-link-checker'); ?>"><span
                                                 class="dashicons dashicons-edit"></span></button>
                                         <?php if ($link->is_broken): ?>
                                             <button type="button" class="blc-action-btn blc-redirect"
@@ -461,7 +483,7 @@ class BLC_Dashboard
                 <div class="blc-pagination">
                     <?php
                     echo paginate_links(array(
-                        'base' => add_query_arg('paged', '%#%'),
+                        'base' => add_query_arg(array('paged' => '%#%', 'per_page' => $per_page)),
                         'format' => '',
                         'current' => $paged,
                         'total' => $total_pages,
@@ -477,7 +499,7 @@ class BLC_Dashboard
                 <div class="blc-modal-content">
                     <div class="blc-modal-header">
                         <h3>
-                            <?php esc_html_e('Edit Link URL', 'dead-link-checker'); ?>
+                            <?php esc_html_e('Edit Link', 'dead-link-checker'); ?>
                         </h3>
                         <button type="button" class="blc-modal-close">&times;</button>
                     </div>
@@ -488,15 +510,24 @@ class BLC_Dashboard
                         <p><label>
                                 <?php esc_html_e('New URL:', 'dead-link-checker'); ?>
                             </label><input type="url" id="blc-edit-new-url" placeholder="https://"></p>
+                        <p><label>
+                                <?php esc_html_e('Anchor Text:', 'dead-link-checker'); ?>
+                            </label><input type="text" id="blc-edit-anchor-text" placeholder="<?php esc_attr_e('Leave empty to keep current', 'dead-link-checker'); ?>"></p>
                         <input type="hidden" id="blc-edit-link-id">
                     </div>
-                    <div class="blc-modal-footer">
-                        <button type="button" class="button blc-modal-cancel">
-                            <?php esc_html_e('Cancel', 'dead-link-checker'); ?>
+                    <div class="blc-modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                        <button type="button" class="button" id="blc-remove-link" style="color:#a00; border-color:#a00;">
+                            <span class="dashicons dashicons-editor-unlink" style="vertical-align:middle; margin-right:2px;"></span>
+                            <?php esc_html_e('Remove Link', 'dead-link-checker'); ?>
                         </button>
-                        <button type="button" class="button button-primary" id="blc-edit-save">
-                            <?php esc_html_e('Update Link', 'dead-link-checker'); ?>
-                        </button>
+                        <div>
+                            <button type="button" class="button blc-modal-cancel">
+                                <?php esc_html_e('Cancel', 'dead-link-checker'); ?>
+                            </button>
+                            <button type="button" class="button button-primary" id="blc-edit-save">
+                                <?php esc_html_e('Update Link', 'dead-link-checker'); ?>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

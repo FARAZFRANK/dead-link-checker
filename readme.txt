@@ -5,7 +5,7 @@ Tags: broken links, dead links, seo, 404 error, link checker, redirects, element
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.4
+Stable tag: 3.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,14 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 
 == Changelog ==
 
+= 3.0.5 =
+* Fixed dashboard stats cache not clearing when link status changes — broken link count now updates immediately
+* Fixed Fresh Scan not clearing stats cache — stale broken link counts no longer persist after clearing all data
+* Fixed HTTP Status help link pointing to wrong page (dead-link-checker-help → blc-help)
+* Fixed Rows per page dropdown not working due to JavaScript URL constructor scope conflict in WordPress
+* Added 10 as a Rows per page option and set it as the default
+* Changed default Rows per page from 20 to 10 for better usability
+
 = 3.0.4 =
 * Fixed Reset Settings and Full Plugin Reset errors (PHP TypeError in sanitize_settings)
 * Improved Recheck link feature — now detects when a link is manually fixed in the post editor
@@ -176,6 +184,9 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.5 =
+Fixed broken link count sync issue, stats cache improvements, and corrected help page link.
 
 = 3.0.4 =
 Fixed Reset Settings errors, improved Recheck to detect manually fixed links, and sanitize_settings array handling fix.
