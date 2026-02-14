@@ -10,14 +10,14 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Checker
+class AWLDLC_Checker
 {
 
     private $settings;
 
     public function __construct()
     {
-        $this->settings = get_option('blc_settings', array());
+        $this->settings = get_option('awldlc_settings', array());
     }
 
     public function check_url($url)
@@ -45,7 +45,7 @@ class BLC_Checker
         $timeout = isset($this->settings['timeout']) ? absint($this->settings['timeout']) : 30;
         $user_agent = isset($this->settings['user_agent']) && !empty($this->settings['user_agent'])
             ? $this->settings['user_agent']
-            : 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . BLC_VERSION . ')';
+            : 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . AWLDLC_VERSION . ')';
         $verify_ssl = isset($this->settings['verify_ssl']) ? (bool) $this->settings['verify_ssl'] : true;
 
         $args = array(

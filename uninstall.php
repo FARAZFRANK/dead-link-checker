@@ -21,12 +21,12 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 /**
  * Uninstall the plugin completely
  */
-function blc_uninstall()
+function awldlc_uninstall()
 {
     global $wpdb;
 
     // Check if user wants to keep data (future feature)
-    $settings = get_option('blc_settings', array());
+    $settings = get_option('awldlc_settings', array());
     $keep_data = isset($settings['keep_data_on_uninstall']) && $settings['keep_data_on_uninstall'];
 
     if ($keep_data) {
@@ -34,8 +34,8 @@ function blc_uninstall()
     }
 
     // Drop custom tables
-    $table_links = $wpdb->prefix . 'blc_links';
-    $table_scans = $wpdb->prefix . 'blc_scans';
+    $table_links = $wpdb->prefix . 'awldlc_links';
+    $table_scans = $wpdb->prefix . 'awldlc_scans';
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
     $wpdb->query("DROP TABLE IF EXISTS {$table_links}");
@@ -44,10 +44,10 @@ function blc_uninstall()
 
     // Delete all plugin options
     $options_to_delete = array(
-        'blc_settings',
-        'blc_db_version',
-        'blc_last_scan',
-        'blc_scan_stats',
+        'awldlc_settings',
+        'awldlc_db_version',
+        'awldlc_last_scan',
+        'awldlc_scan_stats',
     );
 
     foreach ($options_to_delete as $option) {
@@ -58,8 +58,8 @@ function blc_uninstall()
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-            '_transient_blc_%',
-            '_transient_timeout_blc_%'
+            '_transient_awldlc_%',
+            '_transient_timeout_awldlc_%'
         )
     );
 
@@ -67,18 +67,18 @@ function blc_uninstall()
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",
-            'blc_%'
+            'awldlc_%'
         )
     );
 
     // Clear any scheduled cron events
     $cron_events = array(
-        'blc_scheduled_scan',
-        'blc_recheck_broken',
-        'blc_send_digest',
-        'blc_cleanup_old_data',
-        'blc_process_queue',
-        'blc_stale_scan_watchdog',
+        'awldlc_scheduled_scan',
+        'awldlc_recheck_broken',
+        'awldlc_send_digest',
+        'awldlc_cleanup_old_data',
+        'awldlc_process_queue',
+        'awldlc_stale_scan_watchdog',
     );
 
     foreach ($cron_events as $event) {
@@ -105,4 +105,4 @@ function blc_uninstall()
 }
 
 // Run uninstall
-blc_uninstall();
+awldlc_uninstall();

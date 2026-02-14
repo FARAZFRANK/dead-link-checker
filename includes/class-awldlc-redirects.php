@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Redirects
+class AWLDLC_Redirects
 {
     /**
      * Redirects table name
@@ -32,7 +32,7 @@ class BLC_Redirects
     public function __construct()
     {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'blc_redirects';
+        $this->table = $wpdb->prefix . 'awldlc_redirects';
 
         // Check if table exists, create if missing
         $this->ensure_table_exists();
@@ -41,11 +41,11 @@ class BLC_Redirects
         add_action('template_redirect', array($this, 'handle_redirect'), 1);
 
         // Register AJAX handlers
-        add_action('wp_ajax_blc_create_redirect', array($this, 'ajax_create_redirect'));
-        add_action('wp_ajax_blc_update_redirect', array($this, 'ajax_update_redirect'));
-        add_action('wp_ajax_blc_delete_redirect', array($this, 'ajax_delete_redirect'));
-        add_action('wp_ajax_blc_toggle_redirect', array($this, 'ajax_toggle_redirect'));
-        add_action('wp_ajax_blc_get_redirects', array($this, 'ajax_get_redirects'));
+        add_action('wp_ajax_awldlc_create_redirect', array($this, 'ajax_create_redirect'));
+        add_action('wp_ajax_awldlc_update_redirect', array($this, 'ajax_update_redirect'));
+        add_action('wp_ajax_awldlc_delete_redirect', array($this, 'ajax_delete_redirect'));
+        add_action('wp_ajax_awldlc_toggle_redirect', array($this, 'ajax_toggle_redirect'));
+        add_action('wp_ajax_awldlc_get_redirects', array($this, 'ajax_get_redirects'));
     }
 
     /**
@@ -356,7 +356,7 @@ class BLC_Redirects
      */
     public function ajax_create_redirect()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
@@ -385,7 +385,7 @@ class BLC_Redirects
      */
     public function ajax_update_redirect()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
@@ -415,7 +415,7 @@ class BLC_Redirects
      */
     public function ajax_delete_redirect()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
@@ -441,7 +441,7 @@ class BLC_Redirects
      */
     public function ajax_toggle_redirect()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
@@ -476,7 +476,7 @@ class BLC_Redirects
      */
     public function ajax_get_redirects()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));

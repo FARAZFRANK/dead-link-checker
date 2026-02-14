@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Link
+ * Class AWLDLC_Link
  *
  * Link data model with constants and helper methods
  */
-class BLC_Link
+class AWLDLC_Link
 {
 
     // Status codes
@@ -226,7 +226,7 @@ class BLC_Link
     public function get_status_badge()
     {
         if ($this->is_broken) {
-            $class = 'blc-status-broken';
+            $class = 'awldlc-status-broken';
             // Show HTTP code if available, otherwise show 'Error' for connection failures
             if ($this->status_code !== null && $this->status_code > 0) {
                 $text = $this->status_code;
@@ -234,18 +234,18 @@ class BLC_Link
                 $text = $this->error_message ? __('Error', 'dead-link-checker') : __('Error', 'dead-link-checker');
             }
         } elseif ($this->is_warning) {
-            $class = 'blc-status-warning';
+            $class = 'awldlc-status-warning';
             $text = ($this->status_code !== null && $this->status_code > 0) ? $this->status_code : __('Warning', 'dead-link-checker');
         } elseif ($this->status_code === null) {
-            $class = 'blc-status-unchecked';
+            $class = 'awldlc-status-unchecked';
             $text = __('Pending', 'dead-link-checker');
         } else {
-            $class = 'blc-status-ok';
+            $class = 'awldlc-status-ok';
             $text = $this->status_code;
         }
 
         return sprintf(
-            '<span class="blc-status-badge %s">%s</span>',
+            '<span class="awldlc-status-badge %s">%s</span>',
             esc_attr($class),
             esc_html($text)
         );

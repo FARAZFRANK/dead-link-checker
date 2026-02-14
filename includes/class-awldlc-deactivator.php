@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Deactivator
+ * Class AWLDLC_Deactivator
  *
  * Fired during plugin deactivation
  */
-class BLC_Deactivator
+class AWLDLC_Deactivator
 {
 
     /**
@@ -41,11 +41,11 @@ class BLC_Deactivator
     private static function clear_scheduled_events()
     {
         $events = array(
-            'blc_scheduled_scan',
-            'blc_recheck_broken',
-            'blc_send_digest',
-            'blc_cleanup_old_data',
-            'blc_process_queue',
+            'awldlc_scheduled_scan',
+            'awldlc_recheck_broken',
+            'awldlc_send_digest',
+            'awldlc_cleanup_old_data',
+            'awldlc_process_queue',
         );
 
         foreach ($events as $event) {
@@ -69,15 +69,15 @@ class BLC_Deactivator
         $wpdb->query(
             $wpdb->prepare(
                 "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-                '_transient_blc_%',
-                '_transient_timeout_blc_%'
+                '_transient_awldlc_%',
+                '_transient_timeout_awldlc_%'
             )
         );
 
         // Clear specific transients
-        delete_transient('blc_activation_redirect');
-        delete_transient('blc_scan_progress');
-        delete_transient('blc_stats_cache');
+        delete_transient('awldlc_activation_redirect');
+        delete_transient('awldlc_scan_progress');
+        delete_transient('awldlc_stats_cache');
     }
 
     /**
@@ -87,7 +87,7 @@ class BLC_Deactivator
     {
         global $wpdb;
 
-        $table_scans = $wpdb->prefix . 'blc_scans';
+        $table_scans = $wpdb->prefix . 'awldlc_scans';
 
         // Mark running scans as cancelled
         $wpdb->update(

@@ -5,7 +5,7 @@ Tags: broken links, dead links, seo, 404 error, link checker, redirects, element
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.5
+Stable tag: 3.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,14 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 
 == Changelog ==
 
+= 3.0.7 =
+* Complete prefix refactoring — renamed all BLC/blc prefixes to AWLDLC/awldlc for WordPress coding standards compliance
+* Renamed 19 PHP class files from class-blc-*.php to class-awldlc-*.php
+* Updated all HTML element IDs, CSS classes, CSS custom properties, and jQuery selectors
+* Updated all AJAX action names from blc_* to awldlc_*
+* Updated autoloader and require_once paths for renamed files
+* Fixed help tab IDs and internal URL hash references
+
 = 3.0.6 =
 * Added full internationalization (i18n) support — plugin is now translation-ready
 * Generated POT template file with 405 translatable strings
@@ -193,6 +201,9 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.7 =
+Complete prefix refactoring for WordPress coding standards. All internal identifiers updated from BLC to AWLDLC.
 
 = 3.0.6 =
 Full translation support added. POT template and Hindi translation included. JS strings localized. Help page now has translation instructions.

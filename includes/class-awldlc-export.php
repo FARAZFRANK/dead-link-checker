@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Export
+class AWLDLC_Export
 {
 
     /**
@@ -22,7 +22,7 @@ class BLC_Export
      */
     public function export($format = 'csv', $args = array())
     {
-        $links = blc()->database->get_links(array_merge($args, array('per_page' => 10000)));
+        $links = awldlc()->database->get_links(array_merge($args, array('per_page' => 10000)));
 
         if (empty($links)) {
             return new WP_Error('no_data', __('No links to export.', 'dead-link-checker'));
@@ -91,7 +91,7 @@ class BLC_Export
         ));
 
         foreach ($links as $link_data) {
-            $link = new BLC_Link($link_data);
+            $link = new AWLDLC_Link($link_data);
 
             fputcsv($handle, array(
                 $link->id,
@@ -130,7 +130,7 @@ class BLC_Export
         $data = array();
 
         foreach ($links as $link_data) {
-            $link = new BLC_Link($link_data);
+            $link = new AWLDLC_Link($link_data);
 
             $data[] = array(
                 'id' => $link->id,

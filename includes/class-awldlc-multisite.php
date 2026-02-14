@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Multisite
+class AWLDLC_Multisite
 {
     /**
      * Constructor
@@ -37,7 +37,7 @@ class BLC_Multisite
             __('Link Checker Network', 'dead-link-checker'),
             __('Link Checker', 'dead-link-checker'),
             'manage_network',
-            'blc-network',
+            'awldlc-network',
             array($this, 'render_network_dashboard'),
             'dashicons-admin-links',
             100
@@ -54,10 +54,10 @@ class BLC_Multisite
         }
 
         wp_enqueue_style(
-            'blc-admin',
-            BLC_PLUGIN_URL . 'assets/css/admin.css',
+            'awldlc-admin',
+            AWLDLC_PLUGIN_URL . 'assets/css/admin.css',
             array(),
-            BLC_VERSION
+            AWLDLC_VERSION
         );
     }
 
@@ -68,41 +68,41 @@ class BLC_Multisite
     {
         $sites = $this->get_network_stats();
         ?>
-        <div class="wrap blc-wrap blc-network-dashboard">
+        <div class="wrap awldlc-wrap blc-network-dashboard">
             <h1>
                 <?php esc_html_e('Dead Link Checker Pro - Network Overview', 'dead-link-checker'); ?>
             </h1>
 
             <!-- Network Summary -->
-            <div class="blc-network-summary">
-                <div class="blc-network-stat blc-network-stat-total">
-                    <span class="blc-stat-number">
+            <div class="awldlc-network-summary">
+                <div class="awldlc-network-stat blc-network-stat-total">
+                    <span class="awldlc-stat-number">
                         <?php echo esc_html($sites['total_links']); ?>
                     </span>
-                    <span class="blc-stat-label">
+                    <span class="awldlc-stat-label">
                         <?php esc_html_e('Total Links', 'dead-link-checker'); ?>
                     </span>
                 </div>
-                <div class="blc-network-stat blc-network-stat-broken">
-                    <span class="blc-stat-number">
+                <div class="awldlc-network-stat blc-network-stat-broken">
+                    <span class="awldlc-stat-number">
                         <?php echo esc_html($sites['total_broken']); ?>
                     </span>
-                    <span class="blc-stat-label">
+                    <span class="awldlc-stat-label">
                         <?php esc_html_e('Broken Links', 'dead-link-checker'); ?>
                     </span>
                 </div>
-                <div class="blc-network-stat blc-network-stat-sites">
-                    <span class="blc-stat-number">
+                <div class="awldlc-network-stat blc-network-stat-sites">
+                    <span class="awldlc-stat-number">
                         <?php echo esc_html(count($sites['sites'])); ?>
                     </span>
-                    <span class="blc-stat-label">
+                    <span class="awldlc-stat-label">
                         <?php esc_html_e('Sites', 'dead-link-checker'); ?>
                     </span>
                 </div>
             </div>
 
             <!-- Sites Table -->
-            <div class="blc-network-sites">
+            <div class="awldlc-network-sites">
                 <h2>
                     <?php esc_html_e('Sites Overview', 'dead-link-checker'); ?>
                 </h2>
@@ -157,16 +157,16 @@ class BLC_Multisite
                                     </td>
                                     <td>
                                         <?php if ($site['broken'] > 0): ?>
-                                            <span class="blc-badge blc-badge-error">
+                                            <span class="awldlc-badge blc-badge-error">
                                                 <?php echo esc_html($site['broken']); ?>
                                             </span>
                                         <?php else: ?>
-                                            <span class="blc-badge blc-badge-success">0</span>
+                                            <span class="awldlc-badge blc-badge-success">0</span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <?php if ($site['warnings'] > 0): ?>
-                                            <span class="blc-badge blc-badge-warning">
+                                            <span class="awldlc-badge blc-badge-warning">
                                                 <?php echo esc_html($site['warnings']); ?>
                                             </span>
                                         <?php else: ?>
@@ -215,7 +215,7 @@ class BLC_Multisite
             switch_to_blog($site->blog_id);
 
             global $wpdb;
-            $table_name = $wpdb->prefix . 'blc_links';
+            $table_name = $wpdb->prefix . 'awldlc_links';
 
             // Check if table exists
             if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
@@ -240,7 +240,7 @@ class BLC_Multisite
             $site_stats['warnings'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE status_code BETWEEN 300 AND 399 AND is_dismissed = 0");
 
             // Get last scan
-            $scans_table = $wpdb->prefix . 'blc_scans';
+            $scans_table = $wpdb->prefix . 'awldlc_scans';
             if ($wpdb->get_var("SHOW TABLES LIKE '$scans_table'") === $scans_table) {
                 $site_stats['last_scan'] = $wpdb->get_var("SELECT end_time FROM $scans_table WHERE status = 'completed' ORDER BY id DESC LIMIT 1");
             }

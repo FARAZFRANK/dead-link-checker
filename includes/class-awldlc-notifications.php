@@ -10,18 +10,18 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Notifications
+class AWLDLC_Notifications
 {
 
     public function __construct()
     {
-        add_action('blc_scan_complete', array($this, 'on_scan_complete'));
-        add_action('blc_send_digest', array($this, 'send_digest'));
+        add_action('awldlc_scan_complete', array($this, 'on_scan_complete'));
+        add_action('awldlc_send_digest', array($this, 'send_digest'));
     }
 
     public function on_scan_complete($scan)
     {
-        $settings = get_option('blc_settings', array());
+        $settings = get_option('awldlc_settings', array());
 
         if (empty($settings['email_notifications'])) {
             return;
@@ -38,7 +38,7 @@ class BLC_Notifications
 
     private function send_notification($scan)
     {
-        $settings = get_option('blc_settings', array());
+        $settings = get_option('awldlc_settings', array());
         $recipients = isset($settings['email_recipients']) ? (array) $settings['email_recipients'] : array(get_option('admin_email'));
 
         if (empty($recipients)) {
@@ -66,7 +66,7 @@ class BLC_Notifications
 
     private function build_email_message($scan)
     {
-        $broken_links = blc()->database->get_links(array('status' => 'broken', 'per_page' => 20));
+        $broken_links = awldlc()->database->get_links(array('status' => 'broken', 'per_page' => 20));
         $dashboard_url = admin_url('admin.php?page=dead-link-checker&status=broken');
         $site_name = get_bloginfo('name');
 
@@ -241,7 +241,7 @@ class BLC_Notifications
                             </thead>
                             <tbody>
                                 <?php foreach ($broken_links as $link_data):
-                                    $link = new BLC_Link($link_data); ?>
+                                    $link = new AWLDLC_Link($link_data); ?>
                                     <tr>
                                         <td><a href="<?php echo esc_url($link->url); ?>">
                                                 <?php echo esc_html($link->get_display_url(40)); ?>
@@ -279,13 +279,13 @@ class BLC_Notifications
 
     public function send_digest()
     {
-        $settings = get_option('blc_settings', array());
+        $settings = get_option('awldlc_settings', array());
 
         if (empty($settings['email_notifications'])) {
             return;
         }
 
-        $stats = blc()->database->get_stats();
+        $stats = awldlc()->database->get_stats();
 
         if ($stats['broken'] === 0) {
             return;

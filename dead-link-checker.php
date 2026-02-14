@@ -3,7 +3,7 @@
  * Plugin Name: Dead Link Checker Pro
  * Plugin URI: https://awplife.com/
  * Description: Professional Dead Link Checker Pro for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
- * Version: 3.0.6
+ * Version: 3.0.7
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
@@ -20,11 +20,11 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('BLC_VERSION', '3.0.6');
-define('BLC_PLUGIN_FILE', __FILE__);
-define('BLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('BLC_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('BLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('AWLDLC_VERSION', '3.0.7');
+define('AWLDLC_PLUGIN_FILE', __FILE__);
+define('AWLDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('AWLDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('AWLDLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 /**
  * Autoloader for plugin classes
@@ -33,21 +33,23 @@ define('BLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
  */
 spl_autoload_register(function ($class_name) {
     // Only handle our plugin classes
-    if (strpos($class_name, 'BLC_') !== 0) {
+    if (strpos($class_name, 'AWLDLC_') !== 0) {
         return;
     }
 
     // Convert class name to file path
+    // Class AWLDLC_Admin → class-awldlc-admin.php
     $class_file = strtolower(str_replace('_', '-', $class_name));
+    // File names now use awldlc- prefix directly
     $class_file = 'class-' . $class_file . '.php';
 
     // Define possible locations
     $locations = array(
-        BLC_PLUGIN_DIR . 'includes/',
-        BLC_PLUGIN_DIR . 'includes/admin/',
-        BLC_PLUGIN_DIR . 'includes/scanner/',
-        BLC_PLUGIN_DIR . 'includes/scanner/parsers/',
-        BLC_PLUGIN_DIR . 'includes/models/',
+        AWLDLC_PLUGIN_DIR . 'includes/',
+        AWLDLC_PLUGIN_DIR . 'includes/admin/',
+        AWLDLC_PLUGIN_DIR . 'includes/scanner/',
+        AWLDLC_PLUGIN_DIR . 'includes/scanner/parsers/',
+        AWLDLC_PLUGIN_DIR . 'includes/models/',
     );
 
     // Search for the class file
@@ -64,16 +66,16 @@ spl_autoload_register(function ($class_name) {
  * Plugin Activation Hook
  */
 register_activation_hook(__FILE__, function () {
-    require_once BLC_PLUGIN_DIR . 'includes/class-blc-activator.php';
-    BLC_Activator::activate();
+    require_once AWLDLC_PLUGIN_DIR . 'includes/class-awldlc-activator.php';
+    AWLDLC_Activator::activate();
 });
 
 /**
  * Plugin Deactivation Hook
  */
 register_deactivation_hook(__FILE__, function () {
-    require_once BLC_PLUGIN_DIR . 'includes/class-blc-deactivator.php';
-    BLC_Deactivator::deactivate();
+    require_once AWLDLC_PLUGIN_DIR . 'includes/class-awldlc-deactivator.php';
+    AWLDLC_Deactivator::deactivate();
 });
 
 /**
@@ -92,21 +94,21 @@ final class Broken_Link_Checker
     /**
      * Admin instance
      *
-     * @var BLC_Admin|null
+     * @var AWLDLC_Admin|null
      */
     public $admin = null;
 
     /**
      * Scanner instance
      *
-     * @var BLC_Scanner|null
+     * @var AWLDLC_Scanner|null
      */
     public $scanner = null;
 
     /**
      * Database instance
      *
-     * @var BLC_Database|null
+     * @var AWLDLC_Database|null
      */
     public $database = null;
 
@@ -146,25 +148,25 @@ final class Broken_Link_Checker
     public function init()
     {
         // Initialize database
-        $this->database = new BLC_Database();
+        $this->database = new AWLDLC_Database();
 
         // Initialize scanner
-        $this->scanner = new BLC_Scanner();
+        $this->scanner = new AWLDLC_Scanner();
 
         // Initialize admin (only in admin area)
         if (is_admin()) {
-            $this->admin = new BLC_Admin();
+            $this->admin = new AWLDLC_Admin();
         }
 
         // Initialize notifications
-        new BLC_Notifications();
+        new AWLDLC_Notifications();
 
         // Initialize redirects
-        new BLC_Redirects();
+        new AWLDLC_Redirects();
 
         // Initialize multisite support
         if (is_multisite()) {
-            new BLC_Multisite();
+            new AWLDLC_Multisite();
         }
 
         /**
@@ -172,7 +174,7 @@ final class Broken_Link_Checker
          *
          * @param Broken_Link_Checker $this The plugin instance
          */
-        do_action('blc_init', $this);
+        do_action('awldlc_init', $this);
     }
 
     /**
@@ -183,7 +185,7 @@ final class Broken_Link_Checker
         load_plugin_textdomain(
             'dead-link-checker',
             false,
-            dirname(BLC_PLUGIN_BASENAME) . '/languages'
+            dirname(AWLDLC_PLUGIN_BASENAME) . '/languages'
         );
     }
 
@@ -196,7 +198,7 @@ final class Broken_Link_Checker
      */
     public static function get_option($key, $default = null)
     {
-        $options = get_option('blc_settings', array());
+        $options = get_option('awldlc_settings', array());
         return isset($options[$key]) ? $options[$key] : $default;
     }
 
@@ -209,9 +211,9 @@ final class Broken_Link_Checker
      */
     public static function update_option($key, $value)
     {
-        $options = get_option('blc_settings', array());
+        $options = get_option('awldlc_settings', array());
         $options[$key] = $value;
-        return update_option('blc_settings', $options);
+        return update_option('awldlc_settings', $options);
     }
 
     /**
@@ -235,10 +237,10 @@ final class Broken_Link_Checker
  *
  * @return Broken_Link_Checker
  */
-function blc()
+function awldlc()
 {
     return Broken_Link_Checker::get_instance();
 }
 
 // Initialize the plugin
-blc();
+awldlc();

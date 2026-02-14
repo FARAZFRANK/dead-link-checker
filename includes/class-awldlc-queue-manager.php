@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Queue_Manager
+ * Class AWLDLC_Queue_Manager
  *
  * Abstraction layer for background job scheduling
  */
-class BLC_Queue_Manager
+class AWLDLC_Queue_Manager
 {
     /**
      * Check if Action Scheduler is available
@@ -212,7 +212,7 @@ class BLC_Queue_Manager
         );
 
         if (self::has_action_scheduler()) {
-            $status['pending_actions'] = self::get_pending_count('blc_process_queue');
+            $status['pending_actions'] = self::get_pending_count('awldlc_process_queue');
             $status['version'] = defined('ActionScheduler_Versions::LATEST_VERSION')
                 ? ActionScheduler_Versions::LATEST_VERSION
                 : __('Unknown', 'dead-link-checker');

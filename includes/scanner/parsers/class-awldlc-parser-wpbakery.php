@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Parser_WPBakery
+class AWLDLC_Parser_WPBakery
 {
     /**
      * Check if WPBakery is active

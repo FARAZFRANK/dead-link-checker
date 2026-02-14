@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Database
+ * Class AWLDLC_Database
  *
  * Database abstraction layer for links and scans
  */
-class BLC_Database
+class AWLDLC_Database
 {
 
     /**
@@ -39,8 +39,8 @@ class BLC_Database
     public function __construct()
     {
         global $wpdb;
-        $this->table_links = $wpdb->prefix . 'blc_links';
-        $this->table_scans = $wpdb->prefix . 'blc_scans';
+        $this->table_links = $wpdb->prefix . 'awldlc_links';
+        $this->table_scans = $wpdb->prefix . 'awldlc_scans';
     }
 
     /**
@@ -424,7 +424,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        $cache_key = 'blc_stats_cache';
+        $cache_key = 'awldlc_stats_cache';
         $stats = get_transient($cache_key);
 
         if ($stats === false) {
@@ -449,7 +449,7 @@ class BLC_Database
      */
     public function clear_stats_cache()
     {
-        delete_transient('blc_stats_cache');
+        delete_transient('awldlc_stats_cache');
     }
 
     /**
@@ -767,8 +767,8 @@ class BLC_Database
         $scans_result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
 
         // Clear any transients
-        delete_transient('blc_current_scan_id');
-        delete_transient('blc_scan_progress');
+        delete_transient('awldlc_current_scan_id');
+        delete_transient('awldlc_scan_progress');
         $this->clear_stats_cache();
 
         return ($links_result !== false && $scans_result !== false);
@@ -785,8 +785,8 @@ class BLC_Database
 
         $result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
 
-        delete_transient('blc_current_scan_id');
-        delete_transient('blc_scan_progress');
+        delete_transient('awldlc_current_scan_id');
+        delete_transient('awldlc_scan_progress');
 
         return $result !== false;
     }
@@ -855,7 +855,7 @@ class BLC_Database
             'email_recipients'   => array(get_option('admin_email')),
             'concurrent_requests' => 3,
             'delay_between'      => 500,
-            'user_agent'         => 'Mozilla/5.0 (compatible; DeadLinkCheckerPro/' . BLC_VERSION . ')',
+            'user_agent'         => 'Mozilla/5.0 (compatible; DeadLinkCheckerPro/' . AWLDLC_VERSION . ')',
             'verify_ssl'         => true,
             'auto_cleanup_days'  => 90,
         );

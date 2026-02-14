@@ -3,7 +3,7 @@
 ![WordPress Version](https://img.shields.io/badge/WordPress-5.8%2B-blue)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/License-GPLv2-green)
-![Version](https://img.shields.io/badge/Version-3.0.2-orange)
+![Version](https://img.shields.io/badge/Version-3.0.7-orange)
 
 **The complete professional solution for finding and fixing broken links on your WordPress website.**
 
@@ -124,6 +124,33 @@ Dead Link Checker Pro scans your entire WordPress site, identifies dead links, a
 ---
 
 ## 📝 Changelog
+
+### 3.0.7
+- Complete prefix refactoring — renamed all BLC/blc prefixes to AWLDLC/awldlc for WordPress coding standards compliance
+- Renamed 19 PHP class files from class-blc-*.php to class-awldlc-*.php
+- Updated all HTML element IDs, CSS classes, CSS custom properties, and jQuery selectors
+- Updated all AJAX action names from blc_* to awldlc_*
+- Updated autoloader and require_once paths for renamed files
+
+### 3.0.6
+- Added full internationalization (i18n) support — plugin is now translation-ready
+- Generated POT template file with 405 translatable strings
+- Added complete Hindi (hi_IN) translation (100% coverage)
+- Localized all JavaScript strings via wp_localize_script
+- Added "How to Translate This Plugin" section to Help page
+- Fixed third-party admin notices breaking plugin header layout
+
+### 3.0.5
+- Fixed dashboard stats cache not clearing when link status changes
+- Fixed Fresh Scan not clearing stats cache
+- Fixed HTTP Status help link pointing to wrong page
+- Fixed Rows per page dropdown not working
+- Added 10 as default Rows per page option
+
+### 3.0.4
+- Fixed Reset Settings and Full Plugin Reset errors
+- Improved Recheck link feature — detects when link is manually fixed
+- Fixed sanitize_settings handling of array inputs
 
 ### 3.0.3
 - Added Scan Type setting (Manual / Automatic) for controlling scheduled scans

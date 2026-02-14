@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Parser_Elementor
+class AWLDLC_Parser_Elementor
 {
     /**
      * Check if Elementor is active

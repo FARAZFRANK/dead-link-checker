@@ -12,21 +12,21 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Admin
+ * Class AWLDLC_Admin
  */
-class BLC_Admin
+class AWLDLC_Admin
 {
 
-    /** @var BLC_Dashboard */
+    /** @var AWLDLC_Dashboard */
     public $dashboard;
 
-    /** @var BLC_Settings */
+    /** @var AWLDLC_Settings */
     public $settings;
 
     public function __construct()
     {
-        $this->dashboard = new BLC_Dashboard();
-        $this->settings = new BLC_Settings();
+        $this->dashboard = new AWLDLC_Dashboard();
+        $this->settings = new AWLDLC_Settings();
         $this->init_hooks();
     }
 
@@ -34,23 +34,23 @@ class BLC_Admin
     {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
-        add_action('wp_ajax_blc_start_scan', array($this, 'ajax_start_scan'));
-        add_action('wp_ajax_blc_stop_scan', array($this, 'ajax_stop_scan'));
-        add_action('wp_ajax_blc_get_scan_progress', array($this, 'ajax_get_scan_progress'));
-        add_action('wp_ajax_blc_dismiss_link', array($this, 'ajax_dismiss_link'));
-        add_action('wp_ajax_blc_undismiss_link', array($this, 'ajax_undismiss_link'));
-        add_action('wp_ajax_blc_recheck_link', array($this, 'ajax_recheck_link'));
-        add_action('wp_ajax_blc_delete_link', array($this, 'ajax_delete_link'));
-        add_action('wp_ajax_blc_edit_link', array($this, 'ajax_edit_link'));
-        add_action('wp_ajax_blc_remove_link', array($this, 'ajax_remove_link'));
-        add_action('wp_ajax_blc_bulk_action', array($this, 'ajax_bulk_action'));
-        add_action('wp_ajax_blc_export_links', array($this, 'ajax_export_links'));
-        add_action('wp_ajax_blc_fresh_scan', array($this, 'ajax_fresh_scan'));
-        add_action('wp_ajax_blc_force_stop_scan', array($this, 'ajax_force_stop_scan'));
-        add_action('wp_ajax_blc_reset_settings', array($this, 'ajax_reset_settings'));
-        add_action('wp_ajax_blc_clear_scan_history', array($this, 'ajax_clear_scan_history'));
-        add_action('wp_ajax_blc_full_reset', array($this, 'ajax_full_reset'));
-        add_action('wp_ajax_blc_cleanup_exports', array($this, 'ajax_cleanup_exports'));
+        add_action('wp_ajax_awldlc_start_scan', array($this, 'ajax_start_scan'));
+        add_action('wp_ajax_awldlc_stop_scan', array($this, 'ajax_stop_scan'));
+        add_action('wp_ajax_awldlc_get_scan_progress', array($this, 'ajax_get_scan_progress'));
+        add_action('wp_ajax_awldlc_dismiss_link', array($this, 'ajax_dismiss_link'));
+        add_action('wp_ajax_awldlc_undismiss_link', array($this, 'ajax_undismiss_link'));
+        add_action('wp_ajax_awldlc_recheck_link', array($this, 'ajax_recheck_link'));
+        add_action('wp_ajax_awldlc_delete_link', array($this, 'ajax_delete_link'));
+        add_action('wp_ajax_awldlc_edit_link', array($this, 'ajax_edit_link'));
+        add_action('wp_ajax_awldlc_remove_link', array($this, 'ajax_remove_link'));
+        add_action('wp_ajax_awldlc_bulk_action', array($this, 'ajax_bulk_action'));
+        add_action('wp_ajax_awldlc_export_links', array($this, 'ajax_export_links'));
+        add_action('wp_ajax_awldlc_fresh_scan', array($this, 'ajax_fresh_scan'));
+        add_action('wp_ajax_awldlc_force_stop_scan', array($this, 'ajax_force_stop_scan'));
+        add_action('wp_ajax_awldlc_reset_settings', array($this, 'ajax_reset_settings'));
+        add_action('wp_ajax_awldlc_clear_scan_history', array($this, 'ajax_clear_scan_history'));
+        add_action('wp_ajax_awldlc_full_reset', array($this, 'ajax_full_reset'));
+        add_action('wp_ajax_awldlc_cleanup_exports', array($this, 'ajax_cleanup_exports'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_action('admin_init', array($this, 'activation_redirect'));
         add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
@@ -70,23 +70,23 @@ class BLC_Admin
         );
 
         add_submenu_page('dead-link-checker', __('Dashboard', 'dead-link-checker'), __('Dashboard', 'dead-link-checker'), 'manage_options', 'dead-link-checker', array($this->dashboard, 'render_page'));
-        add_submenu_page('dead-link-checker', __('Settings', 'dead-link-checker'), __('Settings', 'dead-link-checker'), 'manage_options', 'blc-settings', array($this->settings, 'render_page'));
-        add_submenu_page('dead-link-checker', __('Scan History', 'dead-link-checker'), __('Scan History', 'dead-link-checker'), 'manage_options', 'blc-logs', array($this, 'render_logs_page'));
-        add_submenu_page('dead-link-checker', __('Help', 'dead-link-checker'), __('Help', 'dead-link-checker'), 'manage_options', 'blc-help', array($this, 'render_help_page'));
+        add_submenu_page('dead-link-checker', __('Settings', 'dead-link-checker'), __('Settings', 'dead-link-checker'), 'manage_options', 'awldlc-settings', array($this->settings, 'render_page'));
+        add_submenu_page('dead-link-checker', __('Scan History', 'dead-link-checker'), __('Scan History', 'dead-link-checker'), 'manage_options', 'awldlc-logs', array($this, 'render_logs_page'));
+        add_submenu_page('dead-link-checker', __('Help', 'dead-link-checker'), __('Help', 'dead-link-checker'), 'manage_options', 'awldlc-help', array($this, 'render_help_page'));
     }
 
     public function enqueue_assets($hook)
     {
-        if (strpos($hook, 'dead-link-checker') === false && strpos($hook, 'blc-') === false) {
+        if (strpos($hook, 'dead-link-checker') === false && strpos($hook, 'awldlc-') === false) {
             return;
         }
 
-        wp_enqueue_style('blc-admin', BLC_PLUGIN_URL . 'assets/css/admin.css', array(), BLC_VERSION);
-        wp_enqueue_script('blc-admin', BLC_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), BLC_VERSION, true);
+        wp_enqueue_style('awldlc-admin', AWLDLC_PLUGIN_URL . 'assets/css/admin.css', array(), AWLDLC_VERSION);
+        wp_enqueue_script('awldlc-admin', AWLDLC_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), AWLDLC_VERSION, true);
 
-        wp_localize_script('blc-admin', 'blcAdmin', array(
+        wp_localize_script('awldlc-admin', 'awldlcAdmin', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('blc_admin_nonce'),
+            'nonce' => wp_create_nonce('awldlc_admin_nonce'),
             'strings' => array(
                 'scanning' => __('Scanning...', 'dead-link-checker'),
                 'scanComplete' => __('Scan complete!', 'dead-link-checker'),
@@ -153,11 +153,11 @@ class BLC_Admin
 
     public function ajax_start_scan()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
-        $result = blc()->scanner->start_scan();
+        $result = awldlc()->scanner->start_scan();
         if (is_wp_error($result)) {
             wp_send_json_error($result->get_error_message());
         }
@@ -166,11 +166,11 @@ class BLC_Admin
 
     public function ajax_stop_scan()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
-        $result = blc()->scanner->stop_scan();
+        $result = awldlc()->scanner->stop_scan();
         if ($result) {
             wp_send_json_success(__('Scan stopped.', 'dead-link-checker'));
         } else {
@@ -180,46 +180,46 @@ class BLC_Admin
 
     public function ajax_get_scan_progress()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
-        wp_send_json_success(blc()->scanner->get_progress());
+        wp_send_json_success(awldlc()->scanner->get_progress());
     }
 
     public function ajax_dismiss_link()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         $link_id = absint($_POST['link_id'] ?? 0);
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'dead-link-checker'));
-        $result = blc()->database->dismiss_link($link_id);
+        $result = awldlc()->database->dismiss_link($link_id);
         $result ? wp_send_json_success(__('Link dismissed.', 'dead-link-checker')) : wp_send_json_error(__('Failed.', 'dead-link-checker'));
     }
 
     public function ajax_undismiss_link()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         $link_id = absint($_POST['link_id'] ?? 0);
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'dead-link-checker'));
-        $result = blc()->database->undismiss_link($link_id);
+        $result = awldlc()->database->undismiss_link($link_id);
         $result ? wp_send_json_success(__('Link restored.', 'dead-link-checker')) : wp_send_json_error(__('Failed.', 'dead-link-checker'));
     }
 
     public function ajax_recheck_link()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         $link_id = absint($_POST['link_id'] ?? 0);
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'dead-link-checker'));
-        $link = blc()->database->get_link($link_id);
+        $link = awldlc()->database->get_link($link_id);
         if (!$link)
             wp_send_json_error(__('Link not found.', 'dead-link-checker'));
 
@@ -230,7 +230,7 @@ class BLC_Admin
                 // Check if the URL is still present in the post content
                 if (strpos($post->post_content, $link->url) === false) {
                     // URL was removed or changed — delete the stale entry
-                    blc()->database->delete_link($link_id);
+                    awldlc()->database->delete_link($link_id);
                     wp_send_json_success(array(
                         'message' => __('Link was fixed/removed from the source. Entry deleted.', 'dead-link-checker'),
                         'removed' => true,
@@ -239,27 +239,27 @@ class BLC_Admin
             }
         }
 
-        $checker = new BLC_Checker();
+        $checker = new AWLDLC_Checker();
         $result = $checker->check_url($link->url);
-        blc()->database->update_link_result($link_id, $result);
+        awldlc()->database->update_link_result($link_id, $result);
         wp_send_json_success(array('message' => __('Link rechecked.', 'dead-link-checker'), 'result' => $result));
     }
 
     public function ajax_delete_link()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         $link_id = absint($_POST['link_id'] ?? 0);
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'dead-link-checker'));
-        $result = blc()->database->delete_link($link_id);
+        $result = awldlc()->database->delete_link($link_id);
         $result ? wp_send_json_success(__('Link deleted.', 'dead-link-checker')) : wp_send_json_error(__('Failed.', 'dead-link-checker'));
     }
 
     public function ajax_edit_link()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
 
@@ -270,7 +270,7 @@ class BLC_Admin
         if (!$link_id || (!$new_url && $new_anchor_text === ''))
             wp_send_json_error(__('Invalid parameters.', 'dead-link-checker'));
 
-        $link = blc()->database->get_link($link_id);
+        $link = awldlc()->database->get_link($link_id);
         if (!$link)
             wp_send_json_error(__('Link not found.', 'dead-link-checker'));
 
@@ -311,7 +311,7 @@ class BLC_Admin
                     $update_data['anchor_text'] = $new_anchor_text;
                 }
                 if (!empty($update_data)) {
-                    blc()->database->update_link($link_id, $update_data);
+                    awldlc()->database->update_link($link_id, $update_data);
                 }
 
                 wp_send_json_success(__('Link updated.', 'dead-link-checker'));
@@ -322,7 +322,7 @@ class BLC_Admin
 
     public function ajax_remove_link()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
 
@@ -330,7 +330,7 @@ class BLC_Admin
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'dead-link-checker'));
 
-        $link = blc()->database->get_link($link_id);
+        $link = awldlc()->database->get_link($link_id);
         if (!$link)
             wp_send_json_error(__('Link not found.', 'dead-link-checker'));
 
@@ -352,20 +352,20 @@ class BLC_Admin
         }
 
         // Always delete the link record from the database
-        blc()->database->delete_link($link_id);
+        awldlc()->database->delete_link($link_id);
         wp_send_json_success(__('Link removed.', 'dead-link-checker'));
     }
 
     public function ajax_bulk_action()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         $action = sanitize_key($_POST['bulk_action'] ?? '');
         $link_ids = array_map('absint', (array) ($_POST['link_ids'] ?? array()));
         if (!$action || empty($link_ids))
             wp_send_json_error(__('Invalid parameters.', 'dead-link-checker'));
-        $db = blc()->database;
+        $db = awldlc()->database;
         $count = 0;
         foreach ($link_ids as $id) {
             switch ($action) {
@@ -384,7 +384,7 @@ class BLC_Admin
                 case 'recheck':
                     $link = $db->get_link($id);
                     if ($link) {
-                        $checker = new BLC_Checker();
+                        $checker = new AWLDLC_Checker();
                         $db->update_link_result($id, $checker->check_url($link->url));
                         $count++;
                     }
@@ -396,12 +396,12 @@ class BLC_Admin
 
     public function ajax_export_links()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         $format = sanitize_key($_POST['format'] ?? 'csv');
         $status = sanitize_key($_POST['status'] ?? 'all');
-        $export = new BLC_Export();
+        $export = new AWLDLC_Export();
         $result = $export->export($format, array('status' => $status));
         is_wp_error($result) ? wp_send_json_error($result->get_error_message()) : wp_send_json_success(array('download_url' => $result));
     }
@@ -413,21 +413,21 @@ class BLC_Admin
      */
     public function ajax_fresh_scan()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
 
         // Clear all existing data
-        $cleared = blc()->database->clear_all_data();
+        $cleared = awldlc()->database->clear_all_data();
 
         if (!$cleared) {
             wp_send_json_error(__('Failed to clear existing data.', 'dead-link-checker'));
         }
 
         // Start a new scan
-        $result = blc()->scanner->start_scan('full');
+        $result = awldlc()->scanner->start_scan('full');
 
         if (is_wp_error($result)) {
             wp_send_json_error($result->get_error_message());
@@ -444,11 +444,11 @@ class BLC_Admin
      */
     public function ajax_force_stop_scan()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
-        blc()->scanner->force_stop_scan();
+        awldlc()->scanner->force_stop_scan();
         wp_send_json_success(__('All scans force stopped and scan state reset.', 'dead-link-checker'));
     }
 
@@ -457,12 +457,12 @@ class BLC_Admin
      */
     public function ajax_reset_settings()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
-        $defaults = BLC_Database::get_default_settings();
-        update_option('blc_settings', $defaults);
+        $defaults = AWLDLC_Database::get_default_settings();
+        update_option('awldlc_settings', $defaults);
         wp_send_json_success(__('Settings reset to defaults.', 'dead-link-checker'));
     }
 
@@ -471,11 +471,11 @@ class BLC_Admin
      */
     public function ajax_clear_scan_history()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
-        $result = blc()->database->clear_scan_history();
+        $result = awldlc()->database->clear_scan_history();
         if ($result) {
             wp_send_json_success(__('Scan history cleared.', 'dead-link-checker'));
         } else {
@@ -488,26 +488,26 @@ class BLC_Admin
      */
     public function ajax_full_reset()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
 
         // Stop any running scans
-        blc()->scanner->force_stop_scan();
+        awldlc()->scanner->force_stop_scan();
 
         // Clear all data
-        blc()->database->clear_all_data();
+        awldlc()->database->clear_all_data();
 
         // Reset settings
-        $defaults = BLC_Database::get_default_settings();
-        update_option('blc_settings', $defaults);
+        $defaults = AWLDLC_Database::get_default_settings();
+        update_option('awldlc_settings', $defaults);
 
         // Clear scheduled events
-        wp_clear_scheduled_hook('blc_scheduled_scan');
-        wp_clear_scheduled_hook('blc_recheck_broken');
-        wp_clear_scheduled_hook('blc_send_digest');
-        wp_clear_scheduled_hook('blc_cleanup_old_data');
+        wp_clear_scheduled_hook('awldlc_scheduled_scan');
+        wp_clear_scheduled_hook('awldlc_recheck_broken');
+        wp_clear_scheduled_hook('awldlc_send_digest');
+        wp_clear_scheduled_hook('awldlc_cleanup_old_data');
 
         // Clean export files
         $this->cleanup_export_files();
@@ -520,7 +520,7 @@ class BLC_Admin
      */
     public function ajax_cleanup_exports()
     {
-        check_ajax_referer('blc_admin_nonce', 'nonce');
+        check_ajax_referer('awldlc_admin_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'dead-link-checker'));
         }
@@ -559,7 +559,7 @@ class BLC_Admin
         $screen = get_current_screen();
         if (!$screen || strpos($screen->id, 'dead-link-checker') === false)
             return;
-        $stats = blc()->database->get_stats();
+        $stats = awldlc()->database->get_stats();
         if ($stats['broken'] > 0) {
             printf('<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>', sprintf(esc_html__('%d broken links detected!', 'dead-link-checker'), $stats['broken']), esc_html__('Review and fix them.', 'dead-link-checker'));
         }
@@ -567,8 +567,8 @@ class BLC_Admin
 
     public function activation_redirect()
     {
-        if (get_transient('blc_activation_redirect')) {
-            delete_transient('blc_activation_redirect');
+        if (get_transient('awldlc_activation_redirect')) {
+            delete_transient('awldlc_activation_redirect');
             if (!isset($_GET['activate-multi'])) {
                 wp_safe_redirect(admin_url('admin.php?page=dead-link-checker'));
                 exit;
@@ -589,7 +589,7 @@ class BLC_Admin
 
         // Overview Tab
         $screen->add_help_tab(array(
-            'id' => 'blc_overview',
+            'id' => 'awldlc_overview',
             'title' => __('Overview', 'dead-link-checker'),
             'content' => '<h3>' . __('Dead Link Checker Pro', 'dead-link-checker') . '</h3>' .
                 '<p>' . __('This plugin scans your website for broken links and helps you fix them quickly. It checks all links in your posts, pages, comments, and custom fields.', 'dead-link-checker') . '</p>' .
@@ -604,7 +604,7 @@ class BLC_Admin
 
         // How to Use Tab
         $screen->add_help_tab(array(
-            'id' => 'blc_howto',
+            'id' => 'awldlc_howto',
             'title' => __('How to Use', 'dead-link-checker'),
             'content' => '<h3>' . __('Getting Started', 'dead-link-checker') . '</h3>' .
                 '<ol>' .
@@ -623,7 +623,7 @@ class BLC_Admin
 
         // Link Status Tab
         $screen->add_help_tab(array(
-            'id' => 'blc_status',
+            'id' => 'awldlc_status',
             'title' => __('Link Status', 'dead-link-checker'),
             'content' => '<h3>' . __('Understanding Link Status', 'dead-link-checker') . '</h3>' .
                 '<table class="widefat">' .
@@ -636,7 +636,7 @@ class BLC_Admin
 
         // Settings Tab
         $screen->add_help_tab(array(
-            'id' => 'blc_settings_help',
+            'id' => 'awldlc_settings_help',
             'title' => __('Settings', 'dead-link-checker'),
             'content' => '<h3>' . __('Configuration Options', 'dead-link-checker') . '</h3>' .
                 '<ul>' .
@@ -657,14 +657,14 @@ class BLC_Admin
 
     public function add_dashboard_widget()
     {
-        wp_add_dashboard_widget('blc_dashboard_widget', __('Dead Link Checker Pro', 'dead-link-checker'), array($this, 'render_dashboard_widget'));
+        wp_add_dashboard_widget('awldlc_dashboard_widget', __('Dead Link Checker Pro', 'dead-link-checker'), array($this, 'render_dashboard_widget'));
     }
 
     public function render_dashboard_widget()
     {
-        $stats = blc()->database->get_stats();
+        $stats = awldlc()->database->get_stats();
         ?>
-        <div class="blc-widget">
+        <div class="awldlc-widget">
             <p><strong>
                     <?php echo esc_html($stats['broken']); ?>
                 </strong>
@@ -687,22 +687,22 @@ class BLC_Admin
     {
         if (!current_user_can('manage_options'))
             return;
-        $stats = blc()->database->get_stats();
+        $stats = awldlc()->database->get_stats();
         if ($stats['broken'] === 0)
             return;
-        $wp_admin_bar->add_node(array('id' => 'blc-broken-links', 'title' => '<span class="ab-icon dashicons dashicons-warning"></span> ' . $stats['broken'], 'href' => admin_url('admin.php?page=dead-link-checker&status=broken')));
+        $wp_admin_bar->add_node(array('id' => 'awldlc-broken-links', 'title' => '<span class="ab-icon dashicons dashicons-warning"></span> ' . $stats['broken'], 'href' => admin_url('admin.php?page=dead-link-checker&status=broken')));
     }
 
     public function render_logs_page()
     {
-        $scans = blc()->database->get_scan_history(50);
+        $scans = awldlc()->database->get_scan_history(50);
         ?>
-        <div class="wrap blc-wrap blc-settings-page">
+        <div class="wrap awldlc-wrap awldlc-settings-page">
             <h1>
                 <?php esc_html_e('Scan History', 'dead-link-checker'); ?>
             </h1>
-            <div class="blc-settings-tabs">
-                    <table class="blc-links-table blc-scan-history-table" width="100%">
+            <div class="awldlc-settings-tabs">
+                    <table class="awldlc-links-table awldlc-scan-history-table" width="100%">
                         <thead>
                             <tr>
                                 <th>
@@ -744,7 +744,7 @@ class BLC_Admin
                                         <td>
                                             <?php echo esc_html(ucfirst($scan->scan_type)); ?>
                                         </td>
-                                        <td><span class="blc-scan-<?php echo esc_attr($scan->status); ?>">
+                                        <td><span class="awldlc-scan-<?php echo esc_attr($scan->status); ?>">
                                                 <?php echo esc_html(ucfirst($scan->status)); ?>
                                             </span></td>
                                         <td>
@@ -774,15 +774,15 @@ class BLC_Admin
     public function render_help_page()
     {
         ?>
-        <div class="wrap blc-wrap">
+        <div class="wrap awldlc-wrap">
             <h1><span class="dashicons dashicons-editor-help"
                     style="font-size: 30px; margin-right: 10px;"></span><?php esc_html_e('Help & Documentation', 'dead-link-checker'); ?>
             </h1>
 
-            <div class="blc-help-container" style="max-width: 960px; margin-top: 20px;">
+            <div class="awldlc-help-container" style="max-width: 960px; margin-top: 20px;">
 
                 <!-- How Plugin Works -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 2px solid #667eea; padding-bottom: 10px; color: #333;">
                         <span class="dashicons dashicons-admin-generic" style="color: #667eea;"></span>
                         <?php esc_html_e('How Plugin Works?', 'dead-link-checker'); ?>
@@ -793,7 +793,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Scanning Modes -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-search" style="color: #4CAF50;"></span>
                         <?php esc_html_e('Scanning Modes', 'dead-link-checker'); ?>
@@ -828,7 +828,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Handling Stuck Scans -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-warning" style="color: #FF9800;"></span>
                         <?php esc_html_e('What If a Scan Gets Stuck?', 'dead-link-checker'); ?>
@@ -844,7 +844,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Settings Explained -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-admin-settings" style="color: #2196F3;"></span>
                         <?php esc_html_e('Settings Explained', 'dead-link-checker'); ?>
@@ -900,7 +900,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Link Status -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-info" style="color: #2196F3;"></span>
                         <?php esc_html_e('Understanding Link Status', 'dead-link-checker'); ?>
@@ -928,7 +928,7 @@ class BLC_Admin
                         </tr>
                     </table>
 
-                    <h3 id="blc-http-status-codes" style="margin-top: 20px; color: #555;"><?php esc_html_e('Common HTTP Status Codes', 'dead-link-checker'); ?></h3>
+                    <h3 id="awldlc-http-status-codes" style="margin-top: 20px; color: #555;"><?php esc_html_e('Common HTTP Status Codes', 'dead-link-checker'); ?></h3>
                     <table class="widefat">
                         <tr><td style="width:80px;"><strong>200</strong></td><td><?php esc_html_e('OK — Link is working.', 'dead-link-checker'); ?></td></tr>
                         <tr><td><strong>301</strong></td><td><?php esc_html_e('Moved Permanently — The URL has been permanently redirected to a new location.', 'dead-link-checker'); ?></td></tr>
@@ -950,7 +950,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Reset & Maintenance -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-update" style="color: #E91E63;"></span>
                         <?php esc_html_e('Reset & Maintenance Options', 'dead-link-checker'); ?>
@@ -960,7 +960,7 @@ class BLC_Admin
                             <td style="width:180px;"><strong><?php esc_html_e('Force Stop Scan', 'dead-link-checker'); ?></strong></td>
                             <td><?php esc_html_e('Forcefully stops all running/pending scans, clears the scan queue, and resets the scan state. Use when a scan appears stuck.', 'dead-link-checker'); ?></td>
                             <td style="width:160px; text-align:right;">
-                                <button type="button" id="blc-force-stop-btn" class="button" style="color:#FF9800; border-color:#FF9800;">
+                                <button type="button" id="awldlc-force-stop-btn" class="button" style="color:#FF9800; border-color:#FF9800;">
                                     <span class="dashicons dashicons-dismiss" style="margin-top:4px;"></span> <?php esc_html_e('Force Stop', 'dead-link-checker'); ?>
                                 </button>
                             </td>
@@ -969,7 +969,7 @@ class BLC_Admin
                             <td><strong><?php esc_html_e('Clear Scan History', 'dead-link-checker'); ?></strong></td>
                             <td><?php esc_html_e('Deletes all scan history records but keeps your link data intact.', 'dead-link-checker'); ?></td>
                             <td style="text-align:right;">
-                                <button type="button" id="blc-clear-history-btn" class="button">
+                                <button type="button" id="awldlc-clear-history-btn" class="button">
                                     <span class="dashicons dashicons-trash" style="margin-top:4px;"></span> <?php esc_html_e('Clear History', 'dead-link-checker'); ?>
                                 </button>
                             </td>
@@ -978,7 +978,7 @@ class BLC_Admin
                             <td><strong><?php esc_html_e('Reset Settings', 'dead-link-checker'); ?></strong></td>
                             <td><?php esc_html_e('Resets all plugin settings to their default values without affecting link data or scan history.', 'dead-link-checker'); ?></td>
                             <td style="text-align:right;">
-                                <button type="button" id="blc-reset-settings-btn" class="button">
+                                <button type="button" id="awldlc-reset-settings-btn" class="button">
                                     <span class="dashicons dashicons-undo" style="margin-top:4px;"></span> <?php esc_html_e('Reset Settings', 'dead-link-checker'); ?>
                                 </button>
                             </td>
@@ -987,7 +987,7 @@ class BLC_Admin
                             <td><strong><?php esc_html_e('Cleanup Exports', 'dead-link-checker'); ?></strong></td>
                             <td><?php esc_html_e('Deletes all exported CSV/JSON files from the uploads directory to free up disk space.', 'dead-link-checker'); ?></td>
                             <td style="text-align:right;">
-                                <button type="button" id="blc-cleanup-exports-btn" class="button">
+                                <button type="button" id="awldlc-cleanup-exports-btn" class="button">
                                     <span class="dashicons dashicons-trash" style="margin-top:4px;"></span> <?php esc_html_e('Cleanup Exports', 'dead-link-checker'); ?>
                                 </button>
                             </td>
@@ -996,7 +996,7 @@ class BLC_Admin
                             <td><strong style="color:#dc3545;"><?php esc_html_e('Full Plugin Reset', 'dead-link-checker'); ?></strong></td>
                             <td><?php esc_html_e('Resets EVERYTHING — link data, scan history, settings, and export files — back to factory defaults. Use with caution!', 'dead-link-checker'); ?></td>
                             <td style="text-align:right;">
-                                <button type="button" id="blc-full-reset-btn" class="button" style="color:#dc3545; border-color:#dc3545;">
+                                <button type="button" id="awldlc-full-reset-btn" class="button" style="color:#dc3545; border-color:#dc3545;">
                                     <span class="dashicons dashicons-warning" style="margin-top:4px;"></span> <?php esc_html_e('Full Reset', 'dead-link-checker'); ?>
                                 </button>
                             </td>
@@ -1005,7 +1005,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Tips -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-lightbulb" style="color: #9C27B0;"></span>
                         <?php esc_html_e('Tips & Best Practices', 'dead-link-checker'); ?>
@@ -1021,7 +1021,7 @@ class BLC_Admin
                 </div>
 
                 <!-- How to Translate -->
-                <div class="blc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="awldlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
                         <span class="dashicons dashicons-translation" style="color: #00BCD4;"></span>
                         <?php esc_html_e('How to Translate This Plugin', 'dead-link-checker'); ?>
@@ -1103,7 +1103,7 @@ class BLC_Admin
                 </div>
 
                 <!-- Support -->
-                <div class="blc-card"
+                <div class="awldlc-card"
                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; margin-bottom: 20px; border-radius: 8px; color: #fff;">
                     <h2 style="margin-top: 0; color: #fff;">
                         <span class="dashicons dashicons-sos"></span>

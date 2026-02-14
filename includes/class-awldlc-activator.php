@@ -13,11 +13,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Activator
+ * Class AWLDLC_Activator
  *
  * Fired during plugin activation
  */
-class BLC_Activator
+class AWLDLC_Activator
 {
 
     /**
@@ -54,7 +54,7 @@ class BLC_Activator
     {
         // Check PHP version
         if (version_compare(PHP_VERSION, '7.4', '<')) {
-            deactivate_plugins(plugin_basename(BLC_PLUGIN_FILE));
+            deactivate_plugins(plugin_basename(AWLDLC_PLUGIN_FILE));
             wp_die(
                 esc_html__('Dead Link Checker Pro requires PHP 7.4 or higher.', 'dead-link-checker'),
                 esc_html__('Plugin Activation Error', 'dead-link-checker'),
@@ -65,7 +65,7 @@ class BLC_Activator
         // Check WordPress version
         global $wp_version;
         if (version_compare($wp_version, '5.8', '<')) {
-            deactivate_plugins(plugin_basename(BLC_PLUGIN_FILE));
+            deactivate_plugins(plugin_basename(AWLDLC_PLUGIN_FILE));
             wp_die(
                 esc_html__('Dead Link Checker Pro requires WordPress 5.8 or higher.', 'dead-link-checker'),
                 esc_html__('Plugin Activation Error', 'dead-link-checker'),
@@ -84,7 +84,7 @@ class BLC_Activator
         $charset_collate = $wpdb->get_charset_collate();
 
         // Links table - stores all discovered links
-        $table_links = $wpdb->prefix . 'blc_links';
+        $table_links = $wpdb->prefix . 'awldlc_links';
         $sql_links = "CREATE TABLE {$table_links} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             url varchar(2048) NOT NULL,
@@ -117,7 +117,7 @@ class BLC_Activator
         ) {$charset_collate};";
 
         // Scans table - stores scan history
-        $table_scans = $wpdb->prefix . 'blc_scans';
+        $table_scans = $wpdb->prefix . 'awldlc_scans';
         $sql_scans = "CREATE TABLE {$table_scans} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             scan_type varchar(20) NOT NULL DEFAULT 'full',
@@ -135,7 +135,7 @@ class BLC_Activator
         ) {$charset_collate};";
 
         // Redirects table - stores URL redirects
-        $table_redirects = $wpdb->prefix . 'blc_redirects';
+        $table_redirects = $wpdb->prefix . 'awldlc_redirects';
         $sql_redirects = "CREATE TABLE {$table_redirects} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             source_url varchar(2048) NOT NULL,
@@ -163,7 +163,7 @@ class BLC_Activator
         dbDelta($sql_redirects);
 
         // Store database version
-        update_option('blc_db_version', self::DB_VERSION);
+        update_option('awldlc_db_version', self::DB_VERSION);
     }
 
     /**
@@ -200,7 +200,7 @@ class BLC_Activator
             // Advanced
             'concurrent_requests' => 3,
             'delay_between' => 500, // milliseconds
-            'user_agent' => 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . BLC_VERSION . '; +https://wordpress.org/)',
+            'user_agent' => 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . AWLDLC_VERSION . '; +https://wordpress.org/)',
             'verify_ssl' => true,
             'mark_broken_after' => 3, // consecutive failures
 
@@ -212,8 +212,8 @@ class BLC_Activator
         );
 
         // Only set if not already exists
-        if (!get_option('blc_settings')) {
-            add_option('blc_settings', $defaults);
+        if (!get_option('awldlc_settings')) {
+            add_option('awldlc_settings', $defaults);
         }
     }
 
@@ -225,23 +225,23 @@ class BLC_Activator
     {
         // Schedule automatic scanning - start TOMORROW, not immediately
         // First scan should always be manual
-        if (!wp_next_scheduled('blc_scheduled_scan')) {
-            wp_schedule_event(time() + DAY_IN_SECONDS, 'daily', 'blc_scheduled_scan');
+        if (!wp_next_scheduled('awldlc_scheduled_scan')) {
+            wp_schedule_event(time() + DAY_IN_SECONDS, 'daily', 'awldlc_scheduled_scan');
         }
 
         // Schedule auto-recheck of broken/warning links (lightweight daily check)
-        if (!wp_next_scheduled('blc_recheck_broken')) {
-            wp_schedule_event(time() + HOUR_IN_SECONDS * 12, 'twicedaily', 'blc_recheck_broken');
+        if (!wp_next_scheduled('awldlc_recheck_broken')) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS * 12, 'twicedaily', 'awldlc_recheck_broken');
         }
 
         // Schedule notification digest - start next week
-        if (!wp_next_scheduled('blc_send_digest')) {
-            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'blc_send_digest');
+        if (!wp_next_scheduled('awldlc_send_digest')) {
+            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'awldlc_send_digest');
         }
 
         // Schedule cleanup of old data - start next week
-        if (!wp_next_scheduled('blc_cleanup_old_data')) {
-            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'blc_cleanup_old_data');
+        if (!wp_next_scheduled('awldlc_cleanup_old_data')) {
+            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'awldlc_cleanup_old_data');
         }
     }
 
@@ -250,6 +250,6 @@ class BLC_Activator
      */
     private static function set_activation_flag()
     {
-        set_transient('blc_activation_redirect', true, 30);
+        set_transient('awldlc_activation_redirect', true, 30);
     }
 }

@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Parser_Divi
+class AWLDLC_Parser_Divi
 {
     /**
      * Check if Divi is active
