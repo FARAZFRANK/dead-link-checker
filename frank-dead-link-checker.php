@@ -1,16 +1,16 @@
 <?php
 /**
- * Plugin Name: Dead Link Checker
+ * Plugin Name: Frank Dead Link Checker
  * Plugin URI: https://awplife.com/
- * Description: Dead Link Checker for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
- * Version: 3.0.8
+ * Description: Frank Dead Link Checker for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
+ * Version: 3.0.9
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
  * Author URI: https://awplife.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: dead-link-checker
+ * Text Domain: frank-dead-link-checker
  * Domain Path: /languages
  */
 
@@ -20,11 +20,11 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('AWLDLC_VERSION', '3.0.8');
-define('AWLDLC_PLUGIN_FILE', __FILE__);
-define('AWLDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('AWLDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('AWLDLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('FRANKDLC_VERSION', '3.0.9');
+define('FRANKDLC_PLUGIN_FILE', __FILE__);
+define('FRANKDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('FRANKDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('FRANKDLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 /**
  * Autoloader for plugin classes
@@ -33,23 +33,23 @@ define('AWLDLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
  */
 spl_autoload_register(function ($class_name) {
     // Only handle our plugin classes
-    if (strpos($class_name, 'AWLDLC_') !== 0) {
+    if (strpos($class_name, 'FRANKDLC_') !== 0) {
         return;
     }
 
     // Convert class name to file path
-    // Class AWLDLC_Admin → class-awldlc-admin.php
+    // Class FRANKDLC_Admin → class-frankdlc-admin.php
     $class_file = strtolower(str_replace('_', '-', $class_name));
-    // File names now use awldlc- prefix directly
+    // File names now use frankdlc- prefix directly
     $class_file = 'class-' . $class_file . '.php';
 
     // Define possible locations
     $locations = array(
-        AWLDLC_PLUGIN_DIR . 'includes/',
-        AWLDLC_PLUGIN_DIR . 'includes/admin/',
-        AWLDLC_PLUGIN_DIR . 'includes/scanner/',
-        AWLDLC_PLUGIN_DIR . 'includes/scanner/parsers/',
-        AWLDLC_PLUGIN_DIR . 'includes/models/',
+        FRANKDLC_PLUGIN_DIR . 'includes/',
+        FRANKDLC_PLUGIN_DIR . 'includes/admin/',
+        FRANKDLC_PLUGIN_DIR . 'includes/scanner/',
+        FRANKDLC_PLUGIN_DIR . 'includes/scanner/parsers/',
+        FRANKDLC_PLUGIN_DIR . 'includes/models/',
     );
 
     // Search for the class file
@@ -66,16 +66,16 @@ spl_autoload_register(function ($class_name) {
  * Plugin Activation Hook
  */
 register_activation_hook(__FILE__, function () {
-    require_once AWLDLC_PLUGIN_DIR . 'includes/class-awldlc-activator.php';
-    AWLDLC_Activator::activate();
+    require_once FRANKDLC_PLUGIN_DIR . 'includes/class-frankdlc-activator.php';
+    FRANKDLC_Activator::activate();
 });
 
 /**
  * Plugin Deactivation Hook
  */
 register_deactivation_hook(__FILE__, function () {
-    require_once AWLDLC_PLUGIN_DIR . 'includes/class-awldlc-deactivator.php';
-    AWLDLC_Deactivator::deactivate();
+    require_once FRANKDLC_PLUGIN_DIR . 'includes/class-frankdlc-deactivator.php';
+    FRANKDLC_Deactivator::deactivate();
 });
 
 /**
@@ -94,21 +94,21 @@ final class Broken_Link_Checker
     /**
      * Admin instance
      *
-     * @var AWLDLC_Admin|null
+     * @var FRANKDLC_Admin|null
      */
     public $admin = null;
 
     /**
      * Scanner instance
      *
-     * @var AWLDLC_Scanner|null
+     * @var FRANKDLC_Scanner|null
      */
     public $scanner = null;
 
     /**
      * Database instance
      *
-     * @var AWLDLC_Database|null
+     * @var FRANKDLC_Database|null
      */
     public $database = null;
 
@@ -148,25 +148,25 @@ final class Broken_Link_Checker
     public function init()
     {
         // Initialize database
-        $this->database = new AWLDLC_Database();
+        $this->database = new FRANKDLC_Database();
 
         // Initialize scanner
-        $this->scanner = new AWLDLC_Scanner();
+        $this->scanner = new FRANKDLC_Scanner();
 
         // Initialize admin (only in admin area)
         if (is_admin()) {
-            $this->admin = new AWLDLC_Admin();
+            $this->admin = new FRANKDLC_Admin();
         }
 
         // Initialize notifications
-        new AWLDLC_Notifications();
+        new FRANKDLC_Notifications();
 
         // Initialize redirects
-        new AWLDLC_Redirects();
+        new FRANKDLC_Redirects();
 
         // Initialize multisite support
         if (is_multisite()) {
-            new AWLDLC_Multisite();
+            new FRANKDLC_Multisite();
         }
 
         /**
@@ -174,7 +174,7 @@ final class Broken_Link_Checker
          *
          * @param Broken_Link_Checker $this The plugin instance
          */
-        do_action('awldlc_init', $this);
+        do_action('FRANKDLC_init', $this);
     }
 
     /**
@@ -183,9 +183,9 @@ final class Broken_Link_Checker
     public function load_textdomain()
     {
         load_plugin_textdomain(
-            'dead-link-checker',
+            'frank-dead-link-checker',
             false,
-            dirname(AWLDLC_PLUGIN_BASENAME) . '/languages'
+            dirname(FRANKDLC_PLUGIN_BASENAME) . '/languages'
         );
     }
 
@@ -198,7 +198,7 @@ final class Broken_Link_Checker
      */
     public static function get_option($key, $default = null)
     {
-        $options = get_option('awldlc_settings', array());
+        $options = get_option('FRANKDLC_settings', array());
         return isset($options[$key]) ? $options[$key] : $default;
     }
 
@@ -211,9 +211,9 @@ final class Broken_Link_Checker
      */
     public static function update_option($key, $value)
     {
-        $options = get_option('awldlc_settings', array());
+        $options = get_option('FRANKDLC_settings', array());
         $options[$key] = $value;
-        return update_option('awldlc_settings', $options);
+        return update_option('FRANKDLC_settings', $options);
     }
 
     /**
@@ -237,10 +237,10 @@ final class Broken_Link_Checker
  *
  * @return Broken_Link_Checker
  */
-function awldlc()
+function FRANKDLC()
 {
     return Broken_Link_Checker::get_instance();
 }
 
 // Initialize the plugin
-awldlc();
+FRANKDLC();

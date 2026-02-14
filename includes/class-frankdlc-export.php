@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Export
+class FRANKDLC_Export
 {
 
     /**
@@ -22,10 +22,10 @@ class AWLDLC_Export
      */
     public function export($format = 'csv', $args = array())
     {
-        $links = awldlc()->database->get_links(array_merge($args, array('per_page' => 10000)));
+        $links = FRANKDLC()->database->get_links(array_merge($args, array('per_page' => 10000)));
 
         if (empty($links)) {
-            return new WP_Error('no_data', __('No links to export.', 'dead-link-checker'));
+            return new WP_Error('no_data', __('No links to export.', 'frank-dead-link-checker'));
         }
 
         $upload_dir = wp_upload_dir();
@@ -46,7 +46,7 @@ class AWLDLC_Export
         }
 
         if (!$result) {
-            return new WP_Error('export_failed', __('Failed to create export file.', 'dead-link-checker'));
+            return new WP_Error('export_failed', __('Failed to create export file.', 'frank-dead-link-checker'));
         }
 
         return $upload_dir['baseurl'] . '/dlc-exports/' . $filename;
@@ -91,7 +91,7 @@ class AWLDLC_Export
         ));
 
         foreach ($links as $link_data) {
-            $link = new AWLDLC_Link($link_data);
+            $link = new FRANKDLC_Link($link_data);
 
             fputcsv($handle, array(
                 $link->id,
@@ -130,7 +130,7 @@ class AWLDLC_Export
         $data = array();
 
         foreach ($links as $link_data) {
-            $link = new AWLDLC_Link($link_data);
+            $link = new FRANKDLC_Link($link_data);
 
             $data[] = array(
                 'id' => $link->id,

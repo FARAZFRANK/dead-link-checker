@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Scanner
+class FRANKDLC_Scanner
 {
 
     private $parser;
@@ -18,35 +18,35 @@ class AWLDLC_Scanner
 
     public function __construct()
     {
-        $this->parser = new AWLDLC_Parser();
-        $this->checker = new AWLDLC_Checker();
-        add_action('awldlc_scheduled_scan', array($this, 'run_scheduled_scan'));
-        add_action('awldlc_process_queue', array($this, 'process_queue'));
-        add_action('awldlc_recheck_broken', array($this, 'recheck_broken_links'));
+        $this->parser = new FRANKDLC_Parser();
+        $this->checker = new FRANKDLC_Checker();
+        add_action('FRANKDLC_scheduled_scan', array($this, 'run_scheduled_scan'));
+        add_action('FRANKDLC_process_queue', array($this, 'process_queue'));
+        add_action('FRANKDLC_recheck_broken', array($this, 'recheck_broken_links'));
     }
 
     public function start_scan($type = 'full')
     {
-        if (awldlc()->database->is_scan_running()) {
-            return new WP_Error('scan_running', __('A scan is already in progress.', 'dead-link-checker'));
+        if (FRANKDLC()->database->is_scan_running()) {
+            return new WP_Error('scan_running', __('A scan is already in progress.', 'frank-dead-link-checker'));
         }
 
-        $scan_id = awldlc()->database->create_scan($type);
+        $scan_id = FRANKDLC()->database->create_scan($type);
         if (!$scan_id) {
-            return new WP_Error('scan_failed', __('Failed to create scan record.', 'dead-link-checker'));
+            return new WP_Error('scan_failed', __('Failed to create scan record.', 'frank-dead-link-checker'));
         }
 
-        awldlc()->database->update_scan($scan_id, array('status' => 'running'));
-        set_transient('awldlc_current_scan_id', $scan_id, HOUR_IN_SECONDS);
+        FRANKDLC()->database->update_scan($scan_id, array('status' => 'running'));
+        set_transient('FRANKDLC_current_scan_id', $scan_id, HOUR_IN_SECONDS);
 
         // Discover all links
         $total_links = $this->discover_links();
 
-        awldlc()->database->update_scan($scan_id, array('total_links' => $total_links));
+        FRANKDLC()->database->update_scan($scan_id, array('total_links' => $total_links));
 
         // Schedule queue processing using Queue Manager
-        if (!AWLDLC_Queue_Manager::is_scheduled('awldlc_process_queue')) {
-            AWLDLC_Queue_Manager::schedule_single(time() + 5, 'awldlc_process_queue');
+        if (!FRANKDLC_Queue_Manager::is_scheduled('FRANKDLC_process_queue')) {
+            FRANKDLC_Queue_Manager::schedule_single(time() + 5, 'FRANKDLC_process_queue');
         }
 
         return $scan_id;
@@ -55,7 +55,7 @@ class AWLDLC_Scanner
     private function discover_links()
     {
         $count = 0;
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
 
         // Scan posts
         if (!empty($settings['scan_posts'])) {
@@ -109,19 +109,19 @@ class AWLDLC_Scanner
             $uses_page_builder = false;
 
             // Check for Elementor
-            if (class_exists('AWLDLC_Parser_Elementor') && AWLDLC_Parser_Elementor::is_active() && AWLDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
+            if (class_exists('FRANKDLC_Parser_Elementor') && FRANKDLC_Parser_Elementor::is_active() && FRANKDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
                 $uses_page_builder = true;
             }
             // Check for Divi
-            if (class_exists('AWLDLC_Parser_Divi') && AWLDLC_Parser_Divi::is_active() && AWLDLC_Parser_Divi::is_built_with_divi($post_id)) {
+            if (class_exists('FRANKDLC_Parser_Divi') && FRANKDLC_Parser_Divi::is_active() && FRANKDLC_Parser_Divi::is_built_with_divi($post_id)) {
                 $uses_page_builder = true;
             }
             // Check for WPBakery
-            if (class_exists('AWLDLC_Parser_WPBakery') && AWLDLC_Parser_WPBakery::is_active() && AWLDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
+            if (class_exists('FRANKDLC_Parser_WPBakery') && FRANKDLC_Parser_WPBakery::is_active() && FRANKDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
                 $uses_page_builder = true;
             }
             // Check for Gutenberg blocks
-            if (class_exists('AWLDLC_Parser_Gutenberg') && AWLDLC_Parser_Gutenberg::is_active() && AWLDLC_Parser_Gutenberg::has_blocks($post_id)) {
+            if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active() && FRANKDLC_Parser_Gutenberg::has_blocks($post_id)) {
                 $uses_page_builder = true;
             }
 
@@ -132,7 +132,7 @@ class AWLDLC_Scanner
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'post_content';
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -148,7 +148,7 @@ class AWLDLC_Scanner
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'post_excerpt';
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -171,14 +171,14 @@ class AWLDLC_Scanner
         $links = array();
 
         // Check for Elementor content
-        if (class_exists('AWLDLC_Parser_Elementor') && AWLDLC_Parser_Elementor::is_active()) {
-            if (AWLDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
-                $elementor_links = AWLDLC_Parser_Elementor::extract_links($post_id);
+        if (class_exists('FRANKDLC_Parser_Elementor') && FRANKDLC_Parser_Elementor::is_active()) {
+            if (FRANKDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
+                $elementor_links = FRANKDLC_Parser_Elementor::extract_links($post_id);
                 foreach ($elementor_links as $link) {
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'elementor_data';
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -186,14 +186,14 @@ class AWLDLC_Scanner
         }
 
         // Check for Divi content
-        if (class_exists('AWLDLC_Parser_Divi') && AWLDLC_Parser_Divi::is_active()) {
-            if (AWLDLC_Parser_Divi::is_built_with_divi($post_id)) {
-                $divi_links = AWLDLC_Parser_Divi::extract_links($post_id);
+        if (class_exists('FRANKDLC_Parser_Divi') && FRANKDLC_Parser_Divi::is_active()) {
+            if (FRANKDLC_Parser_Divi::is_built_with_divi($post_id)) {
+                $divi_links = FRANKDLC_Parser_Divi::extract_links($post_id);
                 foreach ($divi_links as $link) {
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'divi_builder';
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -201,14 +201,14 @@ class AWLDLC_Scanner
         }
 
         // Check for WPBakery content
-        if (class_exists('AWLDLC_Parser_WPBakery') && AWLDLC_Parser_WPBakery::is_active()) {
-            if (AWLDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
-                $wpbakery_links = AWLDLC_Parser_WPBakery::extract_links($post_id);
+        if (class_exists('FRANKDLC_Parser_WPBakery') && FRANKDLC_Parser_WPBakery::is_active()) {
+            if (FRANKDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
+                $wpbakery_links = FRANKDLC_Parser_WPBakery::extract_links($post_id);
                 foreach ($wpbakery_links as $link) {
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'wpbakery';
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -216,14 +216,14 @@ class AWLDLC_Scanner
         }
 
         // Check for Gutenberg blocks
-        if (class_exists('AWLDLC_Parser_Gutenberg') && AWLDLC_Parser_Gutenberg::is_active()) {
-            if (AWLDLC_Parser_Gutenberg::has_blocks($post_id)) {
-                $gutenberg_links = AWLDLC_Parser_Gutenberg::extract_links($post_id);
+        if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active()) {
+            if (FRANKDLC_Parser_Gutenberg::has_blocks($post_id)) {
+                $gutenberg_links = FRANKDLC_Parser_Gutenberg::extract_links($post_id);
                 foreach ($gutenberg_links as $link) {
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'gutenberg_blocks';
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -247,13 +247,13 @@ class AWLDLC_Scanner
                 if ($item->type === 'custom' && !empty($item->url)) {
                     $link = array(
                         'url' => $item->url,
-                        'link_type' => AWLDLC_Link::determine_type($item->url, 'a'),
+                        'link_type' => FRANKDLC_Link::determine_type($item->url, 'a'),
                         'source_id' => $menu->term_id,
                         'source_type' => 'menu',
                         'source_field' => 'menu_item',
                         'anchor_text' => $item->title,
                     );
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -282,7 +282,7 @@ class AWLDLC_Scanner
                     $link['source_id'] = 0;
                     $link['source_type'] = 'widget';
                     $link['source_field'] = $widget_id;
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -337,7 +337,7 @@ class AWLDLC_Scanner
                 $link['source_type'] = 'comment';
                 $link['source_field'] = 'comment_content';
 
-                if (awldlc()->database->save_link($link)) {
+                if (FRANKDLC()->database->save_link($link)) {
                     $count++;
                 }
             }
@@ -354,7 +354,7 @@ class AWLDLC_Scanner
                     'source_field' => 'author_url',
                 );
 
-                if (awldlc()->database->save_link($author_link)) {
+                if (FRANKDLC()->database->save_link($author_link)) {
                     $count++;
                 }
             }
@@ -371,7 +371,7 @@ class AWLDLC_Scanner
     private function scan_all_custom_fields()
     {
         $count = 0;
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
 
         // Post types to scan
         $post_types = array();
@@ -479,7 +479,7 @@ class AWLDLC_Scanner
                     $link['source_type'] = 'custom_field';
                     $link['source_field'] = $meta_key;
 
-                    if (awldlc()->database->save_link($link)) {
+                    if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
                 }
@@ -496,7 +496,7 @@ class AWLDLC_Scanner
                         'source_field' => $meta_key,
                     );
 
-                    if (awldlc()->database->save_link($direct_link)) {
+                    if (FRANKDLC()->database->save_link($direct_link)) {
                         $count++;
                     }
                 }
@@ -522,15 +522,15 @@ class AWLDLC_Scanner
 
     public function process_queue()
     {
-        $scan_id = get_transient('awldlc_current_scan_id');
+        $scan_id = get_transient('FRANKDLC_current_scan_id');
         if (!$scan_id)
             return;
 
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
         $batch_size = isset($settings['concurrent_requests']) ? absint($settings['concurrent_requests']) : 3;
         $batch_size = max(1, min(10, $batch_size));
 
-        $links = awldlc()->database->get_links_to_check($batch_size);
+        $links = FRANKDLC()->database->get_links_to_check($batch_size);
 
         if (empty($links)) {
             $this->complete_scan($scan_id);
@@ -543,7 +543,7 @@ class AWLDLC_Scanner
 
         foreach ($links as $link) {
             $result = $this->checker->check_url($link->url);
-            awldlc()->database->update_link_result($link->id, $result);
+            FRANKDLC()->database->update_link_result($link->id, $result);
 
             $checked++;
             if (!empty($result['is_broken']))
@@ -553,9 +553,9 @@ class AWLDLC_Scanner
         }
 
         // Update scan progress
-        $scan = awldlc()->database->get_running_scan();
+        $scan = FRANKDLC()->database->get_running_scan();
         if ($scan) {
-            awldlc()->database->update_scan($scan_id, array(
+            FRANKDLC()->database->update_scan($scan_id, array(
                 'checked_links' => $scan->checked_links + $checked,
                 'broken_links' => $scan->broken_links + $broken,
                 'warning_links' => $scan->warning_links + $warnings,
@@ -566,9 +566,9 @@ class AWLDLC_Scanner
         $this->update_progress($scan_id);
 
         // Schedule next batch using Queue Manager
-        $remaining = awldlc()->database->get_links_to_check(1);
+        $remaining = FRANKDLC()->database->get_links_to_check(1);
         if (!empty($remaining)) {
-            AWLDLC_Queue_Manager::schedule_single(time() + 2, 'awldlc_process_queue');
+            FRANKDLC_Queue_Manager::schedule_single(time() + 2, 'FRANKDLC_process_queue');
         } else {
             $this->complete_scan($scan_id);
         }
@@ -576,9 +576,9 @@ class AWLDLC_Scanner
 
     private function complete_scan($scan_id)
     {
-        $scan = awldlc()->database->get_running_scan();
+        $scan = FRANKDLC()->database->get_running_scan();
         if ($scan) {
-            awldlc()->database->complete_scan($scan_id, array(
+            FRANKDLC()->database->complete_scan($scan_id, array(
                 'total_links' => $scan->total_links,
                 'checked_links' => $scan->checked_links,
                 'broken_links' => $scan->broken_links,
@@ -586,18 +586,18 @@ class AWLDLC_Scanner
             ));
         }
 
-        delete_transient('awldlc_current_scan_id');
-        delete_transient('awldlc_scan_progress');
+        delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_scan_progress');
 
         // Trigger notification if broken links found
         if ($scan && $scan->broken_links > 0) {
-            do_action('awldlc_scan_complete', $scan);
+            do_action('FRANKDLC_scan_complete', $scan);
         }
     }
 
     private function update_progress($scan_id)
     {
-        $scan = awldlc()->database->get_running_scan();
+        $scan = FRANKDLC()->database->get_running_scan();
         if (!$scan)
             return;
 
@@ -611,7 +611,7 @@ class AWLDLC_Scanner
             'percent' => $scan->total_links > 0 ? round(($scan->checked_links / $scan->total_links) * 100) : 0,
         );
 
-        set_transient('awldlc_scan_progress', $progress, HOUR_IN_SECONDS);
+        set_transient('FRANKDLC_scan_progress', $progress, HOUR_IN_SECONDS);
     }
 
     /**
@@ -621,11 +621,11 @@ class AWLDLC_Scanner
      */
     public function stop_scan()
     {
-        $scan_id = get_transient('awldlc_current_scan_id');
+        $scan_id = get_transient('FRANKDLC_current_scan_id');
 
         // Also check database for running scans (transient may have expired)
         if (!$scan_id) {
-            $running_scan = awldlc()->database->get_running_scan();
+            $running_scan = FRANKDLC()->database->get_running_scan();
             if ($running_scan) {
                 $scan_id = $running_scan->id;
             } else {
@@ -634,18 +634,18 @@ class AWLDLC_Scanner
         }
 
         // Update scan status to cancelled
-        awldlc()->database->update_scan($scan_id, array(
+        FRANKDLC()->database->update_scan($scan_id, array(
             'status' => 'cancelled',
             'completed_at' => current_time('mysql'),
         ));
 
         // Clear transients
-        delete_transient('awldlc_current_scan_id');
-        delete_transient('awldlc_scan_progress');
+        delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_scan_progress');
 
         // Clear any scheduled queue processing (uses Queue Manager for AS/WP-Cron)
-        AWLDLC_Queue_Manager::cancel('awldlc_process_queue');
-        wp_clear_scheduled_hook('awldlc_process_queue'); // Also clear WP-Cron just in case
+        FRANKDLC_Queue_Manager::cancel('FRANKDLC_process_queue');
+        wp_clear_scheduled_hook('FRANKDLC_process_queue'); // Also clear WP-Cron just in case
 
         return true;
     }
@@ -663,7 +663,7 @@ class AWLDLC_Scanner
     {
         global $wpdb;
 
-        $table = awldlc()->database->get_scans_table();
+        $table = FRANKDLC()->database->get_scans_table();
 
         // Cancel all running and pending scans in database
         $wpdb->update(
@@ -671,7 +671,7 @@ class AWLDLC_Scanner
             array(
                 'status' => 'cancelled',
                 'completed_at' => current_time('mysql'),
-                'error_message' => __('Force stopped by admin', 'dead-link-checker'),
+                'error_message' => __('Force stopped by admin', 'frank-dead-link-checker'),
             ),
             array('status' => 'running'),
             array('%s', '%s', '%s'),
@@ -682,7 +682,7 @@ class AWLDLC_Scanner
             $table,
             array(
                 'status' => 'cancelled',
-                'error_message' => __('Force stopped by admin', 'dead-link-checker'),
+                'error_message' => __('Force stopped by admin', 'frank-dead-link-checker'),
             ),
             array('status' => 'pending'),
             array('%s', '%s'),
@@ -690,14 +690,14 @@ class AWLDLC_Scanner
         );
 
         // Clear all transients
-        delete_transient('awldlc_current_scan_id');
-        delete_transient('awldlc_scan_progress');
-        delete_transient('awldlc_stats_cache');
+        delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_scan_progress');
+        delete_transient('FRANKDLC_stats_cache');
 
         // Clear all scheduled queue processing
-        AWLDLC_Queue_Manager::cancel('awldlc_process_queue');
-        AWLDLC_Queue_Manager::cancel_group('blc');
-        wp_clear_scheduled_hook('awldlc_process_queue');
+        FRANKDLC_Queue_Manager::cancel('FRANKDLC_process_queue');
+        FRANKDLC_Queue_Manager::cancel_group('blc');
+        wp_clear_scheduled_hook('FRANKDLC_process_queue');
 
         return true;
     }
@@ -712,7 +712,7 @@ class AWLDLC_Scanner
     {
         global $wpdb;
 
-        $table = awldlc()->database->get_scans_table();
+        $table = FRANKDLC()->database->get_scans_table();
         $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-30 minutes'));
 
         // Find scans that have been running for over 30 minutes
@@ -728,7 +728,7 @@ class AWLDLC_Scanner
                     array(
                         'status' => 'failed',
                         'completed_at' => current_time('mysql'),
-                        'error_message' => __('Scan timed out (exceeded 30 minutes)', 'dead-link-checker'),
+                        'error_message' => __('Scan timed out (exceeded 30 minutes)', 'frank-dead-link-checker'),
                     ),
                     array('id' => $scan->id),
                     array('%s', '%s', '%s'),
@@ -737,12 +737,12 @@ class AWLDLC_Scanner
             }
 
             // Clear transients
-            delete_transient('awldlc_current_scan_id');
-            delete_transient('awldlc_scan_progress');
+            delete_transient('FRANKDLC_current_scan_id');
+            delete_transient('FRANKDLC_scan_progress');
 
             // Clear queue
-            AWLDLC_Queue_Manager::cancel('awldlc_process_queue');
-            wp_clear_scheduled_hook('awldlc_process_queue');
+            FRANKDLC_Queue_Manager::cancel('FRANKDLC_process_queue');
+            wp_clear_scheduled_hook('FRANKDLC_process_queue');
 
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log(sprintf('[BLC] Auto-cancelled %d stale scan(s)', count($stale_scans)));
@@ -752,10 +752,10 @@ class AWLDLC_Scanner
 
     public function get_progress()
     {
-        $progress = get_transient('awldlc_scan_progress');
+        $progress = get_transient('FRANKDLC_scan_progress');
 
         if (!$progress) {
-            $scan = awldlc()->database->get_running_scan();
+            $scan = FRANKDLC()->database->get_running_scan();
             if ($scan) {
                 // Check if scan is stale (running for over 30 minutes)
                 $started_at = strtotime($scan->started_at);
@@ -784,7 +784,7 @@ class AWLDLC_Scanner
 
     public function run_scheduled_scan()
     {
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
         if (isset($settings['scan_frequency']) && $settings['scan_frequency'] === 'manual') {
             return;
         }
@@ -803,11 +803,11 @@ class AWLDLC_Scanner
         global $wpdb;
 
         // Don't run if a full scan is in progress
-        if (awldlc()->database->is_scan_running()) {
+        if (FRANKDLC()->database->is_scan_running()) {
             return;
         }
 
-        $table = awldlc()->database->get_links_table();
+        $table = FRANKDLC()->database->get_links_table();
 
         // Get broken and warning links that haven't been checked in the last 6 hours
         $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-6 hours'));
@@ -826,13 +826,13 @@ class AWLDLC_Scanner
             return;
         }
 
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
         $delay = isset($settings['delay_between']) ? (int) $settings['delay_between'] : 500;
 
         foreach ($links as $link) {
             $result = $this->checker->check_url($link->url);
 
-            awldlc()->database->update_link_result($link->id, $result);
+            FRANKDLC()->database->update_link_result($link->id, $result);
 
             // Small delay between requests
             if ($delay > 0) {
@@ -841,7 +841,7 @@ class AWLDLC_Scanner
         }
 
         // Clear stats cache so dashboard shows updated counts
-        awldlc()->database->clear_stats_cache();
+        FRANKDLC()->database->clear_stats_cache();
 
         // Log the recheck for debugging
         if (defined('WP_DEBUG') && WP_DEBUG) {

@@ -1,12 +1,12 @@
 /**
- * Dead Link Checker - Admin JavaScript
+ * Frank Dead Link Checker - Admin JavaScript
  * Handles all interactive functionality
  */
 
 (function ($) {
     'use strict';
 
-    const AWLDLC = {
+    const FRANKDLC = {
         init: function () {
             this.relocateNotices();
             this.bindEvents();
@@ -19,16 +19,16 @@
          * WordPress injects notices inside .wrap, which breaks our flexbox header
          */
         relocateNotices: function () {
-            var $wrap = $('.awldlc-wrap');
-            var $header = $wrap.find('.awldlc-header');
+            var $wrap = $('.frankdlc-wrap');
+            var $header = $wrap.find('.frankdlc-header');
             if (!$wrap.length || !$header.length) return;
 
             // Create a container for notices right after the header
-            var $noticeContainer = $('<div class="awldlc-notices-container"></div>');
+            var $noticeContainer = $('<div class="frankdlc-notices-container"></div>');
             $header.after($noticeContainer);
 
-            // Move all notice elements from .awldlc-wrap into the container
-            $wrap.children('.notice, .updated, .error, .update-nag, div[class*="notice"]').not('.awldlc-notices-container').each(function () {
+            // Move all notice elements from .frankdlc-wrap into the container
+            $wrap.children('.notice, .updated, .error, .update-nag, div[class*="notice"]').not('.frankdlc-notices-container').each(function () {
                 $noticeContainer.append($(this));
             });
 
@@ -41,144 +41,144 @@
 
         bindEvents: function () {
             // Scan button
-            $('#awldlc-scan-btn').on('click', this.startScan.bind(this));
+            $('#frankdlc-scan-btn').on('click', this.startScan.bind(this));
 
             // Stop scan button
-            $('#awldlc-stop-btn').on('click', this.stopScan.bind(this));
+            $('#frankdlc-stop-btn').on('click', this.stopScan.bind(this));
 
             // Fresh Scan button
-            $('#awldlc-fresh-scan-btn').on('click', this.freshScan.bind(this));
+            $('#frankdlc-fresh-scan-btn').on('click', this.freshScan.bind(this));
 
             // Force Stop button
-            $('#awldlc-force-stop-btn').on('click', this.forceStopScan.bind(this));
+            $('#frankdlc-force-stop-btn').on('click', this.forceStopScan.bind(this));
 
             // Reset & Maintenance buttons (Help/Settings page)
-            $(document).on('click', '#awldlc-reset-settings-btn', this.resetSettings.bind(this));
-            $(document).on('click', '#awldlc-clear-history-btn', this.clearScanHistory.bind(this));
-            $(document).on('click', '#awldlc-full-reset-btn', this.fullReset.bind(this));
-            $(document).on('click', '#awldlc-cleanup-exports-btn', this.cleanupExports.bind(this));
+            $(document).on('click', '#frankdlc-reset-settings-btn', this.resetSettings.bind(this));
+            $(document).on('click', '#frankdlc-clear-history-btn', this.clearScanHistory.bind(this));
+            $(document).on('click', '#frankdlc-full-reset-btn', this.fullReset.bind(this));
+            $(document).on('click', '#frankdlc-cleanup-exports-btn', this.cleanupExports.bind(this));
 
             // Select all checkbox
-            $('#awldlc-select-all').on('change', function () {
-                $('.awldlc-link-checkbox').prop('checked', $(this).prop('checked'));
+            $('#frankdlc-select-all').on('change', function () {
+                $('.frankdlc-link-checkbox').prop('checked', $(this).prop('checked'));
             });
 
             // Individual actions
-            $(document).on('click', '.awldlc-recheck', this.recheckLink.bind(this));
-            $(document).on('click', '.awldlc-dismiss', this.dismissLink.bind(this));
-            $(document).on('click', '.awldlc-undismiss', this.undismissLink.bind(this));
-            $(document).on('click', '.awldlc-delete', this.deleteLink.bind(this));
-            $(document).on('click', '.awldlc-edit', this.openEditModal.bind(this));
-            $(document).on('click', '.awldlc-redirect', this.openRedirectModal.bind(this));
+            $(document).on('click', '.frankdlc-recheck', this.recheckLink.bind(this));
+            $(document).on('click', '.frankdlc-dismiss', this.dismissLink.bind(this));
+            $(document).on('click', '.frankdlc-undismiss', this.undismissLink.bind(this));
+            $(document).on('click', '.frankdlc-delete', this.deleteLink.bind(this));
+            $(document).on('click', '.frankdlc-edit', this.openEditModal.bind(this));
+            $(document).on('click', '.frankdlc-redirect', this.openRedirectModal.bind(this));
 
             // Bulk action
-            $('#awldlc-bulk-apply').on('click', this.bulkAction.bind(this));
+            $('#frankdlc-bulk-apply').on('click', this.bulkAction.bind(this));
 
             // Export dropdown
-            $('#awldlc-export-btn').on('click', this.toggleExportMenu.bind(this));
-            $(document).on('click', '.awldlc-export-option', this.exportLinks.bind(this));
+            $('#frankdlc-export-btn').on('click', this.toggleExportMenu.bind(this));
+            $(document).on('click', '.frankdlc-export-option', this.exportLinks.bind(this));
             $(document).on('click', function (e) {
-                if (!$(e.target).closest('.awldlc-export-dropdown').length) {
-                    $('.awldlc-export-menu').hide();
+                if (!$(e.target).closest('.frankdlc-export-dropdown').length) {
+                    $('.frankdlc-export-menu').hide();
                 }
             });
 
             // Modal
-            $(document).on('click', '.awldlc-modal-close, .awldlc-modal-cancel', this.closeModal.bind(this));
-            $('#awldlc-edit-save').on('click', this.saveEdit.bind(this));
-            $('#awldlc-remove-link').on('click', this.removeLink.bind(this));
-            $('#awldlc-redirect-save').on('click', this.saveRedirect.bind(this));
+            $(document).on('click', '.frankdlc-modal-close, .frankdlc-modal-cancel', this.closeModal.bind(this));
+            $('#frankdlc-edit-save').on('click', this.saveEdit.bind(this));
+            $('#frankdlc-remove-link').on('click', this.removeLink.bind(this));
+            $('#frankdlc-redirect-save').on('click', this.saveRedirect.bind(this));
 
             // Close modal on outside click
-            $(document).on('click', '.awldlc-modal', function (e) {
-                if ($(e.target).hasClass('awldlc-modal')) {
-                    AWLDLC.closeModal();
+            $(document).on('click', '.frankdlc-modal', function (e) {
+                if ($(e.target).hasClass('frankdlc-modal')) {
+                    FRANKDLC.closeModal();
                 }
             });
 
             // Close modal on ESC
             $(document).on('keydown', function (e) {
                 if (e.key === 'Escape') {
-                    AWLDLC.closeModal();
+                    FRANKDLC.closeModal();
                 }
             });
         },
 
         initTabs: function () {
-            $('.awldlc-tabs-nav a').on('click', function (e) {
+            $('.frankdlc-tabs-nav a').on('click', function (e) {
                 e.preventDefault();
                 const target = $(this).attr('href');
 
-                $('.awldlc-tabs-nav a').removeClass('active');
+                $('.frankdlc-tabs-nav a').removeClass('active');
                 $(this).addClass('active');
 
-                $('.awldlc-tab-panel').removeClass('active');
+                $('.frankdlc-tab-panel').removeClass('active');
                 $(target).addClass('active');
             });
         },
 
         startScan: function (e) {
             e.preventDefault();
-            const $btn = $('#awldlc-scan-btn');
-            const $stopBtn = $('#awldlc-stop-btn');
+            const $btn = $('#frankdlc-scan-btn');
+            const $stopBtn = $('#frankdlc-stop-btn');
 
             $btn.hide();
             $stopBtn.show();
-            $('#awldlc-scan-progress').show();
+            $('#frankdlc-scan-progress').show();
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_start_scan',
-                    nonce: awldlcAdmin.nonce
+                    action: 'frankdlc_start_scan',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.pollProgress();
+                        FRANKDLC.pollProgress();
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.scanFailed, 'error');
-                        AWLDLC.resetScanButton();
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanFailed, 'error');
+                        FRANKDLC.resetScanButton();
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.scanFailed, 'error');
-                    AWLDLC.resetScanButton();
+                    FRANKDLC.showToast(frankdlcAdmin.strings.scanFailed, 'error');
+                    FRANKDLC.resetScanButton();
                 }
             });
         },
 
         stopScan: function (e) {
             e.preventDefault();
-            const $stopBtn = $('#awldlc-stop-btn');
+            const $stopBtn = $('#frankdlc-stop-btn');
 
-            if (!confirm(awldlcAdmin.strings.confirmStop)) {
+            if (!confirm(frankdlcAdmin.strings.confirmStop)) {
                 return;
             }
 
-            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.stopping);
+            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.stopping);
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_stop_scan',
-                    nonce: awldlcAdmin.nonce
+                    action: 'frankdlc_stop_scan',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(awldlcAdmin.strings.scanStopped, 'success');
-                        AWLDLC.resetScanButton();
-                        $('#awldlc-scan-progress').fadeOut();
+                        FRANKDLC.showToast(frankdlcAdmin.strings.scanStopped, 'success');
+                        FRANKDLC.resetScanButton();
+                        $('#frankdlc-scan-progress').fadeOut();
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
-                        $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + awldlcAdmin.strings.stopScan);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                        $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + awldlcAdmin.strings.stopScan);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
                 }
             });
         },
@@ -187,41 +187,41 @@
             e.preventDefault();
 
             // Show confirmation dialog
-            if (!confirm(awldlcAdmin.strings.confirmFreshScan)) {
+            if (!confirm(frankdlcAdmin.strings.confirmFreshScan)) {
                 return;
             }
 
-            const $btn = $('#awldlc-fresh-scan-btn');
-            const $scanBtn = $('#awldlc-scan-btn');
-            const $stopBtn = $('#awldlc-stop-btn');
+            const $btn = $('#frankdlc-fresh-scan-btn');
+            const $scanBtn = $('#frankdlc-scan-btn');
+            const $stopBtn = $('#frankdlc-stop-btn');
 
             // Disable buttons and show loading state
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.clearing);
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
             $scanBtn.hide();
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_fresh_scan',
-                    nonce: awldlcAdmin.nonce
+                    action: 'frankdlc_fresh_scan',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(awldlcAdmin.strings.freshScanStarted, 'success');
+                        FRANKDLC.showToast(frankdlcAdmin.strings.freshScanStarted, 'success');
                         $btn.hide();
                         $stopBtn.show();
-                        $('#awldlc-scan-progress').show();
-                        AWLDLC.pollProgress();
+                        $('#frankdlc-scan-progress').show();
+                        FRANKDLC.pollProgress();
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + awldlcAdmin.strings.freshScan);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
                         $scanBtn.show();
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + awldlcAdmin.strings.freshScan);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
                     $scanBtn.show();
                 }
             });
@@ -229,26 +229,26 @@
 
         pollProgress: function () {
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_get_scan_progress',
-                    nonce: awldlcAdmin.nonce
+                    action: 'frankdlc_get_scan_progress',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
                         const data = response.data;
 
                         if (data.status === 'completed' || data.status === 'idle' || data.status === 'cancelled') {
-                            AWLDLC.showToast(awldlcAdmin.strings.scanComplete, 'success');
-                            AWLDLC.resetScanButton();
-                            $('#awldlc-scan-progress').fadeOut();
+                            FRANKDLC.showToast(frankdlcAdmin.strings.scanComplete, 'success');
+                            FRANKDLC.resetScanButton();
+                            $('#frankdlc-scan-progress').fadeOut();
                             setTimeout(function () { location.reload(); }, 1500);
                         } else {
                             // Update progress bar
-                            $('.awldlc-progress-fill').css('width', data.percent + '%');
-                            $('.awldlc-progress-text').text(
-                                awldlcAdmin.strings.progressText
+                            $('.frankdlc-progress-fill').css('width', data.percent + '%');
+                            $('.frankdlc-progress-text').text(
+                                frankdlcAdmin.strings.progressText
                                     .replace('%1$s', data.checked)
                                     .replace('%2$s', data.total)
                                     .replace('%3$s', data.percent)
@@ -257,14 +257,14 @@
                             );
 
                             // Poll again
-                            setTimeout(AWLDLC.pollProgress, 2000);
+                            setTimeout(FRANKDLC.pollProgress, 2000);
                         }
                     } else {
-                        setTimeout(AWLDLC.pollProgress, 3000);
+                        setTimeout(FRANKDLC.pollProgress, 3000);
                     }
                 },
                 error: function () {
-                    setTimeout(AWLDLC.pollProgress, 5000);
+                    setTimeout(FRANKDLC.pollProgress, 5000);
                 }
             });
         },
@@ -272,27 +272,27 @@
         checkScanStatus: function () {
             // Check if scan is running on page load
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_get_scan_progress',
-                    nonce: awldlcAdmin.nonce
+                    action: 'frankdlc_get_scan_progress',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success && response.data.status === 'running') {
-                        $('#awldlc-scan-btn').hide();
-                        $('#awldlc-stop-btn').show();
-                        $('#awldlc-scan-progress').show();
-                        $('.awldlc-progress-fill').css('width', response.data.percent + '%');
-                        AWLDLC.pollProgress();
+                        $('#frankdlc-scan-btn').hide();
+                        $('#frankdlc-stop-btn').show();
+                        $('#frankdlc-scan-progress').show();
+                        $('.frankdlc-progress-fill').css('width', response.data.percent + '%');
+                        FRANKDLC.pollProgress();
                     }
                 }
             });
         },
 
         resetScanButton: function () {
-            $('#awldlc-scan-btn').show();
-            $('#awldlc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + awldlcAdmin.strings.stopScan);
+            $('#frankdlc-scan-btn').show();
+            $('#frankdlc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
         },
 
         recheckLink: function (e) {
@@ -303,17 +303,17 @@
             $btn.find('.dashicons').addClass('spin');
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_recheck_link',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_recheck_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     $btn.find('.dashicons').removeClass('spin');
                     if (response.success) {
-                        AWLDLC.showToast(response.data.message, 'success');
+                        FRANKDLC.showToast(response.data.message, 'success');
                         if (response.data.removed) {
                             // Link was fixed/removed from source — fade out the row
                             $row.fadeOut(400, function () {
@@ -323,12 +323,12 @@
                             setTimeout(function () { location.reload(); }, 1000);
                         }
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
                     $btn.find('.dashicons').removeClass('spin');
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -339,23 +339,23 @@
             const linkId = $btn.data('id');
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_dismiss_link',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_dismiss_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     if (response.success) {
                         $row.fadeOut(300, function () { $(this).remove(); });
-                        AWLDLC.showToast(response.data, 'success');
+                        FRANKDLC.showToast(response.data, 'success');
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -366,23 +366,23 @@
             const linkId = $btn.data('id');
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_undismiss_link',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_undismiss_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     if (response.success) {
                         $row.fadeOut(300, function () { $(this).remove(); });
-                        AWLDLC.showToast(response.data, 'success');
+                        FRANKDLC.showToast(response.data, 'success');
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -392,26 +392,26 @@
             const $row = $btn.closest('tr');
             const linkId = $btn.data('id');
 
-            if (!confirm(awldlcAdmin.strings.confirmDelete)) return;
+            if (!confirm(frankdlcAdmin.strings.confirmDelete)) return;
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_delete_link',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_delete_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     if (response.success) {
                         $row.fadeOut(300, function () { $(this).remove(); });
-                        AWLDLC.showToast(response.data, 'success');
+                        FRANKDLC.showToast(response.data, 'success');
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -422,86 +422,86 @@
             const url = $btn.data('url');
             const anchor = $btn.data('anchor') || '';
 
-            $('#awldlc-edit-link-id').val(linkId);
-            $('#awldlc-edit-old-url').val(url);
-            $('#awldlc-edit-new-url').val('');
-            $('#awldlc-edit-anchor-text').val(anchor);
-            $('#awldlc-edit-modal').fadeIn(200);
-            $('#awldlc-edit-new-url').focus();
+            $('#frankdlc-edit-link-id').val(linkId);
+            $('#frankdlc-edit-old-url').val(url);
+            $('#frankdlc-edit-new-url').val('');
+            $('#frankdlc-edit-anchor-text').val(anchor);
+            $('#frankdlc-edit-modal').fadeIn(200);
+            $('#frankdlc-edit-new-url').focus();
         },
 
         closeModal: function () {
-            $('.awldlc-modal').fadeOut(200);
+            $('.frankdlc-modal').fadeOut(200);
         },
 
         saveEdit: function () {
-            const linkId = $('#awldlc-edit-link-id').val();
-            const newUrl = $('#awldlc-edit-new-url').val();
-            const newAnchor = $('#awldlc-edit-anchor-text').val();
+            const linkId = $('#frankdlc-edit-link-id').val();
+            const newUrl = $('#frankdlc-edit-new-url').val();
+            const newAnchor = $('#frankdlc-edit-anchor-text').val();
 
             if (!newUrl && !newAnchor) {
-                AWLDLC.showToast(awldlcAdmin.strings.enterUrlOrAnchor, 'error');
+                FRANKDLC.showToast(frankdlcAdmin.strings.enterUrlOrAnchor, 'error');
                 return;
             }
 
-            $('#awldlc-edit-save').prop('disabled', true).text(awldlcAdmin.strings.processing);
+            $('#frankdlc-edit-save').prop('disabled', true).text(frankdlcAdmin.strings.processing);
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_edit_link',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_edit_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId,
                     new_url: newUrl,
                     new_anchor_text: newAnchor
                 },
                 success: function (response) {
-                    $('#awldlc-edit-save').prop('disabled', false).text(awldlcAdmin.strings.updateLink);
+                    $('#frankdlc-edit-save').prop('disabled', false).text(frankdlcAdmin.strings.updateLink);
                     if (response.success) {
-                        AWLDLC.closeModal();
-                        AWLDLC.showToast(response.data, 'success');
+                        FRANKDLC.closeModal();
+                        FRANKDLC.showToast(response.data, 'success');
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#awldlc-edit-save').prop('disabled', false).text(awldlcAdmin.strings.updateLink);
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    $('#frankdlc-edit-save').prop('disabled', false).text(frankdlcAdmin.strings.updateLink);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
 
         removeLink: function () {
-            if (!confirm(awldlcAdmin.strings.confirmRemoveLink)) {
+            if (!confirm(frankdlcAdmin.strings.confirmRemoveLink)) {
                 return;
             }
 
-            const linkId = $('#awldlc-edit-link-id').val();
-            $('#awldlc-remove-link').prop('disabled', true).text(awldlcAdmin.strings.processing);
+            const linkId = $('#frankdlc-edit-link-id').val();
+            $('#frankdlc-remove-link').prop('disabled', true).text(frankdlcAdmin.strings.processing);
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_remove_link',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_remove_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
-                    $('#awldlc-remove-link').prop('disabled', false).text(awldlcAdmin.strings.removeLink);
+                    $('#frankdlc-remove-link').prop('disabled', false).text(frankdlcAdmin.strings.removeLink);
                     if (response.success) {
-                        AWLDLC.closeModal();
-                        AWLDLC.showToast(response.data, 'success');
+                        FRANKDLC.closeModal();
+                        FRANKDLC.showToast(response.data, 'success');
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#awldlc-remove-link').prop('disabled', false).text(awldlcAdmin.strings.removeLink);
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    $('#frankdlc-remove-link').prop('disabled', false).text(frankdlcAdmin.strings.removeLink);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -511,98 +511,98 @@
             const linkId = $btn.data('id');
             const url = $btn.data('url');
 
-            $('#awldlc-redirect-link-id').val(linkId);
-            $('#awldlc-redirect-source-url').val(url);
-            $('#awldlc-redirect-target-url').val('').focus();
-            $('#awldlc-redirect-type').val('301');
-            $('#awldlc-redirect-modal').fadeIn(200);
+            $('#frankdlc-redirect-link-id').val(linkId);
+            $('#frankdlc-redirect-source-url').val(url);
+            $('#frankdlc-redirect-target-url').val('').focus();
+            $('#frankdlc-redirect-type').val('301');
+            $('#frankdlc-redirect-modal').fadeIn(200);
         },
 
         saveRedirect: function () {
-            const linkId = $('#awldlc-redirect-link-id').val();
-            const sourceUrl = $('#awldlc-redirect-source-url').val();
-            const targetUrl = $('#awldlc-redirect-target-url').val();
-            const redirectType = $('#awldlc-redirect-type').val();
+            const linkId = $('#frankdlc-redirect-link-id').val();
+            const sourceUrl = $('#frankdlc-redirect-source-url').val();
+            const targetUrl = $('#frankdlc-redirect-target-url').val();
+            const redirectType = $('#frankdlc-redirect-type').val();
 
             if (!targetUrl) {
-                AWLDLC.showToast(awldlcAdmin.strings.enterTargetUrl, 'error');
+                FRANKDLC.showToast(frankdlcAdmin.strings.enterTargetUrl, 'error');
                 return;
             }
 
-            $('#awldlc-redirect-save').prop('disabled', true).text(awldlcAdmin.strings.processing);
+            $('#frankdlc-redirect-save').prop('disabled', true).text(frankdlcAdmin.strings.processing);
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_create_redirect',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_create_redirect',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId,
                     source_url: sourceUrl,
                     target_url: targetUrl,
                     redirect_type: redirectType
                 },
                 success: function (response) {
-                    $('#awldlc-redirect-save').prop('disabled', false).text(awldlcAdmin.strings.createRedirect);
+                    $('#frankdlc-redirect-save').prop('disabled', false).text(frankdlcAdmin.strings.createRedirect);
                     if (response.success) {
-                        AWLDLC.closeModal();
-                        AWLDLC.showToast(response.data.message || awldlcAdmin.strings.redirectSuccess, 'success');
+                        FRANKDLC.closeModal();
+                        FRANKDLC.showToast(response.data.message || frankdlcAdmin.strings.redirectSuccess, 'success');
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#awldlc-redirect-save').prop('disabled', false).text(awldlcAdmin.strings.createRedirect);
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    $('#frankdlc-redirect-save').prop('disabled', false).text(frankdlcAdmin.strings.createRedirect);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
 
         bulkAction: function () {
-            const action = $('#awldlc-bulk-action').val();
+            const action = $('#frankdlc-bulk-action').val();
             const linkIds = [];
 
-            $('.awldlc-link-checkbox:checked').each(function () {
+            $('.frankdlc-link-checkbox:checked').each(function () {
                 linkIds.push($(this).val());
             });
 
             if (!action) {
-                AWLDLC.showToast(awldlcAdmin.strings.selectAction, 'error');
+                FRANKDLC.showToast(frankdlcAdmin.strings.selectAction, 'error');
                 return;
             }
 
             if (linkIds.length === 0) {
-                AWLDLC.showToast(awldlcAdmin.strings.selectLink, 'error');
+                FRANKDLC.showToast(frankdlcAdmin.strings.selectLink, 'error');
                 return;
             }
 
-            if (action === 'delete' && !confirm(awldlcAdmin.strings.confirmDelete)) {
+            if (action === 'delete' && !confirm(frankdlcAdmin.strings.confirmDelete)) {
                 return;
             }
 
-            $('#awldlc-bulk-apply').prop('disabled', true).text(awldlcAdmin.strings.processing);
+            $('#frankdlc-bulk-apply').prop('disabled', true).text(frankdlcAdmin.strings.processing);
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_bulk_action',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_bulk_action',
+                    nonce: frankdlcAdmin.nonce,
                     bulk_action: action,
                     link_ids: linkIds
                 },
                 success: function (response) {
-                    $('#awldlc-bulk-apply').prop('disabled', false).text(awldlcAdmin.strings.apply);
+                    $('#frankdlc-bulk-apply').prop('disabled', false).text(frankdlcAdmin.strings.apply);
                     if (response.success) {
-                        AWLDLC.showToast(response.data.message, 'success');
+                        FRANKDLC.showToast(response.data.message, 'success');
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#awldlc-bulk-apply').prop('disabled', false).text(awldlcAdmin.strings.apply);
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
+                    $('#frankdlc-bulk-apply').prop('disabled', false).text(frankdlcAdmin.strings.apply);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -610,31 +610,31 @@
         toggleExportMenu: function (e) {
             e.preventDefault();
             e.stopPropagation();
-            $('.awldlc-export-menu').toggle();
+            $('.frankdlc-export-menu').toggle();
         },
 
         exportLinks: function (e) {
             e.preventDefault();
             const format = $(e.currentTarget).data('format');
-            const $btn = $('#awldlc-export-btn');
+            const $btn = $('#frankdlc-export-btn');
             const originalText = $btn.html();
 
-            $('.awldlc-export-menu').hide();
-            $btn.html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.exporting);
+            $('.frankdlc-export-menu').hide();
+            $btn.html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.exporting);
             $btn.prop('disabled', true);
 
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'awldlc_export_links',
-                    nonce: awldlcAdmin.nonce,
+                    action: 'frankdlc_export_links',
+                    nonce: frankdlcAdmin.nonce,
                     format: format,
                     status: new URLSearchParams(window.location.search).get('status') || 'all'
                 },
                 success: function (response) {
                     if (response.success && response.data && response.data.download_url) {
-                        AWLDLC.showToast(awldlcAdmin.strings.exportSuccess, 'success');
+                        FRANKDLC.showToast(frankdlcAdmin.strings.exportSuccess, 'success');
                         var downloadUrl = response.data.download_url;
 
                         if (format === 'json') {
@@ -659,7 +659,7 @@
                         }
                     } else {
                         // Handle error message properly
-                        var errorMsg = awldlcAdmin.strings.exportFailed;
+                        var errorMsg = frankdlcAdmin.strings.exportFailed;
                         if (response.data) {
                             if (typeof response.data === 'string') {
                                 errorMsg = response.data;
@@ -667,11 +667,11 @@
                                 errorMsg = response.data.message;
                             }
                         }
-                        AWLDLC.showToast(errorMsg, 'error');
+                        FRANKDLC.showToast(errorMsg, 'error');
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.exportFailed, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.exportFailed, 'error');
                 },
                 complete: function () {
                     $btn.html(originalText);
@@ -684,9 +684,9 @@
             type = type || 'success';
 
             // Remove existing toasts
-            $('.awldlc-toast').remove();
+            $('.frankdlc-toast').remove();
 
-            const $toast = $('<div class="awldlc-toast ' + type + '">' + message + '</div>');
+            const $toast = $('<div class="frankdlc-toast ' + type + '">' + message + '</div>');
             $('body').append($toast);
 
             setTimeout(function () {
@@ -699,27 +699,27 @@
          */
         forceStopScan: function (e) {
             e.preventDefault();
-            if (!confirm(awldlcAdmin.strings.confirmForceStop)) {
+            if (!confirm(frankdlcAdmin.strings.confirmForceStop)) {
                 return;
             }
-            const $btn = $('#awldlc-force-stop-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.forceStopping);
+            const $btn = $('#frankdlc-force-stop-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.forceStopping);
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'awldlc_force_stop_scan', nonce: awldlcAdmin.nonce },
+                data: { action: 'frankdlc_force_stop_scan', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.allScansForceStopped, 'success');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.allScansForceStopped, 'success');
                         setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.failedForceStop, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + awldlcAdmin.strings.forceStop);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedForceStop, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + awldlcAdmin.strings.forceStop);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
                 }
             });
         },
@@ -729,27 +729,27 @@
          */
         resetSettings: function (e) {
             e.preventDefault();
-            if (!confirm(awldlcAdmin.strings.confirmResetSettings)) {
+            if (!confirm(frankdlcAdmin.strings.confirmResetSettings)) {
                 return;
             }
-            const $btn = $('#awldlc-reset-settings-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.resetting);
+            const $btn = $('#frankdlc-reset-settings-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resetting);
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'awldlc_reset_settings', nonce: awldlcAdmin.nonce },
+                data: { action: 'frankdlc_reset_settings', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.settingsResetDefaults, 'success');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.settingsResetDefaults, 'success');
                         setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.failedResetSettings, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + awldlcAdmin.strings.resetSettings);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetSettings, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + awldlcAdmin.strings.resetSettings);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
                 }
             });
         },
@@ -759,27 +759,27 @@
          */
         clearScanHistory: function (e) {
             e.preventDefault();
-            if (!confirm(awldlcAdmin.strings.confirmClearHistory)) {
+            if (!confirm(frankdlcAdmin.strings.confirmClearHistory)) {
                 return;
             }
-            const $btn = $('#awldlc-clear-history-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.clearing);
+            const $btn = $('#frankdlc-clear-history-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'awldlc_clear_scan_history', nonce: awldlcAdmin.nonce },
+                data: { action: 'frankdlc_clear_scan_history', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.scanHistoryCleared, 'success');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanHistoryCleared, 'success');
                         setTimeout(function () { location.reload(); }, 1500);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.failedClearHistory, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + awldlcAdmin.strings.clearHistory);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedClearHistory, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + awldlcAdmin.strings.clearHistory);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
                 }
             });
         },
@@ -789,31 +789,31 @@
          */
         fullReset: function (e) {
             e.preventDefault();
-            if (!confirm(awldlcAdmin.strings.confirmFullReset)) {
+            if (!confirm(frankdlcAdmin.strings.confirmFullReset)) {
                 return;
             }
             // Double confirmation for destructive action
-            if (!confirm(awldlcAdmin.strings.confirmFullResetDouble)) {
+            if (!confirm(frankdlcAdmin.strings.confirmFullResetDouble)) {
                 return;
             }
-            const $btn = $('#awldlc-full-reset-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.resettingEverything);
+            const $btn = $('#frankdlc-full-reset-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resettingEverything);
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'awldlc_full_reset', nonce: awldlcAdmin.nonce },
+                data: { action: 'frankdlc_full_reset', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.pluginFullyReset, 'success');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.pluginFullyReset, 'success');
                         setTimeout(function () { location.reload(); }, 2000);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.failedResetPlugin, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + awldlcAdmin.strings.fullReset);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetPlugin, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + awldlcAdmin.strings.fullReset);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
                 }
             });
         },
@@ -823,27 +823,27 @@
          */
         cleanupExports: function (e) {
             e.preventDefault();
-            if (!confirm(awldlcAdmin.strings.confirmCleanupExports)) {
+            if (!confirm(frankdlcAdmin.strings.confirmCleanupExports)) {
                 return;
             }
-            const $btn = $('#awldlc-cleanup-exports-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + awldlcAdmin.strings.cleaning);
+            const $btn = $('#frankdlc-cleanup-exports-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.cleaning);
             $.ajax({
-                url: awldlcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'awldlc_cleanup_exports', nonce: awldlcAdmin.nonce },
+                data: { action: 'frankdlc_cleanup_exports', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.exportFilesCleaned, 'success');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + awldlcAdmin.strings.cleanupExports);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.exportFilesCleaned, 'success');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
                     } else {
-                        AWLDLC.showToast(response.data || awldlcAdmin.strings.failedCleanupExports, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + awldlcAdmin.strings.cleanupExports);
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedCleanupExports, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
                     }
                 },
                 error: function () {
-                    AWLDLC.showToast(awldlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + awldlcAdmin.strings.cleanupExports);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
                 }
             });
         }
@@ -851,10 +851,10 @@
 
     // Initialize on document ready
     $(document).ready(function () {
-        AWLDLC.init();
+        FRANKDLC.init();
     });
 
     // Add spin animation
-    $('<style>.spin { animation: awldlc-spin 1s linear infinite; } @keyframes awldlc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>').appendTo('head');
+    $('<style>.spin { animation: frankdlc-spin 1s linear infinite; } @keyframes frankdlc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>').appendTo('head');
 
 })(jQuery);

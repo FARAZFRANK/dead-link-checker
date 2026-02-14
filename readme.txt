@@ -1,19 +1,19 @@
-=== Dead Link Checker ===
+=== Frank Dead Link Checker ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Donate link: https://awplife.com/
 Tags: broken links, dead links, seo, 404 error, link checker, redirects, elementor
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.8
+Stable tag: 3.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Dead Link Checker for WordPress. Scan all content types, page builders, with email notifications, redirects, and export features.
+Frank Dead Link Checker for WordPress. Scan all content types, page builders, with email notifications, redirects, and export features.
 
 == Description ==
 
-**Dead Link Checker** is the complete solution for finding and fixing broken links on your WordPress website. Includes advanced capabilities for power users and agencies.
+**Frank Dead Link Checker** is the complete solution for finding and fixing broken links on your WordPress website. Includes advanced capabilities for power users and agencies.
 
 = Features =
 
@@ -84,7 +84,7 @@ Dead Link Checker for WordPress. Scan all content types, page builders, with ema
 
 == Installation ==
 
-1. Upload the `dead-link-checker` folder to `/wp-content/plugins/` directory
+1. Upload the `frank-dead-link-checker` folder to `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to 'Link Checker' in your admin menu
 4. Click 'Scan Now' to start your first link scan
@@ -101,7 +101,7 @@ Scan time depends on your website size and the number of concurrent requests con
 
 = Does it work with all page builders? =
 
-Yes! Dead Link Checker supports Elementor, Divi, WPBakery, and Gutenberg. All links within page builder content are detected and checked.
+Yes! Frank Dead Link Checker supports Elementor, Divi, WPBakery, and Gutenberg. All links within page builder content are detected and checked.
 
 = How do I create a redirect? =
 
@@ -125,6 +125,16 @@ Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 6. Email notification settings
 
 == Changelog ==
+
+= 3.0.9 =
+* WordPress.org review compliance — complete plugin rebrand
+* Changed plugin name to "Frank Dead Link Checker"
+* Changed plugin slug to frank-dead-link-checker
+* Changed main file to frank-dead-link-checker.php
+* Renamed all AWLDLC/awldlc prefixes to FRANKDLC/frankdlc (constants, functions, classes, hooks, AJAX, CSS, JS)
+* Renamed all 19 class files from class-awldlc-*.php to class-frankdlc-*.php
+* Updated text domain to frank-dead-link-checker
+* Updated all translation files (.pot, .po, .mo)
 
 = 3.0.8 =
 * WordPress.org Guideline 6 compliance — removed all "Pro" references from plugin name, descriptions, and UI strings
@@ -152,7 +162,7 @@ Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 = 3.0.5 =
 * Fixed dashboard stats cache not clearing when link status changes — broken link count now updates immediately
 * Fixed Fresh Scan not clearing stats cache — stale broken link counts no longer persist after clearing all data
-* Fixed HTTP Status help link pointing to wrong page (dead-link-checker-help → blc-help)
+* Fixed HTTP Status help link pointing to wrong page (frank-dead-link-checker-help → blc-help)
 * Fixed Rows per page dropdown not working due to JavaScript URL constructor scope conflict in WordPress
 * Added 10 as a Rows per page option and set it as the default
 * Changed default Rows per page from 20 to 10 for better usability
@@ -190,7 +200,7 @@ Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 * Blog article added for plugin promotion
 
 = 3.0.0 =
-* Complete rebranding from "Broken Link Checker" to "Dead Link Checker"
+* Complete rebranding from "Broken Link Checker" to "Frank Dead Link Checker"
 * Enhanced dashboard UI with real-time statistics
 * Improved table responsiveness for mobile devices
 * Fixed pagination table footer alignment
@@ -233,14 +243,14 @@ Improved export download behavior - CSV downloads directly, JSON opens in new ta
 Fixed export feature with proper branding and resolved 403 download error.
 
 = 3.0.0 =
-Major rebranding release. Dead Link Checker now includes all features with improved UI and performance.
+Major rebranding release. Frank Dead Link Checker now includes all features with improved UI and performance.
 
 = 1.0.0 =
-First release of Dead Link Checker.
+First release of Frank Dead Link Checker.
 
 == Privacy Policy ==
 
-Dead Link Checker respects your privacy:
+Frank Dead Link Checker respects your privacy:
 
 * **No External Connections** – The plugin only connects to URLs on your own website during scans
 * **No Data Collection** – We do not collect, track, or transmit any personal data

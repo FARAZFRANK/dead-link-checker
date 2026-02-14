@@ -10,14 +10,14 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Checker
+class FRANKDLC_Checker
 {
 
     private $settings;
 
     public function __construct()
     {
-        $this->settings = get_option('awldlc_settings', array());
+        $this->settings = get_option('FRANKDLC_settings', array());
     }
 
     public function check_url($url)
@@ -38,14 +38,14 @@ class AWLDLC_Checker
         // Validate URL
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             $result['is_broken'] = true;
-            $result['error_message'] = __('Invalid URL format', 'dead-link-checker');
+            $result['error_message'] = __('Invalid URL format', 'frank-dead-link-checker');
             return $result;
         }
 
         $timeout = isset($this->settings['timeout']) ? absint($this->settings['timeout']) : 30;
         $user_agent = isset($this->settings['user_agent']) && !empty($this->settings['user_agent'])
             ? $this->settings['user_agent']
-            : 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . AWLDLC_VERSION . ')';
+            : 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . FRANKDLC_VERSION . ')';
         $verify_ssl = isset($this->settings['verify_ssl']) ? (bool) $this->settings['verify_ssl'] : true;
 
         $args = array(

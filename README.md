@@ -1,13 +1,13 @@
-# Dead Link Checker
+# Frank Dead Link Checker
 
 ![WordPress Version](https://img.shields.io/badge/WordPress-5.8%2B-blue)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/License-GPLv2-green)
-![Version](https://img.shields.io/badge/Version-3.0.8-orange)
+![Version](https://img.shields.io/badge/Version-3.0.9-orange)
 
 **The complete professional solution for finding and fixing broken links on your WordPress website.**
 
-Dead Link Checker scans your entire WordPress site, identifies dead links, and helps you fix them quickly—improving SEO and user experience.
+Frank Dead Link Checker scans your entire WordPress site, identifies dead links, and helps you fix them quickly—improving SEO and user experience.
 
 ---
 
@@ -73,7 +73,7 @@ Dead Link Checker scans your entire WordPress site, identifies dead links, and h
 
 ## 📦 Installation
 
-1. Upload the `dead-link-checker-pro` folder to `/wp-content/plugins/` directory
+1. Upload the `frank-dead-link-checker-pro` folder to `/wp-content/plugins/` directory
 2. Activate the plugin through the **Plugins** menu in WordPress
 3. Go to **Link Checker** in your admin menu
 4. Click **Scan Now** to start your first link scan
@@ -124,6 +124,13 @@ Dead Link Checker scans your entire WordPress site, identifies dead links, and h
 ---
 
 ## 📝 Changelog
+
+### 3.0.9
+- WordPress.org review compliance — complete plugin rebrand
+- Changed plugin name to "Frank Dead Link Checker", slug to frank-dead-link-checker
+- Renamed all AWLDLC/awldlc prefixes to FRANKDLC/frankdlc
+- Renamed all class files and main plugin file
+- Updated text domain, translation files
 
 ### 3.0.8
 - WordPress.org Guideline 6 compliance — removed all "Pro" references from plugin name, descriptions, and UI strings
@@ -183,7 +190,7 @@ Dead Link Checker scans your entire WordPress site, identifies dead links, and h
 - Blog article added for plugin promotion
 
 ### 3.0.0
-- Complete rebranding from "Broken Link Checker" to "Dead Link Checker"
+- Complete rebranding from "Broken Link Checker" to "Frank Dead Link Checker"
 - Enhanced dashboard UI with real-time statistics
 - Improved table responsiveness for mobile devices
 - Fixed pagination table footer alignment
@@ -203,7 +210,7 @@ Dead Link Checker scans your entire WordPress site, identifies dead links, and h
 
 ## 🔒 Privacy Policy
 
-Dead Link Checker respects your privacy:
+Frank Dead Link Checker respects your privacy:
 
 - **No External Connections** – The plugin only connects to URLs on your own website during scans
 - **No Data Collection** – We do not collect, track, or transmit any personal data

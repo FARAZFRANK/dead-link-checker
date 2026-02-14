@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Redirects
+class FRANKDLC_Redirects
 {
     /**
      * Redirects table name
@@ -32,7 +32,7 @@ class AWLDLC_Redirects
     public function __construct()
     {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'awldlc_redirects';
+        $this->table = $wpdb->prefix . 'FRANKDLC_redirects';
 
         // Check if table exists, create if missing
         $this->ensure_table_exists();
@@ -41,11 +41,11 @@ class AWLDLC_Redirects
         add_action('template_redirect', array($this, 'handle_redirect'), 1);
 
         // Register AJAX handlers
-        add_action('wp_ajax_awldlc_create_redirect', array($this, 'ajax_create_redirect'));
-        add_action('wp_ajax_awldlc_update_redirect', array($this, 'ajax_update_redirect'));
-        add_action('wp_ajax_awldlc_delete_redirect', array($this, 'ajax_delete_redirect'));
-        add_action('wp_ajax_awldlc_toggle_redirect', array($this, 'ajax_toggle_redirect'));
-        add_action('wp_ajax_awldlc_get_redirects', array($this, 'ajax_get_redirects'));
+        add_action('wp_ajax_FRANKDLC_create_redirect', array($this, 'ajax_create_redirect'));
+        add_action('wp_ajax_FRANKDLC_update_redirect', array($this, 'ajax_update_redirect'));
+        add_action('wp_ajax_FRANKDLC_delete_redirect', array($this, 'ajax_delete_redirect'));
+        add_action('wp_ajax_FRANKDLC_toggle_redirect', array($this, 'ajax_toggle_redirect'));
+        add_action('wp_ajax_FRANKDLC_get_redirects', array($this, 'ajax_get_redirects'));
     }
 
     /**
@@ -160,7 +160,7 @@ class AWLDLC_Redirects
         $redirect_type = isset($data['redirect_type']) ? absint($data['redirect_type']) : 301;
 
         if (empty($source_url) || empty($target_url)) {
-            return new WP_Error('missing_data', __('Source and target URLs are required.', 'dead-link-checker'));
+            return new WP_Error('missing_data', __('Source and target URLs are required.', 'frank-dead-link-checker'));
         }
 
         // Validate redirect type
@@ -177,7 +177,7 @@ class AWLDLC_Redirects
         ));
 
         if ($existing) {
-            return new WP_Error('duplicate', __('A redirect for this URL already exists.', 'dead-link-checker'));
+            return new WP_Error('duplicate', __('A redirect for this URL already exists.', 'frank-dead-link-checker'));
         }
 
         $result = $wpdb->insert(
@@ -197,7 +197,7 @@ class AWLDLC_Redirects
         );
 
         if (!$result) {
-            return new WP_Error('db_error', __('Failed to create redirect.', 'dead-link-checker'));
+            return new WP_Error('db_error', __('Failed to create redirect.', 'frank-dead-link-checker'));
         }
 
         return $wpdb->insert_id;
@@ -238,7 +238,7 @@ class AWLDLC_Redirects
         }
 
         if (empty($update)) {
-            return new WP_Error('no_data', __('No data to update.', 'dead-link-checker'));
+            return new WP_Error('no_data', __('No data to update.', 'frank-dead-link-checker'));
         }
 
         $result = $wpdb->update(
@@ -356,10 +356,10 @@ class AWLDLC_Redirects
      */
     public function ajax_create_redirect()
     {
-        check_ajax_referer('awldlc_admin_nonce', 'nonce');
+        check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
         $result = $this->create_redirect(array(
@@ -375,7 +375,7 @@ class AWLDLC_Redirects
         }
 
         wp_send_json_success(array(
-            'message' => __('Redirect created successfully.', 'dead-link-checker'),
+            'message' => __('Redirect created successfully.', 'frank-dead-link-checker'),
             'redirect_id' => $result,
         ));
     }
@@ -385,16 +385,16 @@ class AWLDLC_Redirects
      */
     public function ajax_update_redirect()
     {
-        check_ajax_referer('awldlc_admin_nonce', 'nonce');
+        check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
 
         if (!$id) {
-            wp_send_json_error(array('message' => __('Invalid redirect ID.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Invalid redirect ID.', 'frank-dead-link-checker')));
         }
 
         $result = $this->update_redirect($id, array(
@@ -407,7 +407,7 @@ class AWLDLC_Redirects
             wp_send_json_error(array('message' => $result->get_error_message()));
         }
 
-        wp_send_json_success(array('message' => __('Redirect updated successfully.', 'dead-link-checker')));
+        wp_send_json_success(array('message' => __('Redirect updated successfully.', 'frank-dead-link-checker')));
     }
 
     /**
@@ -415,25 +415,25 @@ class AWLDLC_Redirects
      */
     public function ajax_delete_redirect()
     {
-        check_ajax_referer('awldlc_admin_nonce', 'nonce');
+        check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
 
         if (!$id) {
-            wp_send_json_error(array('message' => __('Invalid redirect ID.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Invalid redirect ID.', 'frank-dead-link-checker')));
         }
 
         $result = $this->delete_redirect($id);
 
         if (!$result) {
-            wp_send_json_error(array('message' => __('Failed to delete redirect.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Failed to delete redirect.', 'frank-dead-link-checker')));
         }
 
-        wp_send_json_success(array('message' => __('Redirect deleted successfully.', 'dead-link-checker')));
+        wp_send_json_success(array('message' => __('Redirect deleted successfully.', 'frank-dead-link-checker')));
     }
 
     /**
@@ -441,21 +441,21 @@ class AWLDLC_Redirects
      */
     public function ajax_toggle_redirect()
     {
-        check_ajax_referer('awldlc_admin_nonce', 'nonce');
+        check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
 
         if (!$id) {
-            wp_send_json_error(array('message' => __('Invalid redirect ID.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Invalid redirect ID.', 'frank-dead-link-checker')));
         }
 
         $redirect = $this->get_redirect($id);
         if (!$redirect) {
-            wp_send_json_error(array('message' => __('Redirect not found.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Redirect not found.', 'frank-dead-link-checker')));
         }
 
         $new_status = $redirect->is_active ? 0 : 1;
@@ -466,7 +466,7 @@ class AWLDLC_Redirects
         }
 
         wp_send_json_success(array(
-            'message' => $new_status ? __('Redirect enabled.', 'dead-link-checker') : __('Redirect disabled.', 'dead-link-checker'),
+            'message' => $new_status ? __('Redirect enabled.', 'frank-dead-link-checker') : __('Redirect disabled.', 'frank-dead-link-checker'),
             'is_active' => $new_status,
         ));
     }
@@ -476,10 +476,10 @@ class AWLDLC_Redirects
      */
     public function ajax_get_redirects()
     {
-        check_ajax_referer('awldlc_admin_nonce', 'nonce');
+        check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied.', 'dead-link-checker')));
+            wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
         $result = $this->get_redirects(array(
@@ -503,11 +503,11 @@ class AWLDLC_Redirects
     public static function get_type_label($type)
     {
         $types = array(
-            301 => __('301 Permanent', 'dead-link-checker'),
-            302 => __('302 Temporary', 'dead-link-checker'),
-            307 => __('307 Temporary', 'dead-link-checker'),
+            301 => __('301 Permanent', 'frank-dead-link-checker'),
+            302 => __('302 Temporary', 'frank-dead-link-checker'),
+            307 => __('307 Temporary', 'frank-dead-link-checker'),
         );
 
-        return $types[$type] ?? __('Unknown', 'dead-link-checker');
+        return $types[$type] ?? __('Unknown', 'frank-dead-link-checker');
     }
 }

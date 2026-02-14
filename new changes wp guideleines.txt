@@ -1,4 +1,8 @@
 Maine plugin ko WordPress.org per review ke liye submit kiya uhhone ye changes kerne ko bola h
 - Change plugin name: Frank Dead Link Checker
 - Change plugin slug: frank-dead-link-checker
-- Change and prefix All variable name, function name, class name, id name, filename slug to: frankdlc_ FRANKDLC_ frankdlc-
+- Change plugin  main file name: frank-dead-link-checker.php
+- Change All prefix variable name, function name, class name, id name, file ane slug, in css and js file to: frankdlc_ FRANKDLC_ frankdlc-
+
+ye task bahut hi carefully, step by step, ek task file bana ker karo
+ager agent terminate ho jaye beech mai to task file mai upka checkpoint bhi likh ker rakho, taki termination ke baad wale chackpoint se continue kiya ja sake

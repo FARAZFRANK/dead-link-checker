@@ -1,10 +1,10 @@
-# Hindi translation for Dead Link Checker
+# Hindi translation for Frank Dead Link Checker
 # Copyright (C) 2026 WPFrank
-# This file is distributed under the same license as the Dead Link Checker plugin.
+# This file is distributed under the same license as the Frank Dead Link Checker plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Dead Link Checker 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dead-link-checker\n"
+"Project-Id-Version: Frank Dead Link Checker 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/frank-dead-link-checker\n"
 "POT-Creation-Date: 2026-02-13 13:18+0000\n"
 "PO-Revision-Date: 2026-02-13 13:18+0530\n"
 "Last-Translator: WPFrank <developer@wpfrank.com>\n"
@@ -14,8 +14,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Dead Link Checker\n"
-"X-Domain: dead-link-checker\n"
+"X-Generator: Frank Dead Link Checker\n"
+"X-Domain: frank-dead-link-checker\n"
 
 #: includes/admin/class-blc-admin.php:564
 msgid "%d broken links detected!"
@@ -438,31 +438,31 @@ msgid "Date Range:"
 msgstr "तिथि सीमा:"
 
 #: includes/admin/class-blc-admin.php:63 includes/admin/class-blc-admin.php:594 includes/admin/class-blc-admin.php:660 includes/admin/class-blc-dashboard.php:76
-msgid "Dead Link Checker"
+msgid "Frank Dead Link Checker"
 msgstr "डेड लिंक चेकर प्रो"
 
 #: includes/class-blc-multisite.php:73
-msgid "Dead Link Checker - Network Overview"
+msgid "Frank Dead Link Checker - Network Overview"
 msgstr "डेड लिंक चेकर प्रो - नेटवर्क अवलोकन"
 
 #: includes/admin/class-blc-settings.php:239
-msgid "Dead Link Checker Settings"
+msgid "Frank Dead Link Checker Settings"
 msgstr "डेड लिंक चेकर प्रो सेटिंग्स"
 
 #: includes/admin/class-blc-admin.php:1030
-msgid "Dead Link Checker is fully translation-ready. You can translate it into your language using any of the methods below."
+msgid "Frank Dead Link Checker is fully translation-ready. You can translate it into your language using any of the methods below."
 msgstr "डेड लिंक चेकर प्रो पूरी तरह अनुवाद-तैयार है। आप नीचे दिए गए किसी भी तरीके से इसे अपनी भाषा में अनुवाद कर सकते हैं।"
 
 #: includes/class-blc-activator.php:59
-msgid "Dead Link Checker requires PHP 7.4 or higher."
+msgid "Frank Dead Link Checker requires PHP 7.4 or higher."
 msgstr "डेड लिंक चेकर प्रो के लिए PHP 7.4 या उच्चतर आवश्यक है।"
 
 #: includes/class-blc-activator.php:70
-msgid "Dead Link Checker requires WordPress 5.8 or higher."
+msgid "Frank Dead Link Checker requires WordPress 5.8 or higher."
 msgstr "डेड लिंक चेकर प्रो के लिए WordPress 5.8 या उच्चतर आवश्यक है।"
 
 #: includes/admin/class-blc-admin.php:791
-msgid "Dead Link Checker scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:"
+msgid "Frank Dead Link Checker scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:"
 msgstr "डेड लिंक चेकर प्रो आपकी पूरी WordPress वेबसाइट को स्कैन करता है टूटे हुए लिंक, रीडायरेक्ट और अन्य लिंक समस्याओं को खोजने के लिए। यह पोस्ट, पेज, मेनू, विजेट, टिप्पणियों, कस्टम फ़ील्ड और पेज बिल्डर सामग्री (Elementor, Divi, WPBakery, Gutenberg) में लिंक की जांच करता है। यह इस प्रकार काम करता है:"
 
 #: includes/admin/class-blc-admin.php:891
@@ -658,8 +658,8 @@ msgid "Features:"
 msgstr "विशेषताएँ:"
 
 #: includes/admin/class-blc-admin.php:1051
-msgid "Find \"Dead Link Checker\" in the list and click on it."
-msgstr "सूची में \"Dead Link Checker\" खोजें और उस पर क्लिक करें।"
+msgid "Find \"Frank Dead Link Checker\" in the list and click on it."
+msgstr "सूची में \"Frank Dead Link Checker\" खोजें और उस पर क्लिक करें।"
 
 #: includes/admin/class-blc-admin.php:652
 msgid "For more help:"
@@ -1418,7 +1418,7 @@ msgid "The plugin automatically detects scans that have been running for over 30
 msgstr "प्लगइन स्वचालित रूप से उन स्कैन का पता लगाता है जो 30 मिनट से अधिक समय से बिना प्रगति के चल रहे हैं और उन्हें \"समय समाप्त\" के रूप में चिह्नित करता है। यह अटके हुए स्कैन को नए स्कैन को अवरुद्ध करने से रोकता है।"
 
 #: includes/class-blc-notifications.php:269
-msgid "This email was sent by Dead Link Checker plugin on %s"
+msgid "This email was sent by Frank Dead Link Checker plugin on %s"
 msgstr "यह ईमेल डेड लिंक चेकर प्रो प्लगइन द्वारा %s पर भेजा गया"
 
 #: includes/admin/class-blc-admin.php:595

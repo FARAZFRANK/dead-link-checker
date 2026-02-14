@@ -21,12 +21,12 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 /**
  * Uninstall the plugin completely
  */
-function awldlc_uninstall()
+function FRANKDLC_uninstall()
 {
     global $wpdb;
 
     // Check if user wants to keep data (future feature)
-    $settings = get_option('awldlc_settings', array());
+    $settings = get_option('FRANKDLC_settings', array());
     $keep_data = isset($settings['keep_data_on_uninstall']) && $settings['keep_data_on_uninstall'];
 
     if ($keep_data) {
@@ -34,8 +34,8 @@ function awldlc_uninstall()
     }
 
     // Drop custom tables
-    $table_links = $wpdb->prefix . 'awldlc_links';
-    $table_scans = $wpdb->prefix . 'awldlc_scans';
+    $table_links = $wpdb->prefix . 'FRANKDLC_links';
+    $table_scans = $wpdb->prefix . 'FRANKDLC_scans';
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
     $wpdb->query("DROP TABLE IF EXISTS {$table_links}");
@@ -44,10 +44,10 @@ function awldlc_uninstall()
 
     // Delete all plugin options
     $options_to_delete = array(
-        'awldlc_settings',
-        'awldlc_db_version',
-        'awldlc_last_scan',
-        'awldlc_scan_stats',
+        'FRANKDLC_settings',
+        'FRANKDLC_db_version',
+        'FRANKDLC_last_scan',
+        'FRANKDLC_scan_stats',
     );
 
     foreach ($options_to_delete as $option) {
@@ -58,8 +58,8 @@ function awldlc_uninstall()
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-            '_transient_awldlc_%',
-            '_transient_timeout_awldlc_%'
+            '_transient_FRANKDLC_%',
+            '_transient_timeout_FRANKDLC_%'
         )
     );
 
@@ -67,18 +67,18 @@ function awldlc_uninstall()
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",
-            'awldlc_%'
+            'FRANKDLC_%'
         )
     );
 
     // Clear any scheduled cron events
     $cron_events = array(
-        'awldlc_scheduled_scan',
-        'awldlc_recheck_broken',
-        'awldlc_send_digest',
-        'awldlc_cleanup_old_data',
-        'awldlc_process_queue',
-        'awldlc_stale_scan_watchdog',
+        'FRANKDLC_scheduled_scan',
+        'FRANKDLC_recheck_broken',
+        'FRANKDLC_send_digest',
+        'FRANKDLC_cleanup_old_data',
+        'FRANKDLC_process_queue',
+        'FRANKDLC_stale_scan_watchdog',
     );
 
     foreach ($cron_events as $event) {
@@ -105,4 +105,4 @@ function awldlc_uninstall()
 }
 
 // Run uninstall
-awldlc_uninstall();
+FRANKDLC_uninstall();

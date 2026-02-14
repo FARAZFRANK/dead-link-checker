@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Parser_Divi
+class FRANKDLC_Parser_Divi
 {
     /**
      * Check if Divi is active

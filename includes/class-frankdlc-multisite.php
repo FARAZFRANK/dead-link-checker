@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Multisite
+class FRANKDLC_Multisite
 {
     /**
      * Constructor
@@ -34,10 +34,10 @@ class AWLDLC_Multisite
     public function add_network_menu()
     {
         add_menu_page(
-            __('Link Checker Network', 'dead-link-checker'),
-            __('Link Checker', 'dead-link-checker'),
+            __('Link Checker Network', 'frank-dead-link-checker'),
+            __('Link Checker', 'frank-dead-link-checker'),
             'manage_network',
-            'awldlc-network',
+            'frankdlc-network',
             array($this, 'render_network_dashboard'),
             'dashicons-admin-links',
             100
@@ -54,10 +54,10 @@ class AWLDLC_Multisite
         }
 
         wp_enqueue_style(
-            'awldlc-admin',
-            AWLDLC_PLUGIN_URL . 'assets/css/admin.css',
+            'frankdlc-admin',
+            FRANKDLC_PLUGIN_URL . 'assets/css/admin.css',
             array(),
-            AWLDLC_VERSION
+            FRANKDLC_VERSION
         );
     }
 
@@ -68,67 +68,67 @@ class AWLDLC_Multisite
     {
         $sites = $this->get_network_stats();
         ?>
-        <div class="wrap awldlc-wrap blc-network-dashboard">
+        <div class="wrap frankdlc-wrap blc-network-dashboard">
             <h1>
-                <?php esc_html_e('Dead Link Checker - Network Overview', 'dead-link-checker'); ?>
+                <?php esc_html_e('Frank Dead Link Checker - Network Overview', 'frank-dead-link-checker'); ?>
             </h1>
 
             <!-- Network Summary -->
-            <div class="awldlc-network-summary">
-                <div class="awldlc-network-stat blc-network-stat-total">
-                    <span class="awldlc-stat-number">
+            <div class="frankdlc-network-summary">
+                <div class="frankdlc-network-stat blc-network-stat-total">
+                    <span class="frankdlc-stat-number">
                         <?php echo esc_html($sites['total_links']); ?>
                     </span>
-                    <span class="awldlc-stat-label">
-                        <?php esc_html_e('Total Links', 'dead-link-checker'); ?>
+                    <span class="frankdlc-stat-label">
+                        <?php esc_html_e('Total Links', 'frank-dead-link-checker'); ?>
                     </span>
                 </div>
-                <div class="awldlc-network-stat blc-network-stat-broken">
-                    <span class="awldlc-stat-number">
+                <div class="frankdlc-network-stat blc-network-stat-broken">
+                    <span class="frankdlc-stat-number">
                         <?php echo esc_html($sites['total_broken']); ?>
                     </span>
-                    <span class="awldlc-stat-label">
-                        <?php esc_html_e('Broken Links', 'dead-link-checker'); ?>
+                    <span class="frankdlc-stat-label">
+                        <?php esc_html_e('Broken Links', 'frank-dead-link-checker'); ?>
                     </span>
                 </div>
-                <div class="awldlc-network-stat blc-network-stat-sites">
-                    <span class="awldlc-stat-number">
+                <div class="frankdlc-network-stat blc-network-stat-sites">
+                    <span class="frankdlc-stat-number">
                         <?php echo esc_html(count($sites['sites'])); ?>
                     </span>
-                    <span class="awldlc-stat-label">
-                        <?php esc_html_e('Sites', 'dead-link-checker'); ?>
+                    <span class="frankdlc-stat-label">
+                        <?php esc_html_e('Sites', 'frank-dead-link-checker'); ?>
                     </span>
                 </div>
             </div>
 
             <!-- Sites Table -->
-            <div class="awldlc-network-sites">
+            <div class="frankdlc-network-sites">
                 <h2>
-                    <?php esc_html_e('Sites Overview', 'dead-link-checker'); ?>
+                    <?php esc_html_e('Sites Overview', 'frank-dead-link-checker'); ?>
                 </h2>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
                             <th>
-                                <?php esc_html_e('Site', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Site', 'frank-dead-link-checker'); ?>
                             </th>
                             <th>
-                                <?php esc_html_e('URL', 'dead-link-checker'); ?>
+                                <?php esc_html_e('URL', 'frank-dead-link-checker'); ?>
                             </th>
                             <th>
-                                <?php esc_html_e('Total Links', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Total Links', 'frank-dead-link-checker'); ?>
                             </th>
                             <th>
-                                <?php esc_html_e('Broken', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Broken', 'frank-dead-link-checker'); ?>
                             </th>
                             <th>
-                                <?php esc_html_e('Warnings', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Warnings', 'frank-dead-link-checker'); ?>
                             </th>
                             <th>
-                                <?php esc_html_e('Last Scan', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Last Scan', 'frank-dead-link-checker'); ?>
                             </th>
                             <th>
-                                <?php esc_html_e('Actions', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Actions', 'frank-dead-link-checker'); ?>
                             </th>
                         </tr>
                     </thead>
@@ -136,7 +136,7 @@ class AWLDLC_Multisite
                         <?php if (empty($sites['sites'])): ?>
                             <tr>
                                 <td colspan="7">
-                                    <?php esc_html_e('No sites found.', 'dead-link-checker'); ?>
+                                    <?php esc_html_e('No sites found.', 'frank-dead-link-checker'); ?>
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -157,16 +157,16 @@ class AWLDLC_Multisite
                                     </td>
                                     <td>
                                         <?php if ($site['broken'] > 0): ?>
-                                            <span class="awldlc-badge blc-badge-error">
+                                            <span class="frankdlc-badge blc-badge-error">
                                                 <?php echo esc_html($site['broken']); ?>
                                             </span>
                                         <?php else: ?>
-                                            <span class="awldlc-badge blc-badge-success">0</span>
+                                            <span class="frankdlc-badge blc-badge-success">0</span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <?php if ($site['warnings'] > 0): ?>
-                                            <span class="awldlc-badge blc-badge-warning">
+                                            <span class="frankdlc-badge blc-badge-warning">
                                                 <?php echo esc_html($site['warnings']); ?>
                                             </span>
                                         <?php else: ?>
@@ -176,14 +176,14 @@ class AWLDLC_Multisite
                                     <td>
                                         <?php if ($site['last_scan']): ?>
                                             <?php echo esc_html(human_time_diff(strtotime($site['last_scan']), current_time('timestamp'))); ?>
-                                            <?php esc_html_e('ago', 'dead-link-checker'); ?>
+                                            <?php esc_html_e('ago', 'frank-dead-link-checker'); ?>
                                         <?php else: ?>
-                                            <?php esc_html_e('Never', 'dead-link-checker'); ?>
+                                            <?php esc_html_e('Never', 'frank-dead-link-checker'); ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <a href="<?php echo esc_url($site['admin_url']); ?>" class="button button-small">
-                                            <?php esc_html_e('View Dashboard', 'dead-link-checker'); ?>
+                                            <?php esc_html_e('View Dashboard', 'frank-dead-link-checker'); ?>
                                         </a>
                                     </td>
                                 </tr>
@@ -215,7 +215,7 @@ class AWLDLC_Multisite
             switch_to_blog($site->blog_id);
 
             global $wpdb;
-            $table_name = $wpdb->prefix . 'awldlc_links';
+            $table_name = $wpdb->prefix . 'FRANKDLC_links';
 
             // Check if table exists
             if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
@@ -240,7 +240,7 @@ class AWLDLC_Multisite
             $site_stats['warnings'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE status_code BETWEEN 300 AND 399 AND is_dismissed = 0");
 
             // Get last scan
-            $scans_table = $wpdb->prefix . 'awldlc_scans';
+            $scans_table = $wpdb->prefix . 'FRANKDLC_scans';
             if ($wpdb->get_var("SHOW TABLES LIKE '$scans_table'") === $scans_table) {
                 $site_stats['last_scan'] = $wpdb->get_var("SELECT end_time FROM $scans_table WHERE status = 'completed' ORDER BY id DESC LIMIT 1");
             }

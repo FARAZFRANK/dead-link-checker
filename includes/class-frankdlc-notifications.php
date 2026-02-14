@@ -10,18 +10,18 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Notifications
+class FRANKDLC_Notifications
 {
 
     public function __construct()
     {
-        add_action('awldlc_scan_complete', array($this, 'on_scan_complete'));
-        add_action('awldlc_send_digest', array($this, 'send_digest'));
+        add_action('FRANKDLC_scan_complete', array($this, 'on_scan_complete'));
+        add_action('FRANKDLC_send_digest', array($this, 'send_digest'));
     }
 
     public function on_scan_complete($scan)
     {
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
 
         if (empty($settings['email_notifications'])) {
             return;
@@ -38,7 +38,7 @@ class AWLDLC_Notifications
 
     private function send_notification($scan)
     {
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
         $recipients = isset($settings['email_recipients']) ? (array) $settings['email_recipients'] : array(get_option('admin_email'));
 
         if (empty($recipients)) {
@@ -48,7 +48,7 @@ class AWLDLC_Notifications
         $site_name = get_bloginfo('name');
         $subject = sprintf(
             /* translators: 1: number of broken links, 2: site name */
-            __('[%2$s] %1$d Broken Links Detected', 'dead-link-checker'),
+            __('[%2$s] %1$d Broken Links Detected', 'frank-dead-link-checker'),
             $scan->broken_links,
             $site_name
         );
@@ -66,7 +66,7 @@ class AWLDLC_Notifications
 
     private function build_email_message($scan)
     {
-        $broken_links = awldlc()->database->get_links(array('status' => 'broken', 'per_page' => 20));
+        $broken_links = FRANKDLC()->database->get_links(array('status' => 'broken', 'per_page' => 20));
         $dashboard_url = admin_url('admin.php?page=dead-link-checker&status=broken');
         $site_name = get_bloginfo('name');
 
@@ -184,14 +184,14 @@ class AWLDLC_Notifications
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>🔗 <?php esc_html_e('Broken Links Report', 'dead-link-checker'); ?></h1>
+                    <h1>🔗 <?php esc_html_e('Broken Links Report', 'frank-dead-link-checker'); ?></h1>
                     <p>
                         <?php echo esc_html($site_name); ?>
                     </p>
                 </div>
                 <div class="content">
                     <p>
-                        <?php esc_html_e('A scan has completed and found the following issues:', 'dead-link-checker'); ?>
+                        <?php esc_html_e('A scan has completed and found the following issues:', 'frank-dead-link-checker'); ?>
                     </p>
 
                     <div class="stats">
@@ -200,7 +200,7 @@ class AWLDLC_Notifications
                                 <?php echo esc_html($scan->broken_links); ?>
                             </div>
                             <div class="stat-label">
-                                <?php esc_html_e('Broken', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Broken', 'frank-dead-link-checker'); ?>
                             </div>
                         </div>
                         <div class="stat">
@@ -208,7 +208,7 @@ class AWLDLC_Notifications
                                 <?php echo esc_html($scan->warning_links); ?>
                             </div>
                             <div class="stat-label">
-                                <?php esc_html_e('Warnings', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Warnings', 'frank-dead-link-checker'); ?>
                             </div>
                         </div>
                         <div class="stat">
@@ -216,32 +216,32 @@ class AWLDLC_Notifications
                                 <?php echo esc_html($scan->checked_links); ?>
                             </div>
                             <div class="stat-label">
-                                <?php esc_html_e('Checked', 'dead-link-checker'); ?>
+                                <?php esc_html_e('Checked', 'frank-dead-link-checker'); ?>
                             </div>
                         </div>
                     </div>
 
                     <?php if (!empty($broken_links)): ?>
                         <h3>
-                            <?php esc_html_e('Broken Links', 'dead-link-checker'); ?>
+                            <?php esc_html_e('Broken Links', 'frank-dead-link-checker'); ?>
                         </h3>
                         <table class="links-table">
                             <thead>
                                 <tr>
                                     <th>
-                                        <?php esc_html_e('URL', 'dead-link-checker'); ?>
+                                        <?php esc_html_e('URL', 'frank-dead-link-checker'); ?>
                                     </th>
                                     <th>
-                                        <?php esc_html_e('Status', 'dead-link-checker'); ?>
+                                        <?php esc_html_e('Status', 'frank-dead-link-checker'); ?>
                                     </th>
                                     <th>
-                                        <?php esc_html_e('Source', 'dead-link-checker'); ?>
+                                        <?php esc_html_e('Source', 'frank-dead-link-checker'); ?>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($broken_links as $link_data):
-                                    $link = new AWLDLC_Link($link_data); ?>
+                                    $link = new FRANKDLC_Link($link_data); ?>
                                     <tr>
                                         <td><a href="<?php echo esc_url($link->url); ?>">
                                                 <?php echo esc_html($link->get_display_url(40)); ?>
@@ -260,13 +260,13 @@ class AWLDLC_Notifications
 
                     <p style="text-align: center; margin-top: 30px;">
                         <a href="<?php echo esc_url($dashboard_url); ?>" class="btn">
-                            <?php esc_html_e('View All Broken Links', 'dead-link-checker'); ?>
+                            <?php esc_html_e('View All Broken Links', 'frank-dead-link-checker'); ?>
                         </a>
                     </p>
                 </div>
                 <div class="footer">
                     <p>
-                        <?php printf(esc_html__('This email was sent by Dead Link Checker plugin on %s', 'dead-link-checker'), esc_html($site_name)); ?>
+                        <?php printf(esc_html__('This email was sent by Frank Dead Link Checker plugin on %s', 'frank-dead-link-checker'), esc_html($site_name)); ?>
                     </p>
                 </div>
             </div>
@@ -279,13 +279,13 @@ class AWLDLC_Notifications
 
     public function send_digest()
     {
-        $settings = get_option('awldlc_settings', array());
+        $settings = get_option('FRANKDLC_settings', array());
 
         if (empty($settings['email_notifications'])) {
             return;
         }
 
-        $stats = awldlc()->database->get_stats();
+        $stats = FRANKDLC()->database->get_stats();
 
         if ($stats['broken'] === 0) {
             return;
@@ -293,7 +293,7 @@ class AWLDLC_Notifications
 
         $recipients = isset($settings['email_recipients']) ? (array) $settings['email_recipients'] : array(get_option('admin_email'));
         $site_name = get_bloginfo('name');
-        $subject = sprintf(__('[%s] Weekly Broken Links Digest', 'dead-link-checker'), $site_name);
+        $subject = sprintf(__('[%s] Weekly Broken Links Digest', 'frank-dead-link-checker'), $site_name);
 
         $fake_scan = (object) array(
             'broken_links' => $stats['broken'],

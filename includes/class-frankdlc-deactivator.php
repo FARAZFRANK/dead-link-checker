@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class AWLDLC_Deactivator
+ * Class FRANKDLC_Deactivator
  *
  * Fired during plugin deactivation
  */
-class AWLDLC_Deactivator
+class FRANKDLC_Deactivator
 {
 
     /**
@@ -41,11 +41,11 @@ class AWLDLC_Deactivator
     private static function clear_scheduled_events()
     {
         $events = array(
-            'awldlc_scheduled_scan',
-            'awldlc_recheck_broken',
-            'awldlc_send_digest',
-            'awldlc_cleanup_old_data',
-            'awldlc_process_queue',
+            'FRANKDLC_scheduled_scan',
+            'FRANKDLC_recheck_broken',
+            'FRANKDLC_send_digest',
+            'FRANKDLC_cleanup_old_data',
+            'FRANKDLC_process_queue',
         );
 
         foreach ($events as $event) {
@@ -69,15 +69,15 @@ class AWLDLC_Deactivator
         $wpdb->query(
             $wpdb->prepare(
                 "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-                '_transient_awldlc_%',
-                '_transient_timeout_awldlc_%'
+                '_transient_FRANKDLC_%',
+                '_transient_timeout_FRANKDLC_%'
             )
         );
 
         // Clear specific transients
-        delete_transient('awldlc_activation_redirect');
-        delete_transient('awldlc_scan_progress');
-        delete_transient('awldlc_stats_cache');
+        delete_transient('FRANKDLC_activation_redirect');
+        delete_transient('FRANKDLC_scan_progress');
+        delete_transient('FRANKDLC_stats_cache');
     }
 
     /**
@@ -87,7 +87,7 @@ class AWLDLC_Deactivator
     {
         global $wpdb;
 
-        $table_scans = $wpdb->prefix . 'awldlc_scans';
+        $table_scans = $wpdb->prefix . 'FRANKDLC_scans';
 
         // Mark running scans as cancelled
         $wpdb->update(
@@ -95,7 +95,7 @@ class AWLDLC_Deactivator
             array(
                 'status' => 'cancelled',
                 'completed_at' => current_time('mysql'),
-                'error_message' => __('Scan cancelled: Plugin deactivated', 'dead-link-checker'),
+                'error_message' => __('Scan cancelled: Plugin deactivated', 'frank-dead-link-checker'),
             ),
             array('status' => 'running'),
             array('%s', '%s', '%s'),
@@ -107,7 +107,7 @@ class AWLDLC_Deactivator
             $table_scans,
             array(
                 'status' => 'cancelled',
-                'error_message' => __('Scan cancelled: Plugin deactivated', 'dead-link-checker'),
+                'error_message' => __('Scan cancelled: Plugin deactivated', 'frank-dead-link-checker'),
             ),
             array('status' => 'pending'),
             array('%s', '%s'),

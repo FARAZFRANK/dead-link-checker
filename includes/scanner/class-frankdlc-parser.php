@@ -10,14 +10,14 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Parser
+class FRANKDLC_Parser
 {
 
     private $settings;
 
     public function __construct()
     {
-        $this->settings = get_option('awldlc_settings', array());
+        $this->settings = get_option('FRANKDLC_settings', array());
     }
 
     public function parse_content($content)
@@ -71,7 +71,7 @@ class AWLDLC_Parser
             }
 
             $anchor_text = wp_strip_all_tags($match[2]);
-            $link_type = AWLDLC_Link::determine_type($url, 'a');
+            $link_type = FRANKDLC_Link::determine_type($url, 'a');
 
             // Check if type is enabled
             if (!$this->is_type_enabled($link_type)) {
@@ -115,7 +115,7 @@ class AWLDLC_Parser
 
             $links[] = array(
                 'url' => $url,
-                'link_type' => AWLDLC_Link::TYPE_IMAGE,
+                'link_type' => FRANKDLC_Link::TYPE_IMAGE,
                 'anchor_text' => mb_substr($alt, 0, 500),
             );
         }
@@ -196,11 +196,11 @@ class AWLDLC_Parser
     private function is_type_enabled($link_type)
     {
         switch ($link_type) {
-            case AWLDLC_Link::TYPE_INTERNAL:
+            case FRANKDLC_Link::TYPE_INTERNAL:
                 return !empty($this->settings['check_internal']);
-            case AWLDLC_Link::TYPE_EXTERNAL:
+            case FRANKDLC_Link::TYPE_EXTERNAL:
                 return !empty($this->settings['check_external']);
-            case AWLDLC_Link::TYPE_IMAGE:
+            case FRANKDLC_Link::TYPE_IMAGE:
                 return !empty($this->settings['check_images']);
             default:
                 return true;

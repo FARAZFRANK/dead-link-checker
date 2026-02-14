@@ -13,11 +13,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class AWLDLC_Activator
+ * Class FRANKDLC_Activator
  *
  * Fired during plugin activation
  */
-class AWLDLC_Activator
+class FRANKDLC_Activator
 {
 
     /**
@@ -54,10 +54,10 @@ class AWLDLC_Activator
     {
         // Check PHP version
         if (version_compare(PHP_VERSION, '7.4', '<')) {
-            deactivate_plugins(plugin_basename(AWLDLC_PLUGIN_FILE));
+            deactivate_plugins(plugin_basename(FRANKDLC_PLUGIN_FILE));
             wp_die(
-                esc_html__('Dead Link Checker requires PHP 7.4 or higher.', 'dead-link-checker'),
-                esc_html__('Plugin Activation Error', 'dead-link-checker'),
+                esc_html__('Frank Dead Link Checker requires PHP 7.4 or higher.', 'frank-dead-link-checker'),
+                esc_html__('Plugin Activation Error', 'frank-dead-link-checker'),
                 array('back_link' => true)
             );
         }
@@ -65,10 +65,10 @@ class AWLDLC_Activator
         // Check WordPress version
         global $wp_version;
         if (version_compare($wp_version, '5.8', '<')) {
-            deactivate_plugins(plugin_basename(AWLDLC_PLUGIN_FILE));
+            deactivate_plugins(plugin_basename(FRANKDLC_PLUGIN_FILE));
             wp_die(
-                esc_html__('Dead Link Checker requires WordPress 5.8 or higher.', 'dead-link-checker'),
-                esc_html__('Plugin Activation Error', 'dead-link-checker'),
+                esc_html__('Frank Dead Link Checker requires WordPress 5.8 or higher.', 'frank-dead-link-checker'),
+                esc_html__('Plugin Activation Error', 'frank-dead-link-checker'),
                 array('back_link' => true)
             );
         }
@@ -84,7 +84,7 @@ class AWLDLC_Activator
         $charset_collate = $wpdb->get_charset_collate();
 
         // Links table - stores all discovered links
-        $table_links = $wpdb->prefix . 'awldlc_links';
+        $table_links = $wpdb->prefix . 'FRANKDLC_links';
         $sql_links = "CREATE TABLE {$table_links} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             url varchar(2048) NOT NULL,
@@ -117,7 +117,7 @@ class AWLDLC_Activator
         ) {$charset_collate};";
 
         // Scans table - stores scan history
-        $table_scans = $wpdb->prefix . 'awldlc_scans';
+        $table_scans = $wpdb->prefix . 'FRANKDLC_scans';
         $sql_scans = "CREATE TABLE {$table_scans} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             scan_type varchar(20) NOT NULL DEFAULT 'full',
@@ -135,7 +135,7 @@ class AWLDLC_Activator
         ) {$charset_collate};";
 
         // Redirects table - stores URL redirects
-        $table_redirects = $wpdb->prefix . 'awldlc_redirects';
+        $table_redirects = $wpdb->prefix . 'FRANKDLC_redirects';
         $sql_redirects = "CREATE TABLE {$table_redirects} (
             id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             source_url varchar(2048) NOT NULL,
@@ -163,7 +163,7 @@ class AWLDLC_Activator
         dbDelta($sql_redirects);
 
         // Store database version
-        update_option('awldlc_db_version', self::DB_VERSION);
+        update_option('FRANKDLC_db_version', self::DB_VERSION);
     }
 
     /**
@@ -200,7 +200,7 @@ class AWLDLC_Activator
             // Advanced
             'concurrent_requests' => 3,
             'delay_between' => 500, // milliseconds
-            'user_agent' => 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . AWLDLC_VERSION . '; +https://wordpress.org/)',
+            'user_agent' => 'Mozilla/5.0 (compatible; BrokenLinkChecker/' . FRANKDLC_VERSION . '; +https://wordpress.org/)',
             'verify_ssl' => true,
             'mark_broken_after' => 3, // consecutive failures
 
@@ -212,8 +212,8 @@ class AWLDLC_Activator
         );
 
         // Only set if not already exists
-        if (!get_option('awldlc_settings')) {
-            add_option('awldlc_settings', $defaults);
+        if (!get_option('FRANKDLC_settings')) {
+            add_option('FRANKDLC_settings', $defaults);
         }
     }
 
@@ -225,23 +225,23 @@ class AWLDLC_Activator
     {
         // Schedule automatic scanning - start TOMORROW, not immediately
         // First scan should always be manual
-        if (!wp_next_scheduled('awldlc_scheduled_scan')) {
-            wp_schedule_event(time() + DAY_IN_SECONDS, 'daily', 'awldlc_scheduled_scan');
+        if (!wp_next_scheduled('FRANKDLC_scheduled_scan')) {
+            wp_schedule_event(time() + DAY_IN_SECONDS, 'daily', 'FRANKDLC_scheduled_scan');
         }
 
         // Schedule auto-recheck of broken/warning links (lightweight daily check)
-        if (!wp_next_scheduled('awldlc_recheck_broken')) {
-            wp_schedule_event(time() + HOUR_IN_SECONDS * 12, 'twicedaily', 'awldlc_recheck_broken');
+        if (!wp_next_scheduled('FRANKDLC_recheck_broken')) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS * 12, 'twicedaily', 'FRANKDLC_recheck_broken');
         }
 
         // Schedule notification digest - start next week
-        if (!wp_next_scheduled('awldlc_send_digest')) {
-            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'awldlc_send_digest');
+        if (!wp_next_scheduled('FRANKDLC_send_digest')) {
+            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'FRANKDLC_send_digest');
         }
 
         // Schedule cleanup of old data - start next week
-        if (!wp_next_scheduled('awldlc_cleanup_old_data')) {
-            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'awldlc_cleanup_old_data');
+        if (!wp_next_scheduled('FRANKDLC_cleanup_old_data')) {
+            wp_schedule_event(time() + WEEK_IN_SECONDS, 'weekly', 'FRANKDLC_cleanup_old_data');
         }
     }
 
@@ -250,6 +250,6 @@ class AWLDLC_Activator
      */
     private static function set_activation_flag()
     {
-        set_transient('awldlc_activation_redirect', true, 30);
+        set_transient('FRANKDLC_activation_redirect', true, 30);
     }
 }

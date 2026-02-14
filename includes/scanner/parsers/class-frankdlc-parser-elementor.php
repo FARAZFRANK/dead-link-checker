@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class AWLDLC_Parser_Elementor
+class FRANKDLC_Parser_Elementor
 {
     /**
      * Check if Elementor is active
