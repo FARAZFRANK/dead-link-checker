@@ -1,5 +1,5 @@
 /**
- * Dead Link Checker Pro - Admin JavaScript
+ * Dead Link Checker - Admin JavaScript
  * Handles all interactive functionality
  */
 

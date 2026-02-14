@@ -56,7 +56,7 @@ class AWLDLC_Activator
         if (version_compare(PHP_VERSION, '7.4', '<')) {
             deactivate_plugins(plugin_basename(AWLDLC_PLUGIN_FILE));
             wp_die(
-                esc_html__('Dead Link Checker Pro requires PHP 7.4 or higher.', 'dead-link-checker'),
+                esc_html__('Dead Link Checker requires PHP 7.4 or higher.', 'dead-link-checker'),
                 esc_html__('Plugin Activation Error', 'dead-link-checker'),
                 array('back_link' => true)
             );
@@ -67,7 +67,7 @@ class AWLDLC_Activator
         if (version_compare($wp_version, '5.8', '<')) {
             deactivate_plugins(plugin_basename(AWLDLC_PLUGIN_FILE));
             wp_die(
-                esc_html__('Dead Link Checker Pro requires WordPress 5.8 or higher.', 'dead-link-checker'),
+                esc_html__('Dead Link Checker requires WordPress 5.8 or higher.', 'dead-link-checker'),
                 esc_html__('Plugin Activation Error', 'dead-link-checker'),
                 array('back_link' => true)
             );

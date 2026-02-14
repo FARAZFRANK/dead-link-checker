@@ -1,0 +1,4 @@
+Maine plugin ko WordPress.org per review ke liye submit kiya uhhone ye changes kerne ko bola h
+- Change plugin name: Frank Dead Link Checker
+- Change plugin slug: frank-dead-link-checker
+- Change and prefix All variable name, function name, class name, id name, filename slug to: frankdlc_ FRANKDLC_ frankdlc-

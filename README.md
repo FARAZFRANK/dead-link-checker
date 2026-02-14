@@ -1,13 +1,13 @@
-# Dead Link Checker Pro
+# Dead Link Checker
 
 ![WordPress Version](https://img.shields.io/badge/WordPress-5.8%2B-blue)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/License-GPLv2-green)
-![Version](https://img.shields.io/badge/Version-3.0.7-orange)
+![Version](https://img.shields.io/badge/Version-3.0.8-orange)
 
 **The complete professional solution for finding and fixing broken links on your WordPress website.**
 
-Dead Link Checker Pro scans your entire WordPress site, identifies dead links, and helps you fix them quickly—improving SEO and user experience.
+Dead Link Checker scans your entire WordPress site, identifies dead links, and helps you fix them quickly—improving SEO and user experience.
 
 ---
 
@@ -125,6 +125,11 @@ Dead Link Checker Pro scans your entire WordPress site, identifies dead links, a
 
 ## 📝 Changelog
 
+### 3.0.8
+- WordPress.org Guideline 6 compliance — removed all "Pro" references from plugin name, descriptions, and UI strings
+- Updated readme.txt, README.md, and all admin-facing text
+- Updated translation template (.pot) and Hindi translation (.po) files
+
 ### 3.0.7
 - Complete prefix refactoring — renamed all BLC/blc prefixes to AWLDLC/awldlc for WordPress coding standards compliance
 - Renamed 19 PHP class files from class-blc-*.php to class-awldlc-*.php
@@ -178,7 +183,7 @@ Dead Link Checker Pro scans your entire WordPress site, identifies dead links, a
 - Blog article added for plugin promotion
 
 ### 3.0.0
-- Complete rebranding from "Broken Link Checker" to "Dead Link Checker Pro"
+- Complete rebranding from "Broken Link Checker" to "Dead Link Checker"
 - Enhanced dashboard UI with real-time statistics
 - Improved table responsiveness for mobile devices
 - Fixed pagination table footer alignment
@@ -198,7 +203,7 @@ Dead Link Checker Pro scans your entire WordPress site, identifies dead links, a
 
 ## 🔒 Privacy Policy
 
-Dead Link Checker Pro respects your privacy:
+Dead Link Checker respects your privacy:
 
 - **No External Connections** – The plugin only connects to URLs on your own website during scans
 - **No Data Collection** – We do not collect, track, or transmit any personal data

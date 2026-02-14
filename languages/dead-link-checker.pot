@@ -1,9 +1,9 @@
-# Translation file for Dead Link Checker Pro
+# Translation file for Dead Link Checker
 # Copyright (C) 2026 WPFrank
-# This file is distributed under the same license as the Dead Link Checker Pro plugin.
+# This file is distributed under the same license as the Dead Link Checker plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Dead Link Checker Pro 1.0.0\n"
+"Project-Id-Version: Dead Link Checker 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dead-link-checker\n"
 "POT-Creation-Date: 2026-02-13 13:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Dead Link Checker Pro\n"
+"X-Generator: Dead Link Checker\n"
 "X-Domain: dead-link-checker\n"
 
 #: includes/admin/class-blc-admin.php:564
@@ -438,31 +438,31 @@ msgid "Date Range:"
 msgstr ""
 
 #: includes/admin/class-blc-admin.php:63 includes/admin/class-blc-admin.php:594 includes/admin/class-blc-admin.php:660 includes/admin/class-blc-dashboard.php:76
-msgid "Dead Link Checker Pro"
+msgid "Dead Link Checker"
 msgstr ""
 
 #: includes/class-blc-multisite.php:73
-msgid "Dead Link Checker Pro - Network Overview"
+msgid "Dead Link Checker - Network Overview"
 msgstr ""
 
 #: includes/admin/class-blc-settings.php:239
-msgid "Dead Link Checker Pro Settings"
+msgid "Dead Link Checker Settings"
 msgstr ""
 
 #: includes/admin/class-blc-admin.php:1030
-msgid "Dead Link Checker Pro is fully translation-ready. You can translate it into your language using any of the methods below."
+msgid "Dead Link Checker is fully translation-ready. You can translate it into your language using any of the methods below."
 msgstr ""
 
 #: includes/class-blc-activator.php:59
-msgid "Dead Link Checker Pro requires PHP 7.4 or higher."
+msgid "Dead Link Checker requires PHP 7.4 or higher."
 msgstr ""
 
 #: includes/class-blc-activator.php:70
-msgid "Dead Link Checker Pro requires WordPress 5.8 or higher."
+msgid "Dead Link Checker requires WordPress 5.8 or higher."
 msgstr ""
 
 #: includes/admin/class-blc-admin.php:791
-msgid "Dead Link Checker Pro scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:"
+msgid "Dead Link Checker scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:"
 msgstr ""
 
 #: includes/admin/class-blc-admin.php:891
@@ -1418,7 +1418,7 @@ msgid "The plugin automatically detects scans that have been running for over 30
 msgstr ""
 
 #: includes/class-blc-notifications.php:269
-msgid "This email was sent by Dead Link Checker Pro plugin on %s"
+msgid "This email was sent by Dead Link Checker plugin on %s"
 msgstr ""
 
 #: includes/admin/class-blc-admin.php:595

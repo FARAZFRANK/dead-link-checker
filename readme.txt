@@ -1,21 +1,21 @@
-=== Dead Link Checker Pro ===
+=== Dead Link Checker ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Donate link: https://awplife.com/
 Tags: broken links, dead links, seo, 404 error, link checker, redirects, elementor
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.7
+Stable tag: 3.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Professional Dead Link Checker Pro for WordPress. Scan all content types, page builders, with email notifications, redirects, and export features.
+Dead Link Checker for WordPress. Scan all content types, page builders, with email notifications, redirects, and export features.
 
 == Description ==
 
-**Dead Link Checker Pro** is the complete professional solution for finding and fixing broken links on your WordPress website. Includes all features from the free version plus advanced capabilities for power users and agencies.
+**Dead Link Checker** is the complete solution for finding and fixing broken links on your WordPress website. Includes advanced capabilities for power users and agencies.
 
-= All Pro Features =
+= Features =
 
 **Content Scanning:**
 
@@ -91,17 +91,17 @@ Professional Dead Link Checker Pro for WordPress. Scan all content types, page b
 
 == Frequently Asked Questions ==
 
-= How do I activate my Pro license? =
+= How do I activate my license? =
 
 Go to Link Checker > Settings > License tab and enter your license key. The license key was sent to your email after purchase.
 
 = How long does a scan take? =
 
-Scan time depends on your website size and the number of concurrent requests configured. With Pro, you can increase concurrent requests for faster scans.
+Scan time depends on your website size and the number of concurrent requests configured. You can increase concurrent requests for faster scans.
 
 = Does it work with all page builders? =
 
-Yes! Pro supports Elementor, Divi, WPBakery, and Gutenberg. All links within page builder content are detected and checked.
+Yes! Dead Link Checker supports Elementor, Divi, WPBakery, and Gutenberg. All links within page builder content are detected and checked.
 
 = How do I create a redirect? =
 
@@ -113,7 +113,7 @@ Yes. Click the 'Export' dropdown on the dashboard and choose CSV or JSON format.
 
 = Where can I get support? =
 
-Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
+Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 
 == Screenshots ==
 
@@ -121,10 +121,16 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 2. Link table with advanced filtering
 3. Edit link modal
 4. Redirect Manager
-5. Settings page with Pro options
+5. Settings page with configuration options
 6. Email notification settings
 
 == Changelog ==
+
+= 3.0.8 =
+* WordPress.org Guideline 6 compliance — removed all "Pro" references from plugin name, descriptions, and UI strings
+* Updated readme.txt, README.md, and all admin-facing text
+* Updated translation template (.pot) and Hindi translation (.po) files
+* Cleaned up FAQ and screenshot descriptions
 
 = 3.0.7 =
 * Complete prefix refactoring — renamed all BLC/blc prefixes to AWLDLC/awldlc for WordPress coding standards compliance
@@ -184,7 +190,7 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Blog article added for plugin promotion
 
 = 3.0.0 =
-* Complete rebranding from "Broken Link Checker" to "Dead Link Checker Pro"
+* Complete rebranding from "Broken Link Checker" to "Dead Link Checker"
 * Enhanced dashboard UI with real-time statistics
 * Improved table responsiveness for mobile devices
 * Fixed pagination table footer alignment
@@ -201,6 +207,9 @@ Pro users receive priority support. Visit [AWP Life](https://awplife.com/) or em
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.8 =
+Guideline 6 compliance — removed all "Pro" references from plugin name and descriptions.
 
 = 3.0.7 =
 Complete prefix refactoring for WordPress coding standards. All internal identifiers updated from BLC to AWLDLC.
@@ -224,14 +233,14 @@ Improved export download behavior - CSV downloads directly, JSON opens in new ta
 Fixed export feature with proper branding and resolved 403 download error.
 
 = 3.0.0 =
-Major rebranding release. Dead Link Checker Pro now includes all premium features with improved UI and performance.
+Major rebranding release. Dead Link Checker now includes all features with improved UI and performance.
 
 = 1.0.0 =
-First release of Dead Link Checker Pro.
+First release of Dead Link Checker.
 
 == Privacy Policy ==
 
-Dead Link Checker Pro respects your privacy:
+Dead Link Checker respects your privacy:
 
 * **No External Connections** – The plugin only connects to URLs on your own website during scans
 * **No Data Collection** – We do not collect, track, or transmit any personal data

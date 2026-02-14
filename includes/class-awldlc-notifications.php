@@ -266,7 +266,7 @@ class AWLDLC_Notifications
                 </div>
                 <div class="footer">
                     <p>
-                        <?php printf(esc_html__('This email was sent by Dead Link Checker Pro plugin on %s', 'dead-link-checker'), esc_html($site_name)); ?>
+                        <?php printf(esc_html__('This email was sent by Dead Link Checker plugin on %s', 'dead-link-checker'), esc_html($site_name)); ?>
                     </p>
                 </div>
             </div>

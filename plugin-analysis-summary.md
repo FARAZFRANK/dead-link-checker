@@ -1,4 +1,4 @@
-# Dead Link Checker Pro — Plugin Analysis & Improvement Plan
+# Dead Link Checker — Plugin Analysis & Improvement Plan
 
 > **Date:** 2026-02-11  
 > **Purpose:** Comprehensive analysis of scanning modes, stuck scan handling, reset/history options, and settings workflow — with **actionable solutions** for implementation.

@@ -1,4 +1,4 @@
-# Dead Link Checker Pro v3.0.3 — Testing Summary
+# Dead Link Checker v3.0.3 — Testing Summary
 
 **Date:** February 11, 2026  
 **Environment:** WordPress 6.9.1, PHP 7.4+, WAMP64 (localhost)  
@@ -129,4 +129,4 @@ After running a full scan, the plugin correctly identified:
 
 ## Overall Result: ✅ ALL TESTS PASSED
 
-All features and functionality of Dead Link Checker Pro v3.0.3 are working correctly.
+All features and functionality of Dead Link Checker v3.0.3 are working correctly.

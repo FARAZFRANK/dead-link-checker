@@ -73,7 +73,7 @@ class AWLDLC_Dashboard
             <div class="awldlc-header">
                 <div class="awldlc-header-left">
                     <h1>
-                        <?php esc_html_e('Dead Link Checker Pro', 'dead-link-checker'); ?>
+                        <?php esc_html_e('Dead Link Checker', 'dead-link-checker'); ?>
                         <span style="font-size: 13px; font-weight: 500; background: #e8f0fe; color: #1a73e8; padding: 3px 10px; border-radius: 12px; vertical-align: middle; margin-left: 8px;">v<?php echo esc_html(AWLDLC_VERSION); ?></span>
                     </h1>
                     <?php if ($latest_scan && $latest_scan->completed_at): ?>

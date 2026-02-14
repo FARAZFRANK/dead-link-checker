@@ -70,7 +70,7 @@ class AWLDLC_Multisite
         ?>
         <div class="wrap awldlc-wrap blc-network-dashboard">
             <h1>
-                <?php esc_html_e('Dead Link Checker Pro - Network Overview', 'dead-link-checker'); ?>
+                <?php esc_html_e('Dead Link Checker - Network Overview', 'dead-link-checker'); ?>
             </h1>
 
             <!-- Network Summary -->

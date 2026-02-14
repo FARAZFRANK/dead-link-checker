@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Dead Link Checker Pro
+ * Plugin Name: Dead Link Checker
  * Plugin URI: https://awplife.com/
- * Description: Professional Dead Link Checker Pro for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
- * Version: 3.0.7
+ * Description: Dead Link Checker for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
+ * Version: 3.0.8
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('AWLDLC_VERSION', '3.0.7');
+define('AWLDLC_VERSION', '3.0.8');
 define('AWLDLC_PLUGIN_FILE', __FILE__);
 define('AWLDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AWLDLC_PLUGIN_URL', plugin_dir_url(__FILE__));

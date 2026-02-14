@@ -236,7 +236,7 @@ class AWLDLC_Settings
         ?>
         <div class="wrap awldlc-wrap blc-settings-page">
             <h1>
-                <?php esc_html_e('Dead Link Checker Pro Settings', 'dead-link-checker'); ?>
+                <?php esc_html_e('Dead Link Checker Settings', 'dead-link-checker'); ?>
             </h1>
             <form method="post" action="options.php">
                 <?php

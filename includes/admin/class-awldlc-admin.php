@@ -60,7 +60,7 @@ class AWLDLC_Admin
     public function add_admin_menu()
     {
         add_menu_page(
-            __('Dead Link Checker Pro', 'dead-link-checker'),
+            __('Dead Link Checker', 'dead-link-checker'),
             __('Link Checker', 'dead-link-checker'),
             'manage_options',
             'dead-link-checker',
@@ -591,7 +591,7 @@ class AWLDLC_Admin
         $screen->add_help_tab(array(
             'id' => 'awldlc_overview',
             'title' => __('Overview', 'dead-link-checker'),
-            'content' => '<h3>' . __('Dead Link Checker Pro', 'dead-link-checker') . '</h3>' .
+            'content' => '<h3>' . __('Dead Link Checker', 'dead-link-checker') . '</h3>' .
                 '<p>' . __('This plugin scans your website for broken links and helps you fix them quickly. It checks all links in your posts, pages, comments, and custom fields.', 'dead-link-checker') . '</p>' .
                 '<h4>' . __('Features:', 'dead-link-checker') . '</h4>' .
                 '<ul>' .
@@ -657,7 +657,7 @@ class AWLDLC_Admin
 
     public function add_dashboard_widget()
     {
-        wp_add_dashboard_widget('awldlc_dashboard_widget', __('Dead Link Checker Pro', 'dead-link-checker'), array($this, 'render_dashboard_widget'));
+        wp_add_dashboard_widget('awldlc_dashboard_widget', __('Dead Link Checker', 'dead-link-checker'), array($this, 'render_dashboard_widget'));
     }
 
     public function render_dashboard_widget()
@@ -788,7 +788,7 @@ class AWLDLC_Admin
                         <?php esc_html_e('How Plugin Works?', 'dead-link-checker'); ?>
                     </h2>
                     <p style="font-size: 14px; line-height: 1.8; color: #555;">
-                        <?php esc_html_e('Dead Link Checker Pro scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:', 'dead-link-checker'); ?>
+                        <?php esc_html_e('Dead Link Checker scans your entire WordPress website to find broken links, redirects, and other link issues. It checks links inside posts, pages, menus, widgets, comments, custom fields, and even page builder content (Elementor, Divi, WPBakery, Gutenberg). Here is how it works:', 'dead-link-checker'); ?>
                     </p>
                 </div>
 
@@ -1027,7 +1027,7 @@ class AWLDLC_Admin
                         <?php esc_html_e('How to Translate This Plugin', 'dead-link-checker'); ?>
                     </h2>
                     <p style="color: #555; line-height: 1.7;">
-                        <?php esc_html_e('Dead Link Checker Pro is fully translation-ready. You can translate it into your language using any of the methods below.', 'dead-link-checker'); ?>
+                        <?php esc_html_e('Dead Link Checker is fully translation-ready. You can translate it into your language using any of the methods below.', 'dead-link-checker'); ?>
                     </p>
 
                     <h3 style="color: #444; background: #e0f7fa; padding: 8px 12px; border-radius: 4px;">
