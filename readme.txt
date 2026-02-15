@@ -1,11 +1,11 @@
 === Frank Dead Link Checker ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Donate link: https://awplife.com/
-Tags: broken links, dead links, seo, 404 error, link checker, redirects, elementor
+Tags: broken links, dead links, seo, 404 error, link checker
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.0.9
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,13 @@ Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 
 == Changelog ==
 
+= 3.1.0 =
+* Moved Reset & Maintenance Options from Help page to Settings page under new "Tools" tab
+* Added Settings tab persistence — active tab remembers across page reloads and Save Changes
+* Fixed activation redirect slug mismatch (7 instances across 4 files)
+* Fixed Settings page CSS class mismatch (blc-settings-page → frankdlc-settings-page)
+* Code quality improvements and standard compliance fixes across various files
+
 = 3.0.9 =
 * WordPress.org review compliance — complete plugin rebrand
 * Changed plugin name to "Frank Dead Link Checker"
@@ -217,6 +224,9 @@ Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.1.0 =
+Reset & Maintenance tools moved to Settings > Tools tab. Settings tab persistence added. Activation redirect and Settings page CSS fixes.
 
 = 3.0.8 =
 Guideline 6 compliance — removed all "Pro" references from plugin name and descriptions.

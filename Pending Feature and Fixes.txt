@@ -1,4 +1,5 @@
-1. Add about status codes on help page: 401, 405, 406, 410, 429, Error and add also them into HTTP Status filters list
-2. Link Table per Page Per Row ka drop down do user convenience k liye
+1. Add these status codes on help page: 401, 405, 406, 410, 429, Error and add also them into HTTP Status filters list
+2. Dashboard per HTTP Status: label ko help page se link ker do
+2. Link Table per Rows Per Page ka dropdown do user convenience k liye
 3. For link Update in popup form, give option to update Anchor Text and URL
 4. For link Update in popup form, give option delete link

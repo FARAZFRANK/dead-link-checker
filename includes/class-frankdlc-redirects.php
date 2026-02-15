@@ -56,6 +56,7 @@ class FRANKDLC_Redirects
         global $wpdb;
 
         // Check if table exists
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $table_exists = $wpdb->get_var($wpdb->prepare(
             "SHOW TABLES LIKE %s",
             $this->table
@@ -101,7 +102,7 @@ class FRANKDLC_Redirects
         global $wpdb;
 
         // Get the current request URI
-        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '';
 
         if (empty($request_uri)) {
             return;
@@ -110,7 +111,9 @@ class FRANKDLC_Redirects
         // Check for a matching redirect
         $url_hash = md5($request_uri);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $redirect = $wpdb->get_row($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property
             "SELECT * FROM {$this->table} WHERE source_url_hash = %s AND is_active = 1",
             $url_hash
         ));
@@ -120,7 +123,9 @@ class FRANKDLC_Redirects
             $full_url = home_url($request_uri);
             $url_hash = md5($full_url);
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $redirect = $wpdb->get_row($wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property
                 "SELECT * FROM {$this->table} WHERE source_url_hash = %s AND is_active = 1",
                 $url_hash
             ));
@@ -128,6 +133,7 @@ class FRANKDLC_Redirects
 
         if ($redirect) {
             // Update hit count
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->update(
                 $this->table,
                 array(
@@ -140,7 +146,7 @@ class FRANKDLC_Redirects
             );
 
             // Perform redirect
-            wp_redirect($redirect->target_url, $redirect->redirect_type);
+            wp_safe_redirect($redirect->target_url, $redirect->redirect_type);
             exit;
         }
     }
@@ -171,7 +177,9 @@ class FRANKDLC_Redirects
 
         // Check for existing redirect
         $url_hash = md5($source_url);
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $existing = $wpdb->get_var($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property
             "SELECT id FROM {$this->table} WHERE source_url_hash = %s",
             $url_hash
         ));
@@ -180,6 +188,7 @@ class FRANKDLC_Redirects
             return new WP_Error('duplicate', __('A redirect for this URL already exists.', 'frank-dead-link-checker'));
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $result = $wpdb->insert(
             $this->table,
             array(
@@ -241,6 +250,7 @@ class FRANKDLC_Redirects
             return new WP_Error('no_data', __('No data to update.', 'frank-dead-link-checker'));
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->update(
             $this->table,
             $update,
@@ -262,6 +272,7 @@ class FRANKDLC_Redirects
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->delete(
             $this->table,
             array('id' => $id),
@@ -315,17 +326,22 @@ class FRANKDLC_Redirects
 
         // Get total count
         if (!empty($values)) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property, $where_sql is built from validated components
             $count_sql = $wpdb->prepare("SELECT COUNT(*) FROM {$this->table} WHERE {$where_sql}", $values);
         } else {
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property, $where_sql is built from validated components
             $count_sql = "SELECT COUNT(*) FROM {$this->table} WHERE {$where_sql}";
         }
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- SQL is prepared above when values exist
         $total = (int) $wpdb->get_var($count_sql);
 
         // Get redirects
         $values[] = $args['per_page'];
         $values[] = $offset;
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property, $where_sql/$orderby/$order are validated
         $sql = "SELECT * FROM {$this->table} WHERE {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- SQL prepared in line above
         $redirects = $wpdb->get_results($wpdb->prepare($sql, $values));
 
         return array(
@@ -345,7 +361,9 @@ class FRANKDLC_Redirects
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $this->table is a safe class property
             "SELECT * FROM {$this->table} WHERE id = %d",
             $id
         ));
@@ -365,8 +383,8 @@ class FRANKDLC_Redirects
         $result = $this->create_redirect(array(
             'source_url' => isset($_POST['source_url']) ? sanitize_text_field(wp_unslash($_POST['source_url'])) : '',
             'target_url' => isset($_POST['target_url']) ? sanitize_text_field(wp_unslash($_POST['target_url'])) : '',
-            'redirect_type' => isset($_POST['redirect_type']) ? absint($_POST['redirect_type']) : 301,
-            'link_id' => isset($_POST['link_id']) ? absint($_POST['link_id']) : 0,
+            'redirect_type' => isset($_POST['redirect_type']) ? absint(wp_unslash($_POST['redirect_type'])) : 301,
+            'link_id' => isset($_POST['link_id']) ? absint(wp_unslash($_POST['link_id'])) : 0,
             'notes' => isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '',
         ));
 
@@ -391,7 +409,7 @@ class FRANKDLC_Redirects
             wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
-        $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        $id = isset($_POST['id']) ? absint(wp_unslash($_POST['id'])) : 0;
 
         if (!$id) {
             wp_send_json_error(array('message' => __('Invalid redirect ID.', 'frank-dead-link-checker')));
@@ -399,7 +417,7 @@ class FRANKDLC_Redirects
 
         $result = $this->update_redirect($id, array(
             'target_url' => isset($_POST['target_url']) ? sanitize_text_field(wp_unslash($_POST['target_url'])) : '',
-            'redirect_type' => isset($_POST['redirect_type']) ? absint($_POST['redirect_type']) : 301,
+            'redirect_type' => isset($_POST['redirect_type']) ? absint(wp_unslash($_POST['redirect_type'])) : 301,
             'notes' => isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '',
         ));
 
@@ -421,7 +439,7 @@ class FRANKDLC_Redirects
             wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
-        $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        $id = isset($_POST['id']) ? absint(wp_unslash($_POST['id'])) : 0;
 
         if (!$id) {
             wp_send_json_error(array('message' => __('Invalid redirect ID.', 'frank-dead-link-checker')));
@@ -447,7 +465,7 @@ class FRANKDLC_Redirects
             wp_send_json_error(array('message' => __('Permission denied.', 'frank-dead-link-checker')));
         }
 
-        $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        $id = isset($_POST['id']) ? absint(wp_unslash($_POST['id'])) : 0;
 
         if (!$id) {
             wp_send_json_error(array('message' => __('Invalid redirect ID.', 'frank-dead-link-checker')));
@@ -483,12 +501,12 @@ class FRANKDLC_Redirects
         }
 
         $result = $this->get_redirects(array(
-            'per_page' => isset($_POST['per_page']) ? absint($_POST['per_page']) : 20,
-            'page' => isset($_POST['page']) ? absint($_POST['page']) : 1,
+            'per_page' => isset($_POST['per_page']) ? absint(wp_unslash($_POST['per_page'])) : 20,
+            'page' => isset($_POST['page']) ? absint(wp_unslash($_POST['page'])) : 1,
             'search' => isset($_POST['search']) ? sanitize_text_field(wp_unslash($_POST['search'])) : '',
-            'is_active' => isset($_POST['is_active']) && $_POST['is_active'] !== '' ? absint($_POST['is_active']) : null,
-            'orderby' => isset($_POST['orderby']) ? sanitize_key($_POST['orderby']) : 'created_at',
-            'order' => isset($_POST['order']) ? sanitize_key($_POST['order']) : 'DESC',
+            'is_active' => isset($_POST['is_active']) && $_POST['is_active'] !== '' ? absint(wp_unslash($_POST['is_active'])) : null,
+            'orderby' => isset($_POST['orderby']) ? sanitize_key(wp_unslash($_POST['orderby'])) : 'created_at',
+            'order' => isset($_POST['order']) ? sanitize_key(wp_unslash($_POST['order'])) : 'DESC',
         ));
 
         wp_send_json_success($result);

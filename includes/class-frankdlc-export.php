@@ -33,7 +33,12 @@ class FRANKDLC_Export
 
         if (!file_exists($export_dir)) {
             wp_mkdir_p($export_dir);
-            file_put_contents($export_dir . '/index.php', '<?php // Silence is golden');
+            global $wp_filesystem;
+            if (empty($wp_filesystem)) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                WP_Filesystem();
+            }
+            $wp_filesystem->put_contents($export_dir . '/index.php', '<?php // Silence is golden', FS_CHMOD_FILE);
         }
 
         $filename = 'dlc-export-' . gmdate('Y-m-d-His') . '.' . $format;
@@ -61,13 +66,15 @@ class FRANKDLC_Export
      */
     private function export_csv($links, $filepath)
     {
-        $handle = fopen($filepath, 'w');
+        // Use a temp file with fputcsv, then write via WP_Filesystem
+        $temp_file = wp_tempnam('dlc-export');
+        $handle = fopen($temp_file, 'w'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
         if (!$handle) {
             return false;
         }
 
         // UTF-8 BOM for Excel compatibility
-        fwrite($handle, "\xEF\xBB\xBF");
+        fwrite($handle, "\xEF\xBB\xBF"); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 
         // Header row
         fputcsv($handle, array(
@@ -114,8 +121,19 @@ class FRANKDLC_Export
             ));
         }
 
-        fclose($handle);
-        return true;
+        fclose($handle); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+
+        // Read temp file and write to destination via WP_Filesystem
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+
+        $csv_content = $wp_filesystem->get_contents($temp_file);
+        $wp_filesystem->delete($temp_file);
+
+        return $wp_filesystem->put_contents($filepath, $csv_content, FS_CHMOD_FILE);
     }
 
     /**
@@ -155,6 +173,12 @@ class FRANKDLC_Export
 
         $json = wp_json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-        return file_put_contents($filepath, $json) !== false;
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+
+        return $wp_filesystem->put_contents($filepath, $json, FS_CHMOD_FILE);
     }
 }

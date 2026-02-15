@@ -234,7 +234,7 @@ class FRANKDLC_Settings
     public function render_page()
     {
         ?>
-        <div class="wrap frankdlc-wrap blc-settings-page">
+        <div class="wrap frankdlc-wrap frankdlc-settings-page">
             <h1>
                 <?php esc_html_e('Frank Dead Link Checker Settings', 'frank-dead-link-checker'); ?>
             </h1>
@@ -258,6 +258,9 @@ class FRANKDLC_Settings
                         </a>
                         <a href="#advanced">
                             <?php esc_html_e('Advanced', 'frank-dead-link-checker'); ?>
+                        </a>
+                        <a href="#tools">
+                            <?php esc_html_e('Tools', 'frank-dead-link-checker'); ?>
                         </a>
 
                     </nav>
@@ -285,6 +288,59 @@ class FRANKDLC_Settings
                         <div id="advanced" class="frankdlc-tab-panel">
                             <table class="form-table">
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_advanced'); ?>
+                            </table>
+                        </div>
+                        <div id="tools" class="frankdlc-tab-panel">
+                            <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                <span class="dashicons dashicons-update" style="color: #E91E63;"></span>
+                                <?php esc_html_e('Reset & Maintenance Options', 'frank-dead-link-checker'); ?>
+                            </h2>
+                            <table class="widefat">
+                                <tr>
+                                    <td style="width:180px;"><strong><?php esc_html_e('Force Stop Scan', 'frank-dead-link-checker'); ?></strong></td>
+                                    <td><?php esc_html_e('Forcefully stops all running/pending scans, clears the scan queue, and resets the scan state. Use when a scan appears stuck.', 'frank-dead-link-checker'); ?></td>
+                                    <td style="width:160px; text-align:right;">
+                                        <button type="button" id="frankdlc-force-stop-btn" class="button" style="color:#FF9800; border-color:#FF9800;">
+                                            <span class="dashicons dashicons-dismiss" style="margin-top:4px;"></span> <?php esc_html_e('Force Stop', 'frank-dead-link-checker'); ?>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong><?php esc_html_e('Clear Scan History', 'frank-dead-link-checker'); ?></strong></td>
+                                    <td><?php esc_html_e('Deletes all scan history records but keeps your link data intact.', 'frank-dead-link-checker'); ?></td>
+                                    <td style="text-align:right;">
+                                        <button type="button" id="frankdlc-clear-history-btn" class="button">
+                                            <span class="dashicons dashicons-trash" style="margin-top:4px;"></span> <?php esc_html_e('Clear History', 'frank-dead-link-checker'); ?>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong><?php esc_html_e('Reset Settings', 'frank-dead-link-checker'); ?></strong></td>
+                                    <td><?php esc_html_e('Resets all plugin settings to their default values without affecting link data or scan history.', 'frank-dead-link-checker'); ?></td>
+                                    <td style="text-align:right;">
+                                        <button type="button" id="frankdlc-reset-settings-btn" class="button">
+                                            <span class="dashicons dashicons-undo" style="margin-top:4px;"></span> <?php esc_html_e('Reset Settings', 'frank-dead-link-checker'); ?>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong><?php esc_html_e('Cleanup Exports', 'frank-dead-link-checker'); ?></strong></td>
+                                    <td><?php esc_html_e('Deletes all exported CSV/JSON files from the uploads directory to free up disk space.', 'frank-dead-link-checker'); ?></td>
+                                    <td style="text-align:right;">
+                                        <button type="button" id="frankdlc-cleanup-exports-btn" class="button">
+                                            <span class="dashicons dashicons-trash" style="margin-top:4px;"></span> <?php esc_html_e('Cleanup Exports', 'frank-dead-link-checker'); ?>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff5f5;">
+                                    <td><strong style="color:#dc3545;"><?php esc_html_e('Full Plugin Reset', 'frank-dead-link-checker'); ?></strong></td>
+                                    <td><?php esc_html_e('Resets EVERYTHING — link data, scan history, settings, and export files — back to factory defaults. Use with caution!', 'frank-dead-link-checker'); ?></td>
+                                    <td style="text-align:right;">
+                                        <button type="button" id="frankdlc-full-reset-btn" class="button" style="color:#dc3545; border-color:#dc3545;">
+                                            <span class="dashicons dashicons-warning" style="margin-top:4px;"></span> <?php esc_html_e('Full Reset', 'frank-dead-link-checker'); ?>
+                                        </button>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
 

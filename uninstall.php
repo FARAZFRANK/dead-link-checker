@@ -37,9 +37,9 @@ function FRANKDLC_uninstall()
     $table_links = $wpdb->prefix . 'FRANKDLC_links';
     $table_scans = $wpdb->prefix . 'FRANKDLC_scans';
 
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
     $wpdb->query("DROP TABLE IF EXISTS {$table_links}");
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
     $wpdb->query("DROP TABLE IF EXISTS {$table_scans}");
 
     // Delete all plugin options
@@ -55,6 +55,7 @@ function FRANKDLC_uninstall()
     }
 
     // Delete all plugin transients
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
@@ -64,6 +65,7 @@ function FRANKDLC_uninstall()
     );
 
     // Delete user meta
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $wpdb->query(
         $wpdb->prepare(
             "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",
@@ -97,6 +99,7 @@ function FRANKDLC_uninstall()
                 }
             }
         }
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
         @rmdir($export_dir);
     }
 

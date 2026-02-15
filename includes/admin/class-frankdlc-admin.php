@@ -192,7 +192,7 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $link_id = absint($_POST['link_id'] ?? 0);
+        $link_id = isset( $_POST['link_id'] ) ? absint( wp_unslash( $_POST['link_id'] ) ) : 0;
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'frank-dead-link-checker'));
         $result = FRANKDLC()->database->dismiss_link($link_id);
@@ -204,7 +204,7 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $link_id = absint($_POST['link_id'] ?? 0);
+        $link_id = isset( $_POST['link_id'] ) ? absint( wp_unslash( $_POST['link_id'] ) ) : 0;
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'frank-dead-link-checker'));
         $result = FRANKDLC()->database->undismiss_link($link_id);
@@ -216,7 +216,7 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $link_id = absint($_POST['link_id'] ?? 0);
+        $link_id = isset( $_POST['link_id'] ) ? absint( wp_unslash( $_POST['link_id'] ) ) : 0;
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'frank-dead-link-checker'));
         $link = FRANKDLC()->database->get_link($link_id);
@@ -250,7 +250,7 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $link_id = absint($_POST['link_id'] ?? 0);
+        $link_id = isset( $_POST['link_id'] ) ? absint( wp_unslash( $_POST['link_id'] ) ) : 0;
         if (!$link_id)
             wp_send_json_error(__('Invalid link ID.', 'frank-dead-link-checker'));
         $result = FRANKDLC()->database->delete_link($link_id);
@@ -263,8 +263,8 @@ class FRANKDLC_Admin
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
 
-        $link_id = absint($_POST['link_id'] ?? 0);
-        $new_url = isset($_POST['new_url']) ? esc_url_raw($_POST['new_url']) : '';
+        $link_id = isset( $_POST['link_id'] ) ? absint( wp_unslash( $_POST['link_id'] ) ) : 0;
+        $new_url = isset($_POST['new_url']) ? esc_url_raw(wp_unslash($_POST['new_url'])) : '';
         $new_anchor_text = isset($_POST['new_anchor_text']) ? sanitize_text_field(wp_unslash($_POST['new_anchor_text'])) : '';
 
         if (!$link_id || (!$new_url && $new_anchor_text === ''))
@@ -314,6 +314,13 @@ class FRANKDLC_Admin
                     FRANKDLC()->database->update_link($link_id, $update_data);
                 }
 
+                // Auto-recheck the new URL so status updates immediately
+                if ($new_url) {
+                    $checker = new FRANKDLC_Checker();
+                    $result = $checker->check_url($new_url);
+                    FRANKDLC()->database->update_link_result($link_id, $result);
+                }
+
                 wp_send_json_success(__('Link updated.', 'frank-dead-link-checker'));
             }
         }
@@ -323,16 +330,20 @@ class FRANKDLC_Admin
     public function ajax_remove_link()
     {
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
-        if (!current_user_can('manage_options'))
+        if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
+        }
 
-        $link_id = absint($_POST['link_id'] ?? 0);
-        if (!$link_id)
+        $link_id = isset( $_POST['link_id'] ) ? absint( wp_unslash( $_POST['link_id'] ) ) : 0;
+        if (!$link_id) {
             wp_send_json_error(__('Invalid link ID.', 'frank-dead-link-checker'));
+        }
 
         $link = FRANKDLC()->database->get_link($link_id);
-        if (!$link)
-            wp_send_json_error(__('Link not found.', 'frank-dead-link-checker'));
+        if (!$link) {
+            // Link may have been already deleted — treat as success
+            wp_send_json_success(__('Link already removed.', 'frank-dead-link-checker'));
+        }
 
         // Try to remove the link from post content if source is a post type
         if (!in_array($link->source_type, array('menu', 'widget', 'comment', 'custom_field'), true)) {
@@ -352,8 +363,12 @@ class FRANKDLC_Admin
         }
 
         // Always delete the link record from the database
-        FRANKDLC()->database->delete_link($link_id);
-        wp_send_json_success(__('Link removed.', 'frank-dead-link-checker'));
+        $deleted = FRANKDLC()->database->delete_link($link_id);
+        if ($deleted) {
+            wp_send_json_success(__('Link removed.', 'frank-dead-link-checker'));
+        } else {
+            wp_send_json_error(__('Failed to remove link from database.', 'frank-dead-link-checker'));
+        }
     }
 
     public function ajax_bulk_action()
@@ -361,8 +376,8 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $action = sanitize_key($_POST['bulk_action'] ?? '');
-        $link_ids = array_map('absint', (array) ($_POST['link_ids'] ?? array()));
+        $action = isset( $_POST['bulk_action'] ) ? sanitize_key( wp_unslash( $_POST['bulk_action'] ) ) : '';
+        $link_ids = isset( $_POST['link_ids'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['link_ids'] ) ) : array();
         if (!$action || empty($link_ids))
             wp_send_json_error(__('Invalid parameters.', 'frank-dead-link-checker'));
         $db = FRANKDLC()->database;
@@ -391,6 +406,7 @@ class FRANKDLC_Admin
                     break;
             }
         }
+        /* translators: %d: number of links processed */
         wp_send_json_success(array('message' => sprintf(__('%d links processed.', 'frank-dead-link-checker'), $count), 'count' => $count));
     }
 
@@ -399,8 +415,8 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $format = sanitize_key($_POST['format'] ?? 'csv');
-        $status = sanitize_key($_POST['status'] ?? 'all');
+        $format = isset( $_POST['format'] ) ? sanitize_key( wp_unslash( $_POST['format'] ) ) : 'csv';
+        $status = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : 'all';
         $export = new FRANKDLC_Export();
         $result = $export->export($format, array('status' => $status));
         is_wp_error($result) ? wp_send_json_error($result->get_error_message()) : wp_send_json_success(array('download_url' => $result));
@@ -525,6 +541,7 @@ class FRANKDLC_Admin
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
         }
         $count = $this->cleanup_export_files();
+        /* translators: %d: number of export files deleted */
         wp_send_json_success(sprintf(__('%d export file(s) deleted.', 'frank-dead-link-checker'), $count));
     }
 
@@ -561,7 +578,8 @@ class FRANKDLC_Admin
             return;
         $stats = FRANKDLC()->database->get_stats();
         if ($stats['broken'] > 0) {
-            printf('<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>', sprintf(esc_html__('%d broken links detected!', 'frank-dead-link-checker'), $stats['broken']), esc_html__('Review and fix them.', 'frank-dead-link-checker'));
+            /* translators: %d: number of broken links */
+            printf('<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>', sprintf(esc_html__('%d broken links detected!', 'frank-dead-link-checker'), intval($stats['broken'])), esc_html__('Review and fix them.', 'frank-dead-link-checker'));
         }
     }
 
@@ -569,8 +587,9 @@ class FRANKDLC_Admin
     {
         if (get_transient('FRANKDLC_activation_redirect')) {
             delete_transient('FRANKDLC_activation_redirect');
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking query parameter on activation redirect, not form processing
             if (!isset($_GET['activate-multi'])) {
-                wp_safe_redirect(admin_url('admin.php?page=dead-link-checker'));
+                wp_safe_redirect(admin_url('admin.php?page=frank-dead-link-checker'));
                 exit;
             }
         }
@@ -676,7 +695,7 @@ class FRANKDLC_Admin
                 </strong>
                 <?php esc_html_e('Total', 'frank-dead-link-checker'); ?>
             </p>
-            <p><a href="<?php echo esc_url(admin_url('admin.php?page=dead-link-checker')); ?>" class="button">
+            <p><a href="<?php echo esc_url(admin_url('admin.php?page=frank-dead-link-checker')); ?>" class="button">
                     <?php esc_html_e('View Links', 'frank-dead-link-checker'); ?>
                 </a></p>
         </div>
@@ -690,7 +709,7 @@ class FRANKDLC_Admin
         $stats = FRANKDLC()->database->get_stats();
         if ($stats['broken'] === 0)
             return;
-        $wp_admin_bar->add_node(array('id' => 'frankdlc-broken-links', 'title' => '<span class="ab-icon dashicons dashicons-warning"></span> ' . $stats['broken'], 'href' => admin_url('admin.php?page=dead-link-checker&status=broken')));
+        $wp_admin_bar->add_node(array('id' => 'frankdlc-broken-links', 'title' => '<span class="ab-icon dashicons dashicons-warning"></span> ' . esc_html($stats['broken']), 'href' => admin_url('admin.php?page=frank-dead-link-checker&status=broken')));
     }
 
     public function render_logs_page()
@@ -946,61 +965,6 @@ class FRANKDLC_Admin
                         <tr><td><strong>DNS Error</strong></td><td><?php esc_html_e('Domain does not exist — The domain name could not be resolved.', 'frank-dead-link-checker'); ?></td></tr>
                         <tr><td><strong>SSL Error</strong></td><td><?php esc_html_e('SSL certificate issue — The website has an invalid or expired SSL certificate.', 'frank-dead-link-checker'); ?></td></tr>
                         <tr><td><strong>Error</strong></td><td><?php esc_html_e('Connection Error — A generic error occurred while trying to reach the URL (e.g., connection refused, reset, or unknown failure).', 'frank-dead-link-checker'); ?></td></tr>
-                    </table>
-                </div>
-
-                <!-- Reset & Maintenance -->
-                <div class="frankdlc-card" style="background: #fff; padding: 24px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                        <span class="dashicons dashicons-update" style="color: #E91E63;"></span>
-                        <?php esc_html_e('Reset & Maintenance Options', 'frank-dead-link-checker'); ?>
-                    </h2>
-                    <table class="widefat">
-                        <tr>
-                            <td style="width:180px;"><strong><?php esc_html_e('Force Stop Scan', 'frank-dead-link-checker'); ?></strong></td>
-                            <td><?php esc_html_e('Forcefully stops all running/pending scans, clears the scan queue, and resets the scan state. Use when a scan appears stuck.', 'frank-dead-link-checker'); ?></td>
-                            <td style="width:160px; text-align:right;">
-                                <button type="button" id="frankdlc-force-stop-btn" class="button" style="color:#FF9800; border-color:#FF9800;">
-                                    <span class="dashicons dashicons-dismiss" style="margin-top:4px;"></span> <?php esc_html_e('Force Stop', 'frank-dead-link-checker'); ?>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong><?php esc_html_e('Clear Scan History', 'frank-dead-link-checker'); ?></strong></td>
-                            <td><?php esc_html_e('Deletes all scan history records but keeps your link data intact.', 'frank-dead-link-checker'); ?></td>
-                            <td style="text-align:right;">
-                                <button type="button" id="frankdlc-clear-history-btn" class="button">
-                                    <span class="dashicons dashicons-trash" style="margin-top:4px;"></span> <?php esc_html_e('Clear History', 'frank-dead-link-checker'); ?>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong><?php esc_html_e('Reset Settings', 'frank-dead-link-checker'); ?></strong></td>
-                            <td><?php esc_html_e('Resets all plugin settings to their default values without affecting link data or scan history.', 'frank-dead-link-checker'); ?></td>
-                            <td style="text-align:right;">
-                                <button type="button" id="frankdlc-reset-settings-btn" class="button">
-                                    <span class="dashicons dashicons-undo" style="margin-top:4px;"></span> <?php esc_html_e('Reset Settings', 'frank-dead-link-checker'); ?>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong><?php esc_html_e('Cleanup Exports', 'frank-dead-link-checker'); ?></strong></td>
-                            <td><?php esc_html_e('Deletes all exported CSV/JSON files from the uploads directory to free up disk space.', 'frank-dead-link-checker'); ?></td>
-                            <td style="text-align:right;">
-                                <button type="button" id="frankdlc-cleanup-exports-btn" class="button">
-                                    <span class="dashicons dashicons-trash" style="margin-top:4px;"></span> <?php esc_html_e('Cleanup Exports', 'frank-dead-link-checker'); ?>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr style="background:#fff5f5;">
-                            <td><strong style="color:#dc3545;"><?php esc_html_e('Full Plugin Reset', 'frank-dead-link-checker'); ?></strong></td>
-                            <td><?php esc_html_e('Resets EVERYTHING — link data, scan history, settings, and export files — back to factory defaults. Use with caution!', 'frank-dead-link-checker'); ?></td>
-                            <td style="text-align:right;">
-                                <button type="button" id="frankdlc-full-reset-btn" class="button" style="color:#dc3545; border-color:#dc3545;">
-                                    <span class="dashicons dashicons-warning" style="margin-top:4px;"></span> <?php esc_html_e('Full Reset', 'frank-dead-link-checker'); ?>
-                                </button>
-                            </td>
-                        </tr>
                     </table>
                 </div>
 

@@ -125,6 +125,13 @@ Frank Dead Link Checker scans your entire WordPress site, identifies dead links,
 
 ## 📝 Changelog
 
+### 3.1.0
+- Moved Reset & Maintenance Options from Help page to Settings page under new "Tools" tab
+- Added Settings tab persistence — active tab remembers across page reloads and Save Changes
+- Fixed activation redirect slug mismatch (7 instances across 4 files)
+- Fixed Settings page CSS class mismatch (blc-settings-page → frankdlc-settings-page)
+- Code quality improvements and standard compliance fixes across various files
+
 ### 3.0.9
 - WordPress.org review compliance — complete plugin rebrand
 - Changed plugin name to "Frank Dead Link Checker", slug to frank-dead-link-checker

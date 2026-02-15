@@ -16,32 +16,32 @@ class FRANKDLC_Dashboard
     public function render_page()
     {
         $stats = FRANKDLC()->database->get_stats();
-        $current_status = isset($_GET['status']) ? sanitize_key($_GET['status']) : 'all';
-        $current_type = isset($_GET['link_type']) ? sanitize_key($_GET['link_type']) : 'all';
+        $current_status = isset($_GET['status']) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : 'all';
+        $current_type = isset($_GET['link_type']) ? sanitize_key( wp_unslash( $_GET['link_type'] ) ) : 'all';
 
         // Handle search from POST (to allow URLs with special characters)
         $search = '';
         if (isset($_POST['FRANKDLC_search']) && isset($_POST['FRANKDLC_search_nonce'])) {
-            if (wp_verify_nonce($_POST['FRANKDLC_search_nonce'], 'FRANKDLC_search_nonce')) {
+            if (wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['FRANKDLC_search_nonce'] ) ), 'FRANKDLC_search_nonce')) {
                 $search = sanitize_text_field(wp_unslash($_POST['FRANKDLC_search']));
             }
         }
 
-        $paged = isset($_GET['paged']) ? absint($_GET['paged']) : 1;
+        $paged = isset($_GET['paged']) ? absint( wp_unslash( $_GET['paged'] ) ) : 1;
         $allowed_per_page = array(10, 20, 50, 100, 200);
-        $per_page = isset($_GET['per_page']) ? absint($_GET['per_page']) : 10;
+        $per_page = isset($_GET['per_page']) ? absint( wp_unslash( $_GET['per_page'] ) ) : 10;
         if (!in_array($per_page, $allowed_per_page, true)) {
             $per_page = 10;
         }
 
         // Sorting params
-        $orderby = isset($_GET['orderby']) ? sanitize_key($_GET['orderby']) : 'last_check';
-        $order = isset($_GET['order']) && strtoupper($_GET['order']) === 'ASC' ? 'ASC' : 'DESC';
+        $orderby = isset($_GET['orderby']) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : 'last_check';
+        $order = isset($_GET['order']) && strtoupper( sanitize_text_field( wp_unslash( $_GET['order'] ) ) ) === 'ASC' ? 'ASC' : 'DESC';
 
         // Advanced filters
-        $date_from = isset($_GET['date_from']) ? sanitize_text_field($_GET['date_from']) : '';
-        $date_to = isset($_GET['date_to']) ? sanitize_text_field($_GET['date_to']) : '';
-        $http_status = isset($_GET['http_status']) ? sanitize_text_field($_GET['http_status']) : '';
+        $date_from = isset($_GET['date_from']) ? sanitize_text_field( wp_unslash( $_GET['date_from'] ) ) : '';
+        $date_to = isset($_GET['date_to']) ? sanitize_text_field( wp_unslash( $_GET['date_to'] ) ) : '';
+        $http_status = isset($_GET['http_status']) ? sanitize_text_field( wp_unslash( $_GET['http_status'] ) ) : '';
 
         $links = FRANKDLC()->database->get_links(array(
             'status' => $current_status,
@@ -78,7 +78,10 @@ class FRANKDLC_Dashboard
                     </h1>
                     <?php if ($latest_scan && $latest_scan->completed_at): ?>
                         <span class="frankdlc-last-scan">
-                            <?php printf(esc_html__('Last scan: %s ago', 'frank-dead-link-checker'), human_time_diff(strtotime($latest_scan->completed_at))); ?>
+                            <?php
+                            /* translators: %s: human-readable time difference */
+                            printf(esc_html__('Last scan: %s ago', 'frank-dead-link-checker'), esc_html(human_time_diff(strtotime($latest_scan->completed_at))));
+                            ?>
                         </span>
                     <?php endif; ?>
                     <?php
@@ -213,7 +216,7 @@ class FRANKDLC_Dashboard
                 </ul>
                 <div class="frankdlc-filter-right">
                     <form method="post" class="frankdlc-search-form"
-                        action="<?php echo esc_url(admin_url('admin.php?page=dead-link-checker&status=' . $current_status)); ?>">
+                        action="<?php echo esc_url(admin_url('admin.php?page=frank-dead-link-checker&status=' . $current_status)); ?>">
                         <?php wp_nonce_field('FRANKDLC_search_nonce', 'FRANKDLC_search_nonce'); ?>
                         <input type="search" name="FRANKDLC_search" value="<?php echo esc_attr($search); ?>"
                             placeholder="<?php esc_attr_e('Search URLs...', 'frank-dead-link-checker'); ?>">
@@ -225,7 +228,7 @@ class FRANKDLC_Dashboard
             <!-- Advanced Filters -->
             <div class="frankdlc-advanced-filters">
                 <form method="get" class="frankdlc-filter-form">
-                    <input type="hidden" name="page" value="dead-link-checker">
+                    <input type="hidden" name="page" value="frank-dead-link-checker">
                     <input type="hidden" name="status" value="<?php echo esc_attr($current_status); ?>">
                     <input type="hidden" name="orderby" value="<?php echo esc_attr($orderby); ?>">
                     <input type="hidden" name="order" value="<?php echo esc_attr($order); ?>">
@@ -279,7 +282,7 @@ class FRANKDLC_Dashboard
                     <button type="submit"
                         class="button"><?php esc_html_e('Apply Filters', 'frank-dead-link-checker'); ?></button>
                     <?php if ($current_type !== 'all' || $http_status || $date_from || $date_to): ?>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=dead-link-checker&status=' . $current_status)); ?>"
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=frank-dead-link-checker&status=' . $current_status)); ?>"
                             class="button frankdlc-clear-filters"><?php esc_html_e('Clear', 'frank-dead-link-checker'); ?></a>
                     <?php endif; ?>
                 </form>
@@ -314,7 +317,7 @@ class FRANKDLC_Dashboard
                     <label for="frankdlc-per-page-select" style="font-size:13px; white-space:nowrap;"><?php esc_html_e('Rows per page:', 'frank-dead-link-checker'); ?></label>
                     <select id="frankdlc-per-page-select" style="width:auto; min-width:60px;" onchange="var url=new window.URL(window.location.href); url.searchParams.set('per_page',this.value); url.searchParams.set('paged','1'); window.location.href=url.toString();">
                         <?php foreach (array(10, 20, 50, 100, 200) as $pp): ?>
-                            <option value="<?php echo $pp; ?>" <?php selected($per_page, $pp); ?>><?php echo $pp; ?></option>
+                            <option value="<?php echo esc_attr($pp); ?>" <?php selected($per_page, $pp); ?>><?php echo esc_html($pp); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -399,7 +402,10 @@ class FRANKDLC_Dashboard
                                 <td class="check-column"><input type="checkbox" class="frankdlc-link-checkbox"
                                         value="<?php echo esc_attr($link->id); ?>"></td>
                                 <td class="frankdlc-col-status">
-                                    <?php echo $link->get_status_badge(); ?>
+                                    <?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_status_badge() returns pre-escaped HTML
+                                    echo $link->get_status_badge();
+                                    ?>
                                 </td>
                                 <td class="frankdlc-col-url">
                                     <div class="frankdlc-url-wrap">
@@ -409,7 +415,10 @@ class FRANKDLC_Dashboard
                                         </a>
                                         <?php if ($link->redirect_url): ?>
                                             <span class="frankdlc-redirect-info">→
-                                                <?php echo esc_html(sprintf(_n('%d redirect', '%d redirects', $link->redirect_count, 'frank-dead-link-checker'), $link->redirect_count)); ?>
+                                                <?php
+                                                /* translators: %d: number of redirects */
+                                                echo esc_html(sprintf(_n('%d redirect', '%d redirects', $link->redirect_count, 'frank-dead-link-checker'), $link->redirect_count));
+                                                ?>
                                             </span>
                                         <?php endif; ?>
                                         <?php if ($link->anchor_text): ?>
@@ -434,7 +443,9 @@ class FRANKDLC_Dashboard
                                 <td class="frankdlc-col-checked">
                                     <?php if ($link->last_check): ?>
                                         <span title="<?php echo esc_attr($link->last_check); ?>">
-                                            <?php echo esc_html(sprintf(__('%s ago', 'frank-dead-link-checker'), human_time_diff(strtotime($link->last_check)))); ?>
+                                            <?php
+                                            /* translators: %s: human-readable time difference */
+                                            echo esc_html(sprintf(__('%s ago', 'frank-dead-link-checker'), human_time_diff(strtotime($link->last_check)))); ?>
                                         </span>
                                     <?php else: ?>
                                         <span class="frankdlc-unchecked"><?php esc_html_e('Never', 'frank-dead-link-checker'); ?></span>
@@ -483,6 +494,7 @@ class FRANKDLC_Dashboard
             <?php if ($total_pages > 1): ?>
                 <div class="frankdlc-pagination">
                     <?php
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- paginate_links returns safe HTML
                     echo paginate_links(array(
                         'base' => add_query_arg(array('paged' => '%#%', 'per_page' => $per_page)),
                         'format' => '',

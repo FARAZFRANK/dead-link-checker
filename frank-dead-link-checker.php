@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Frank Dead Link Checker
- * Plugin URI: https://awplife.com/
+ * Plugin URI: https://wordpress.org/plugins/frank-dead-link-checker
  * Description: Frank Dead Link Checker for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
- * Version: 3.0.9
+ * Version: 3.1.0
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
- * Author URI: https://awplife.com/
+ * Author URI: https://wordpress.org/plugins/frank-dead-link-checker
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: frank-dead-link-checker
@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('FRANKDLC_VERSION', '3.0.9');
+define('FRANKDLC_VERSION', '3.1.0');
 define('FRANKDLC_PLUGIN_FILE', __FILE__);
 define('FRANKDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FRANKDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -81,13 +81,13 @@ register_deactivation_hook(__FILE__, function () {
 /**
  * Main Plugin Class
  */
-final class Broken_Link_Checker
+final class FRANKDLC_Plugin
 {
 
     /**
      * Single instance of the plugin
      *
-     * @var Broken_Link_Checker|null
+     * @var FRANKDLC_Plugin|null
      */
     private static $instance = null;
 
@@ -115,7 +115,7 @@ final class Broken_Link_Checker
     /**
      * Get single instance of the plugin
      *
-     * @return Broken_Link_Checker
+     * @return FRANKDLC_Plugin
      */
     public static function get_instance()
     {
@@ -139,7 +139,7 @@ final class Broken_Link_Checker
     private function init_hooks()
     {
         add_action('plugins_loaded', array($this, 'init'));
-        add_action('init', array($this, 'load_textdomain'));
+
     }
 
     /**
@@ -172,22 +172,12 @@ final class Broken_Link_Checker
         /**
          * Fires after the plugin is fully initialized
          *
-         * @param Broken_Link_Checker $this The plugin instance
+         * @param FRANKDLC_Plugin $this The plugin instance
          */
         do_action('FRANKDLC_init', $this);
     }
 
-    /**
-     * Load plugin text domain for translations
-     */
-    public function load_textdomain()
-    {
-        load_plugin_textdomain(
-            'frank-dead-link-checker',
-            false,
-            dirname(FRANKDLC_PLUGIN_BASENAME) . '/languages'
-        );
-    }
+
 
     /**
      * Get plugin option with default value
@@ -235,11 +225,11 @@ final class Broken_Link_Checker
 /**
  * Get the main plugin instance
  *
- * @return Broken_Link_Checker
+ * @return FRANKDLC_Plugin
  */
 function FRANKDLC()
 {
-    return Broken_Link_Checker::get_instance();
+    return FRANKDLC_Plugin::get_instance();
 }
 
 // Initialize the plugin

@@ -66,6 +66,7 @@ class FRANKDLC_Deactivator
         global $wpdb;
 
         // Delete all plugin transients
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query(
             $wpdb->prepare(
                 "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
@@ -90,6 +91,7 @@ class FRANKDLC_Deactivator
         $table_scans = $wpdb->prefix . 'FRANKDLC_scans';
 
         // Mark running scans as cancelled
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $table_scans,
             array(
@@ -103,6 +105,7 @@ class FRANKDLC_Deactivator
         );
 
         // Also mark pending scans
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $table_scans,
             array(

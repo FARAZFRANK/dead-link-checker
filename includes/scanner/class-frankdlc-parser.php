@@ -206,4 +206,31 @@ class FRANKDLC_Parser
                 return true;
         }
     }
+
+    /**
+     * Check if a URL is an internal link
+     *
+     * Compares the URL's host against the site's host to determine
+     * if the link points to the same WordPress installation.
+     *
+     * @param string $url The URL to check
+     * @return bool True if the URL is internal, false otherwise
+     */
+    public function is_internal_link($url)
+    {
+        if (empty($url)) {
+            return false;
+        }
+
+        $site_host = wp_parse_url(home_url(), PHP_URL_HOST);
+        $url_host = wp_parse_url($url, PHP_URL_HOST);
+
+        // If we can't parse the host, treat as internal (relative URL)
+        if (empty($url_host)) {
+            return true;
+        }
+
+        // Compare hosts (case-insensitive)
+        return strcasecmp($site_host, $url_host) === 0;
+    }
 }

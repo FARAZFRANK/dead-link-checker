@@ -85,9 +85,9 @@
 
             // Modal
             $(document).on('click', '.frankdlc-modal-close, .frankdlc-modal-cancel', this.closeModal.bind(this));
-            $('#frankdlc-edit-save').on('click', this.saveEdit.bind(this));
-            $('#frankdlc-remove-link').on('click', this.removeLink.bind(this));
-            $('#frankdlc-redirect-save').on('click', this.saveRedirect.bind(this));
+            $(document).on('click', '#frankdlc-edit-save', this.saveEdit.bind(this));
+            $(document).on('click', '#frankdlc-remove-link', this.removeLink.bind(this));
+            $(document).on('click', '#frankdlc-redirect-save', this.saveRedirect.bind(this));
 
             // Close modal on outside click
             $(document).on('click', '.frankdlc-modal', function (e) {
@@ -114,6 +114,37 @@
 
                 $('.frankdlc-tab-panel').removeClass('active');
                 $(target).addClass('active');
+
+                // Persist active tab in URL hash
+                if (history.replaceState) {
+                    history.replaceState(null, null, target);
+                } else {
+                    window.location.hash = target;
+                }
+
+                // Also save to localStorage for form-submit persistence
+                try { localStorage.setItem('frankdlc_active_tab', target); } catch (e) { }
+            });
+
+            // Restore active tab from URL hash or localStorage on page load
+            var hash = window.location.hash;
+            if (!hash || !$(hash).length || !$(hash).hasClass('frankdlc-tab-panel')) {
+                try { hash = localStorage.getItem('frankdlc_active_tab'); } catch (e) { }
+            }
+            if (hash && $(hash).length && $(hash).hasClass('frankdlc-tab-panel')) {
+                $('.frankdlc-tabs-nav a').removeClass('active');
+                $('.frankdlc-tabs-nav a[href="' + hash + '"]').addClass('active');
+                $('.frankdlc-tab-panel').removeClass('active');
+                $(hash).addClass('active');
+            }
+
+            // Append hash to form action before submit so WordPress redirects back with tab hash
+            $('.frankdlc-settings-page form').on('submit', function () {
+                var activeTab = $('.frankdlc-tabs-nav a.active').attr('href') || '#general';
+                var $form = $(this);
+                var action = $form.attr('action') || '';
+                action = action.replace(/#.*$/, '') + activeTab;
+                $form.attr('action', action);
             });
         },
 
@@ -130,7 +161,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_start_scan',
+                    action: 'FRANKDLC_start_scan',
                     nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
@@ -162,7 +193,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_stop_scan',
+                    action: 'FRANKDLC_stop_scan',
                     nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
@@ -203,7 +234,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_fresh_scan',
+                    action: 'FRANKDLC_fresh_scan',
                     nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
@@ -232,7 +263,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_get_scan_progress',
+                    action: 'FRANKDLC_get_scan_progress',
                     nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
@@ -275,7 +306,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_get_scan_progress',
+                    action: 'FRANKDLC_get_scan_progress',
                     nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
@@ -306,7 +337,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_recheck_link',
+                    action: 'FRANKDLC_recheck_link',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
@@ -342,7 +373,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_dismiss_link',
+                    action: 'FRANKDLC_dismiss_link',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
@@ -369,7 +400,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_undismiss_link',
+                    action: 'FRANKDLC_undismiss_link',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
@@ -398,7 +429,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_delete_link',
+                    action: 'FRANKDLC_delete_link',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
@@ -450,7 +481,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_edit_link',
+                    action: 'FRANKDLC_edit_link',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId,
                     new_url: newUrl,
@@ -479,28 +510,36 @@
             }
 
             const linkId = $('#frankdlc-edit-link-id').val();
-            $('#frankdlc-remove-link').prop('disabled', true).text(frankdlcAdmin.strings.processing);
+            if (!linkId) {
+                FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                return;
+            }
+
+            const $btn = $('#frankdlc-remove-link');
+            const originalHtml = $btn.html();
+            $btn.prop('disabled', true).html(frankdlcAdmin.strings.processing);
 
             $.ajax({
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_remove_link',
+                    action: 'FRANKDLC_remove_link',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
-                    $('#frankdlc-remove-link').prop('disabled', false).text(frankdlcAdmin.strings.removeLink);
+                    $btn.prop('disabled', false).html(originalHtml);
                     if (response.success) {
                         FRANKDLC.closeModal();
                         FRANKDLC.showToast(response.data, 'success');
-                        setTimeout(function () { location.reload(); }, 1000);
+                        // Remove the row from the table
+                        $('tr[data-link-id="' + linkId + '"]').fadeOut(400, function() { $(this).remove(); });
                     } else {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#frankdlc-remove-link').prop('disabled', false).text(frankdlcAdmin.strings.removeLink);
+                    $btn.prop('disabled', false).html(originalHtml);
                     FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
@@ -535,7 +574,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_create_redirect',
+                    action: 'FRANKDLC_create_redirect',
                     nonce: frankdlcAdmin.nonce,
                     link_id: linkId,
                     source_url: sourceUrl,
@@ -586,7 +625,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_bulk_action',
+                    action: 'FRANKDLC_bulk_action',
                     nonce: frankdlcAdmin.nonce,
                     bulk_action: action,
                     link_ids: linkIds
@@ -627,7 +666,7 @@
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'frankdlc_export_links',
+                    action: 'FRANKDLC_export_links',
                     nonce: frankdlcAdmin.nonce,
                     format: format,
                     status: new URLSearchParams(window.location.search).get('status') || 'all'
@@ -707,7 +746,7 @@
             $.ajax({
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'frankdlc_force_stop_scan', nonce: frankdlcAdmin.nonce },
+                data: { action: 'FRANKDLC_force_stop_scan', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.allScansForceStopped, 'success');
@@ -737,7 +776,7 @@
             $.ajax({
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'frankdlc_reset_settings', nonce: frankdlcAdmin.nonce },
+                data: { action: 'FRANKDLC_reset_settings', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.settingsResetDefaults, 'success');
@@ -767,7 +806,7 @@
             $.ajax({
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'frankdlc_clear_scan_history', nonce: frankdlcAdmin.nonce },
+                data: { action: 'FRANKDLC_clear_scan_history', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanHistoryCleared, 'success');
@@ -801,7 +840,7 @@
             $.ajax({
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'frankdlc_full_reset', nonce: frankdlcAdmin.nonce },
+                data: { action: 'FRANKDLC_full_reset', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.pluginFullyReset, 'success');
@@ -831,7 +870,7 @@
             $.ajax({
                 url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
-                data: { action: 'frankdlc_cleanup_exports', nonce: frankdlcAdmin.nonce },
+                data: { action: 'FRANKDLC_cleanup_exports', nonce: frankdlcAdmin.nonce },
                 success: function (response) {
                     if (response.success) {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.exportFilesCleaned, 'success');

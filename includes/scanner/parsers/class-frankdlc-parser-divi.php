@@ -307,8 +307,8 @@ class FRANKDLC_Parser_Divi
             return 'internal';
         }
 
-        $site_url = parse_url(home_url(), PHP_URL_HOST);
-        $link_host = parse_url($url, PHP_URL_HOST);
+        $site_url = wp_parse_url(home_url(), PHP_URL_HOST);
+        $link_host = wp_parse_url($url, PHP_URL_HOST);
 
         if (empty($link_host) || $link_host === $site_url) {
             return 'internal';

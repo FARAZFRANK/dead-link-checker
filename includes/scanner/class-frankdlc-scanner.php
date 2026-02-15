@@ -266,7 +266,7 @@ class FRANKDLC_Scanner
     private function scan_widgets()
     {
         $count = 0;
-        $sidebars = wp_get_sidebars_widgets();
+        $sidebars = get_option( 'sidebars_widgets', array() );
 
         foreach ($sidebars as $sidebar_id => $widgets) {
             if ($sidebar_id === 'wp_inactive_widgets' || !is_array($widgets))
@@ -666,6 +666,7 @@ class FRANKDLC_Scanner
         $table = FRANKDLC()->database->get_scans_table();
 
         // Cancel all running and pending scans in database
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $table,
             array(
@@ -678,6 +679,7 @@ class FRANKDLC_Scanner
             array('%s')
         );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $table,
             array(
@@ -716,13 +718,16 @@ class FRANKDLC_Scanner
         $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-30 minutes'));
 
         // Find scans that have been running for over 30 minutes
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $stale_scans = $wpdb->get_results($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT id FROM {$table} WHERE status IN ('running', 'pending') AND started_at < %s",
             $stale_threshold
         ));
 
         if (!empty($stale_scans)) {
             foreach ($stale_scans as $scan) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->update(
                     $table,
                     array(
@@ -745,6 +750,7 @@ class FRANKDLC_Scanner
             wp_clear_scheduled_hook('FRANKDLC_process_queue');
 
             if (defined('WP_DEBUG') && WP_DEBUG) {
+                // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Only used when WP_DEBUG enabled
                 error_log(sprintf('[BLC] Auto-cancelled %d stale scan(s)', count($stale_scans)));
             }
         }
@@ -812,7 +818,9 @@ class FRANKDLC_Scanner
         // Get broken and warning links that haven't been checked in the last 6 hours
         $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-6 hours'));
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $links = $wpdb->get_results($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT * FROM {$table} 
              WHERE (is_broken = 1 OR is_warning = 1) 
              AND is_dismissed = 0 
@@ -845,6 +853,7 @@ class FRANKDLC_Scanner
 
         // Log the recheck for debugging
         if (defined('WP_DEBUG') && WP_DEBUG) {
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Only used when WP_DEBUG enabled
             error_log(sprintf(
                 '[BLC] Auto-recheck completed: %d links rechecked',
                 count($links)

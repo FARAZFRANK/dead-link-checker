@@ -285,6 +285,7 @@ class FRANKDLC_Link
             case self::SOURCE_COMMENT:
                 $comment = get_comment($this->source_id);
                 return $comment
+                    /* translators: %s: post title */
                     ? sprintf(__('Comment on "%s"', 'frank-dead-link-checker'), get_the_title($comment->comment_post_ID))
                     : __('(Deleted)', 'frank-dead-link-checker');
 
@@ -357,6 +358,7 @@ class FRANKDLC_Link
             return __('Never', 'frank-dead-link-checker');
         }
 
+        /* translators: %s: human-readable time difference */
         return sprintf(__('%s ago', 'frank-dead-link-checker'), human_time_diff(strtotime($this->last_check), current_time('timestamp')));
     }
 

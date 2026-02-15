@@ -67,7 +67,7 @@ class FRANKDLC_Notifications
     private function build_email_message($scan)
     {
         $broken_links = FRANKDLC()->database->get_links(array('status' => 'broken', 'per_page' => 20));
-        $dashboard_url = admin_url('admin.php?page=dead-link-checker&status=broken');
+        $dashboard_url = admin_url('admin.php?page=frank-dead-link-checker&status=broken');
         $site_name = get_bloginfo('name');
 
         ob_start();
@@ -266,7 +266,9 @@ class FRANKDLC_Notifications
                 </div>
                 <div class="footer">
                     <p>
-                        <?php printf(esc_html__('This email was sent by Frank Dead Link Checker plugin on %s', 'frank-dead-link-checker'), esc_html($site_name)); ?>
+                        <?php
+                    /* translators: %s: site name */
+                    printf(esc_html__('This email was sent by Frank Dead Link Checker plugin on %s', 'frank-dead-link-checker'), esc_html($site_name)); ?>
                     </p>
                 </div>
             </div>
@@ -293,6 +295,7 @@ class FRANKDLC_Notifications
 
         $recipients = isset($settings['email_recipients']) ? (array) $settings['email_recipients'] : array(get_option('admin_email'));
         $site_name = get_bloginfo('name');
+        /* translators: %s: site name */
         $subject = sprintf(__('[%s] Weekly Broken Links Digest', 'frank-dead-link-checker'), $site_name);
 
         $fake_scan = (object) array(

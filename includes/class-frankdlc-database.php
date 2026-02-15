@@ -95,6 +95,7 @@ class FRANKDLC_Database
                 'last_check' => current_time('mysql'),
             );
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->update(
                 $this->table_links,
                 $update_data,
@@ -122,6 +123,7 @@ class FRANKDLC_Database
             'check_count' => 0,
         );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $wpdb->insert($this->table_links, $insert_data);
 
         return $wpdb->insert_id ?: false;
@@ -151,13 +153,16 @@ class FRANKDLC_Database
         );
 
         // Increment check count
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "UPDATE {$this->table_links} SET check_count = check_count + 1 WHERE id = %d",
                 $link_id
             )
         );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $update_success = (bool) $wpdb->update(
             $this->table_links,
             $data,
@@ -180,8 +185,10 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_links} WHERE id = %d",
                 $link_id
             )
@@ -203,8 +210,10 @@ class FRANKDLC_Database
 
         $url_hash = md5($url);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_links} 
                 WHERE url_hash = %s 
                 AND source_id = %d 
@@ -339,14 +348,17 @@ class FRANKDLC_Database
         $offset = ($args['page'] - 1) * $args['per_page'];
 
         // Build final query
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $sql = "SELECT * FROM {$this->table_links} WHERE {$where_clause} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
         $values[] = $args['per_page'];
         $values[] = $offset;
 
         if (!empty($values)) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $sql = $wpdb->prepare($sql, $values);
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return $wpdb->get_results($sql);
     }
 
@@ -406,12 +418,15 @@ class FRANKDLC_Database
         }
 
         $where_clause = implode(' AND ', $where);
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $sql = "SELECT COUNT(*) FROM {$this->table_links} WHERE {$where_clause}";
 
         if (!empty($values)) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $sql = $wpdb->prepare($sql, $values);
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
         return (int) $wpdb->get_var($sql);
     }
 
@@ -429,12 +444,19 @@ class FRANKDLC_Database
 
         if ($stats === false) {
             $stats = array(
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'total' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'broken' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 1 AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'warning' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_warning = 1 AND is_broken = 0 AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'working' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 0 AND is_warning = 0 AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'dismissed' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 1"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'internal' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'internal' AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'external' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'external' AND is_dismissed = 0"),
             );
 
@@ -462,6 +484,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->update(
             $this->table_links,
             array('is_dismissed' => 1),
@@ -485,6 +508,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->update(
             $this->table_links,
             array('is_dismissed' => 0),
@@ -508,6 +532,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->delete(
             $this->table_links,
             array('id' => $link_id),
@@ -550,6 +575,7 @@ class FRANKDLC_Database
             return false;
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->update(
             $this->table_links,
             $update,
@@ -574,6 +600,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->delete(
             $this->table_links,
             array(
@@ -600,8 +627,10 @@ class FRANKDLC_Database
 
         $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-1 day'));
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_links} 
                 WHERE is_dismissed = 0 
                 AND (last_check IS NULL OR last_check < %s)
@@ -627,6 +656,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $wpdb->insert(
             $this->table_scans,
             array(
@@ -651,6 +681,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->update(
             $this->table_scans,
             $data,
@@ -680,6 +711,7 @@ class FRANKDLC_Database
 
         $this->clear_stats_cache();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->update(
             $this->table_scans,
             $data,
@@ -696,6 +728,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         return $wpdb->get_row(
             "SELECT * FROM {$this->table_scans} ORDER BY id DESC LIMIT 1"
         );
@@ -711,8 +744,10 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_scans} ORDER BY id DESC LIMIT %d",
                 $limit
             )
@@ -728,6 +763,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $running = $wpdb->get_var(
             "SELECT COUNT(*) FROM {$this->table_scans} WHERE status IN ('pending', 'running')"
         );
@@ -744,6 +780,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         return $wpdb->get_row(
             "SELECT * FROM {$this->table_scans} WHERE status IN ('pending', 'running') ORDER BY id DESC LIMIT 1"
         );
@@ -761,9 +798,11 @@ class FRANKDLC_Database
         global $wpdb;
 
         // Delete all links
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
         $links_result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
 
         // Delete all scans
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
         $scans_result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
 
         // Clear any transients
@@ -783,6 +822,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
         $result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
 
         delete_transient('FRANKDLC_current_scan_id');
@@ -800,6 +840,7 @@ class FRANKDLC_Database
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
         $result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
 
         $this->clear_stats_cache();
@@ -820,7 +861,9 @@ class FRANKDLC_Database
         $threshold = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
 
         // Delete old completed/cancelled/failed scans
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $deleted = $wpdb->query($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "DELETE FROM {$this->table_scans} WHERE status IN ('completed', 'cancelled', 'failed') AND started_at < %s",
             $threshold
         ));

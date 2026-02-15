@@ -218,7 +218,8 @@ class FRANKDLC_Multisite
             $table_name = $wpdb->prefix . 'FRANKDLC_links';
 
             // Check if table exists
-            if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
                 restore_current_blog();
                 continue;
             }
@@ -227,7 +228,7 @@ class FRANKDLC_Multisite
                 'id' => $site->blog_id,
                 'name' => get_bloginfo('name'),
                 'url' => get_bloginfo('url'),
-                'admin_url' => admin_url('admin.php?page=dead-link-checker'),
+                'admin_url' => admin_url('admin.php?page=frank-dead-link-checker'),
                 'total' => 0,
                 'broken' => 0,
                 'warnings' => 0,
@@ -235,14 +236,19 @@ class FRANKDLC_Multisite
             );
 
             // Get link counts
-            $site_stats['total'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
-            $site_stats['broken'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE is_broken = 1 AND is_dismissed = 0");
-            $site_stats['warnings'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE status_code BETWEEN 300 AND 399 AND is_dismissed = 0");
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $site_stats['total'] = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $site_stats['broken'] = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE is_broken = 1 AND is_dismissed = 0" );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $site_stats['warnings'] = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE status_code BETWEEN 300 AND 399 AND is_dismissed = 0" );
 
             // Get last scan
             $scans_table = $wpdb->prefix . 'FRANKDLC_scans';
-            if ($wpdb->get_var("SHOW TABLES LIKE '$scans_table'") === $scans_table) {
-                $site_stats['last_scan'] = $wpdb->get_var("SELECT end_time FROM $scans_table WHERE status = 'completed' ORDER BY id DESC LIMIT 1");
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $scans_table ) ) === $scans_table ) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                $site_stats['last_scan'] = $wpdb->get_var( "SELECT end_time FROM {$scans_table} WHERE status = 'completed' ORDER BY id DESC LIMIT 1" );
             }
 
             $stats['total_links'] += $site_stats['total'];
