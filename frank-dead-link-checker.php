@@ -3,7 +3,7 @@
  * Plugin Name: Frank Dead Link Checker
  * Plugin URI: https://wordpress.org/plugins/frank-dead-link-checker
  * Description: Frank Dead Link Checker for WordPress. Scan posts, pages, custom post types, page builders, menus, widgets, and comments with email notifications, redirects, and export features.
- * Version: 3.1.0
+ * Version: 1.0.1
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('FRANKDLC_VERSION', '3.1.0');
+define('FRANKDLC_VERSION', '1.0.1');
 define('FRANKDLC_PLUGIN_FILE', __FILE__);
 define('FRANKDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FRANKDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -159,14 +159,14 @@ final class FRANKDLC_Plugin
         }
 
         // Initialize notifications
-        new FRANKDLC_Notifications();
+        // new FRANKDLC_Notifications();
 
         // Initialize redirects
-        new FRANKDLC_Redirects();
+        // new FRANKDLC_Redirects();
 
         // Initialize multisite support
         if (is_multisite()) {
-            new FRANKDLC_Multisite();
+            // new FRANKDLC_Multisite();
         }
 
         /**

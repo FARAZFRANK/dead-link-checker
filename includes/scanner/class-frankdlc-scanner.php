@@ -67,25 +67,25 @@ class FRANKDLC_Scanner
             $count += $this->scan_post_type('page');
         }
 
-        // Scan menus
-        if (!empty($settings['scan_menus'])) {
-            $count += $this->scan_menus();
-        }
+        // Scan menus (Pro only)
+        // if (!empty($settings['scan_menus'])) {
+        //     $count += $this->scan_menus();
+        // }
 
-        // Scan widgets
-        if (!empty($settings['scan_widgets'])) {
-            $count += $this->scan_widgets();
-        }
+        // Scan widgets (Pro only)
+        // if (!empty($settings['scan_widgets'])) {
+        //     $count += $this->scan_widgets();
+        // }
 
-        // Scan comments
-        if (!empty($settings['scan_comments'])) {
-            $count += $this->scan_comments();
-        }
+        // Scan comments (Pro only)
+        // if (!empty($settings['scan_comments'])) {
+        //     $count += $this->scan_comments();
+        // }
 
-        // Scan custom fields
-        if (!empty($settings['scan_custom_fields'])) {
-            $count += $this->scan_all_custom_fields();
-        }
+        // Scan custom fields (Pro only)
+        // if (!empty($settings['scan_custom_fields'])) {
+        //     $count += $this->scan_all_custom_fields();
+        // }
 
         return $count;
     }
@@ -108,18 +108,18 @@ class FRANKDLC_Scanner
             // Check if this post uses any page builder - if so, use page builder parser instead of standard
             $uses_page_builder = false;
 
-            // Check for Elementor
-            if (class_exists('FRANKDLC_Parser_Elementor') && FRANKDLC_Parser_Elementor::is_active() && FRANKDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
-                $uses_page_builder = true;
-            }
-            // Check for Divi
-            if (class_exists('FRANKDLC_Parser_Divi') && FRANKDLC_Parser_Divi::is_active() && FRANKDLC_Parser_Divi::is_built_with_divi($post_id)) {
-                $uses_page_builder = true;
-            }
-            // Check for WPBakery
-            if (class_exists('FRANKDLC_Parser_WPBakery') && FRANKDLC_Parser_WPBakery::is_active() && FRANKDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
-                $uses_page_builder = true;
-            }
+            // Check for Elementor (Pro only)
+            // if (class_exists('FRANKDLC_Parser_Elementor') && FRANKDLC_Parser_Elementor::is_active() && FRANKDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
+            //     $uses_page_builder = true;
+            // }
+            // Check for Divi (Pro only)
+            // if (class_exists('FRANKDLC_Parser_Divi') && FRANKDLC_Parser_Divi::is_active() && FRANKDLC_Parser_Divi::is_built_with_divi($post_id)) {
+            //     $uses_page_builder = true;
+            // }
+            // Check for WPBakery (Pro only)
+            // if (class_exists('FRANKDLC_Parser_WPBakery') && FRANKDLC_Parser_WPBakery::is_active() && FRANKDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
+            //     $uses_page_builder = true;
+            // }
             // Check for Gutenberg blocks
             if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active() && FRANKDLC_Parser_Gutenberg::has_blocks($post_id)) {
                 $uses_page_builder = true;
@@ -170,7 +170,8 @@ class FRANKDLC_Scanner
         $count = 0;
         $links = array();
 
-        // Check for Elementor content
+        // Check for Elementor content (Pro only)
+        /*
         if (class_exists('FRANKDLC_Parser_Elementor') && FRANKDLC_Parser_Elementor::is_active()) {
             if (FRANKDLC_Parser_Elementor::is_built_with_elementor($post_id)) {
                 $elementor_links = FRANKDLC_Parser_Elementor::extract_links($post_id);
@@ -184,8 +185,10 @@ class FRANKDLC_Scanner
                 }
             }
         }
+        */
 
-        // Check for Divi content
+        // Check for Divi content (Pro only)
+        /*
         if (class_exists('FRANKDLC_Parser_Divi') && FRANKDLC_Parser_Divi::is_active()) {
             if (FRANKDLC_Parser_Divi::is_built_with_divi($post_id)) {
                 $divi_links = FRANKDLC_Parser_Divi::extract_links($post_id);
@@ -199,8 +202,10 @@ class FRANKDLC_Scanner
                 }
             }
         }
+        */
 
-        // Check for WPBakery content
+        // Check for WPBakery content (Pro only)
+        /*
         if (class_exists('FRANKDLC_Parser_WPBakery') && FRANKDLC_Parser_WPBakery::is_active()) {
             if (FRANKDLC_Parser_WPBakery::is_built_with_wpbakery($post_id)) {
                 $wpbakery_links = FRANKDLC_Parser_WPBakery::extract_links($post_id);
@@ -214,6 +219,7 @@ class FRANKDLC_Scanner
                 }
             }
         }
+        */
 
         // Check for Gutenberg blocks
         if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active()) {
@@ -528,7 +534,7 @@ class FRANKDLC_Scanner
 
         $settings = get_option('FRANKDLC_settings', array());
         $batch_size = isset($settings['concurrent_requests']) ? absint($settings['concurrent_requests']) : 3;
-        $batch_size = max(1, min(10, $batch_size));
+        $batch_size = max(1, min(3, $batch_size)); // Limit to 3 for free version
 
         $links = FRANKDLC()->database->get_links_to_check($batch_size);
 

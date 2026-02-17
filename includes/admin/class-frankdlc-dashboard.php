@@ -455,7 +455,7 @@ class FRANKDLC_Dashboard
                                     <div class="frankdlc-actions-wrap">
                                         <button type="button" class="frankdlc-action-btn frankdlc-recheck"
                                             data-id="<?php echo esc_attr($link->id); ?>"
-                                            title="<?php esc_attr_e('Recheck', 'frank-dead-link-checker'); ?>"><span
+                                            title="<?php esc_attr_e('Upgrade to Pro to Recheck', 'frank-dead-link-checker'); ?>" disabled style="opacity: 0.5; cursor: not-allowed;"><span
                                                 class="dashicons dashicons-update"></span></button>
                                         <button type="button" class="frankdlc-action-btn frankdlc-edit"
                                             data-id="<?php echo esc_attr($link->id); ?>" data-url="<?php echo esc_attr($link->url); ?>" data-anchor="<?php echo esc_attr($link->anchor_text); ?>"
@@ -529,7 +529,7 @@ class FRANKDLC_Dashboard
                         <input type="hidden" id="frankdlc-edit-link-id">
                     </div>
                     <div class="frankdlc-modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
-                        <button type="button" class="button" id="frankdlc-remove-link" style="color:#a00; border-color:#a00;">
+                        <button type="button" class="button" id="frankdlc-remove-link" style="color:#a00; border-color:#a00; opacity: 0.5; cursor: not-allowed;" disabled title="<?php esc_attr_e('Upgrade to Pro to Remove Link', 'frank-dead-link-checker'); ?>">
                             <span class="dashicons dashicons-editor-unlink" style="vertical-align:middle; margin-right:2px;"></span>
                             <?php esc_html_e('Remove Link', 'frank-dead-link-checker'); ?>
                         </button>
@@ -537,11 +537,17 @@ class FRANKDLC_Dashboard
                             <button type="button" class="button frankdlc-modal-cancel">
                                 <?php esc_html_e('Cancel', 'frank-dead-link-checker'); ?>
                             </button>
-                            <button type="button" class="button button-primary" id="frankdlc-edit-save">
+                            <button type="button" class="button button-primary" id="frankdlc-edit-save" disabled style="opacity: 0.5; cursor: not-allowed;" title="<?php esc_attr_e('Upgrade to Pro to Update Link', 'frank-dead-link-checker'); ?>">
                                 <?php esc_html_e('Update Link', 'frank-dead-link-checker'); ?>
                             </button>
                         </div>
                     </div>
+                     <div class="frankdlc-modal-footer" style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; text-align: center;">
+                        <span class="dashicons dashicons-lock" style="vertical-align: middle; color: #555;"></span>
+                        <a href="https://awplife.com/wordpress-plugins/dead-link-checker-pro/" target="_blank" style="font-weight: bold; text-decoration: none; color: #d63638; vertical-align: middle;">
+                            <?php esc_html_e('Upgrade to Pro to Edit & Remove Links', 'frank-dead-link-checker'); ?>
+                        </a>
+                     </div>
                 </div>
             </div>
 

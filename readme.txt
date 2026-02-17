@@ -5,7 +5,7 @@ Tags: broken links, dead links, seo, 404 error, link checker
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -219,6 +219,10 @@ Visit [AWP Life](https://awplife.com/) or email us directly for assistance.
 * Customizable scan settings with concurrent requests
 * Domain exclusion management
 * Performance optimizations throughout
+
+= 1.0.1 =
+* Maintenance release
+* Updated version to 1.0.1
 
 = 1.0.0 =
 * Initial release

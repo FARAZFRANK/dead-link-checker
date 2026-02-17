@@ -55,13 +55,14 @@ class FRANKDLC_Admin
         add_action('admin_init', array($this, 'activation_redirect'));
         add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_menu'), 100);
+        add_filter('plugin_action_links_' . FRANKDLC_PLUGIN_BASENAME, array($this, 'add_plugin_action_links'));
     }
 
     public function add_admin_menu()
     {
         add_menu_page(
-            __('Frank Dead Link Checker', 'frank-dead-link-checker'),
-            __('Link Checker', 'frank-dead-link-checker'),
+            __('Dead Link Checker', 'frank-dead-link-checker'),
+            __('Dead Link Checker', 'frank-dead-link-checker'),
             'manage_options',
             'frank-dead-link-checker',
             array($this->dashboard, 'render_page'),
@@ -73,6 +74,13 @@ class FRANKDLC_Admin
         add_submenu_page('frank-dead-link-checker', __('Settings', 'frank-dead-link-checker'), __('Settings', 'frank-dead-link-checker'), 'manage_options', 'frankdlc-settings', array($this->settings, 'render_page'));
         add_submenu_page('frank-dead-link-checker', __('Scan History', 'frank-dead-link-checker'), __('Scan History', 'frank-dead-link-checker'), 'manage_options', 'frankdlc-logs', array($this, 'render_logs_page'));
         add_submenu_page('frank-dead-link-checker', __('Help', 'frank-dead-link-checker'), __('Help', 'frank-dead-link-checker'), 'manage_options', 'frankdlc-help', array($this, 'render_help_page'));
+    }
+
+    public function add_plugin_action_links($links)
+    {
+        $settings_link = '<a href="' . admin_url('admin.php?page=frankdlc-settings') . '">' . __('Settings', 'frank-dead-link-checker') . '</a>';
+        array_unshift($links, $settings_link);
+        return $links;
     }
 
     public function enqueue_assets($hook)
@@ -274,9 +282,15 @@ class FRANKDLC_Admin
         if (!$link)
             wp_send_json_error(__('Link not found.', 'frank-dead-link-checker'));
 
+        if (in_array($link->source_type, array('menu', 'widget', 'comment', 'custom_field'), true)) {
+            wp_send_json_error(__('Editing this link source is a Pro feature.', 'frank-dead-link-checker'));
+        }
+
+        /*
         if (!in_array($link->source_type, array('menu', 'widget', 'comment', 'custom_field'), true)) {
-            $post = get_post($link->source_id);
-            if ($post) {
+        */
+        $post = get_post($link->source_id);
+        if ($post) {
                 $content = $post->post_content;
                 $old_url_escaped = preg_quote($link->url, '/');
 
@@ -323,7 +337,7 @@ class FRANKDLC_Admin
 
                 wp_send_json_success(__('Link updated.', 'frank-dead-link-checker'));
             }
-        }
+        
         wp_send_json_error(__('Could not update.', 'frank-dead-link-checker'));
     }
 
@@ -415,11 +429,8 @@ class FRANKDLC_Admin
         check_ajax_referer('FRANKDLC_admin_nonce', 'nonce');
         if (!current_user_can('manage_options'))
             wp_send_json_error(__('Permission denied.', 'frank-dead-link-checker'));
-        $format = isset( $_POST['format'] ) ? sanitize_key( wp_unslash( $_POST['format'] ) ) : 'csv';
-        $status = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : 'all';
-        $export = new FRANKDLC_Export();
-        $result = $export->export($format, array('status' => $status));
-        is_wp_error($result) ? wp_send_json_error($result->get_error_message()) : wp_send_json_success(array('download_url' => $result));
+        
+        wp_send_json_error(__('Export is a Pro feature. Please upgrade to the Pro version to export your links.', 'frank-dead-link-checker'));
     }
 
     /**

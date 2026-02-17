@@ -80,6 +80,11 @@ class FRANKDLC_Settings
         return isset($options[$key]) ? $options[$key] : $default;
     }
 
+    private function get_pro_badge()
+    {
+        return ' <span class="frankdlc-pro-badge" style="background:#2271b1; color:#fff; padding:2px 6px; border-radius:4px; font-size:10px; vertical-align:middle; margin-left:5px;">' . __('PRO', 'frank-dead-link-checker') . '</span> <a href="https://awplife.com/wordpress-plugins/dead-link-checker-pro/" target="_blank" style="text-decoration:none; font-size:12px; margin-left:5px;">' . __('Upgrade', 'frank-dead-link-checker') . '</a>';
+    }
+
     public function field_scan_type()
     {
         $value = $this->get_option('scan_type', 'automatic');
@@ -101,17 +106,17 @@ class FRANKDLC_Settings
 
     public function field_scan_frequency()
     {
-        $value = $this->get_option('scan_frequency', 'daily');
+        $value = $this->get_option('scan_frequency', 'weekly');
         ?>
         <select name="FRANKDLC_settings[scan_frequency]">
-            <option value="hourly" <?php selected($value, 'hourly'); ?>>
-                <?php esc_html_e('Hourly', 'frank-dead-link-checker'); ?>
+            <option value="hourly" disabled>
+                <?php esc_html_e('Hourly', 'frank-dead-link-checker'); echo $this->get_pro_badge(); ?>
             </option>
-            <option value="twicedaily" <?php selected($value, 'twicedaily'); ?>>
-                <?php esc_html_e('Twice Daily', 'frank-dead-link-checker'); ?>
+            <option value="twicedaily" disabled>
+                <?php esc_html_e('Twice Daily', 'frank-dead-link-checker'); echo $this->get_pro_badge(); ?>
             </option>
-            <option value="daily" <?php selected($value, 'daily'); ?>>
-                <?php esc_html_e('Daily', 'frank-dead-link-checker'); ?>
+            <option value="daily" disabled>
+                <?php esc_html_e('Daily', 'frank-dead-link-checker'); echo $this->get_pro_badge(); ?>
             </option>
             <option value="weekly" <?php selected($value, 'weekly'); ?>>
                 <?php esc_html_e('Weekly', 'frank-dead-link-checker'); ?>
@@ -146,8 +151,11 @@ class FRANKDLC_Settings
             'scan_custom_fields' => __('Custom Fields (ACF)', 'frank-dead-link-checker'),
         );
         foreach ($types as $key => $label) {
-            $checked = $this->get_option($key, in_array($key, array('scan_posts', 'scan_pages', 'scan_widgets', 'scan_menus'), true));
-            printf('<label><input type="checkbox" name="FRANKDLC_settings[%s]" value="1" %s> %s</label><br>', esc_attr($key), checked($checked, true, false), esc_html($label));
+            $is_pro = in_array($key, array('scan_comments', 'scan_widgets', 'scan_menus', 'scan_custom_fields'), true);
+            $disabled = $is_pro ? 'disabled' : '';
+            $badge = $is_pro ? $this->get_pro_badge() : '';
+            $checked = $is_pro ? false : $this->get_option($key, in_array($key, array('scan_posts', 'scan_pages'), true));
+            printf('<label><input type="checkbox" name="FRANKDLC_settings[%s]" value="1" %s %s> %s%s</label><br>', esc_attr($key), checked($checked, true, false), $disabled, esc_html($label), $badge);
         }
     }
 
@@ -155,8 +163,11 @@ class FRANKDLC_Settings
     {
         $types = array('check_internal' => __('Internal Links', 'frank-dead-link-checker'), 'check_external' => __('External Links', 'frank-dead-link-checker'), 'check_images' => __('Images', 'frank-dead-link-checker'));
         foreach ($types as $key => $label) {
-            $checked = $this->get_option($key, true);
-            printf('<label><input type="checkbox" name="FRANKDLC_settings[%s]" value="1" %s> %s</label><br>', esc_attr($key), checked($checked, true, false), esc_html($label));
+            $is_pro = ($key === 'check_images');
+            $disabled = $is_pro ? 'disabled' : '';
+            $badge = $is_pro ? $this->get_pro_badge() : '';
+            $checked = $is_pro ? false : $this->get_option($key, true);
+            printf('<label><input type="checkbox" name="FRANKDLC_settings[%s]" value="1" %s %s> %s%s</label><br>', esc_attr($key), checked($checked, true, false), $disabled, esc_html($label), $badge);
         }
     }
 
@@ -178,8 +189,8 @@ class FRANKDLC_Settings
         $frequency = $this->get_option('email_frequency', 'weekly');
         $recipients = implode("\n", (array) $this->get_option('email_recipients', array(get_option('admin_email'))));
         ?>
-        <label><input type="checkbox" name="FRANKDLC_settings[email_notifications]" value="1" <?php checked($enabled); ?>>
-            <?php esc_html_e('Enable email notifications', 'frank-dead-link-checker'); ?>
+        <label><input type="checkbox" name="FRANKDLC_settings[email_notifications]" value="1" disabled>
+            <?php esc_html_e('Enable email notifications', 'frank-dead-link-checker'); echo $this->get_pro_badge(); ?>
         </label>
         <br><br>
         <label>
@@ -208,7 +219,8 @@ class FRANKDLC_Settings
     {
         $value = $this->get_option('concurrent_requests', 3);
         ?>
-        <input type="number" name="FRANKDLC_settings[concurrent_requests]" value="<?php echo esc_attr($value); ?>" min="1" max="10">
+        <input type="number" name="FRANKDLC_settings[concurrent_requests]" value="<?php echo esc_attr($value); ?>" min="1" max="3" disabled>
+        <?php echo $this->get_pro_badge(); ?>
         <p class="description">
             <?php esc_html_e('Number of links to check simultaneously. Higher values are faster but may overload your server.', 'frank-dead-link-checker'); ?>
         </p>
@@ -262,6 +274,9 @@ class FRANKDLC_Settings
                         <a href="#tools">
                             <?php esc_html_e('Tools', 'frank-dead-link-checker'); ?>
                         </a>
+                        <a href="#free-pro" style="color: #2271b1; font-weight: 600;">
+                            <?php esc_html_e('Free vs Pro', 'frank-dead-link-checker'); ?>
+                        </a>
 
                     </nav>
                     <div class="frankdlc-tabs-content">
@@ -269,26 +284,31 @@ class FRANKDLC_Settings
                             <table class="form-table">
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_general'); ?>
                             </table>
+                            <?php submit_button(); ?>
                         </div>
                         <div id="scope" class="frankdlc-tab-panel">
                             <table class="form-table">
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_scope'); ?>
                             </table>
+                            <?php submit_button(); ?>
                         </div>
                         <div id="exclusions" class="frankdlc-tab-panel">
                             <table class="form-table">
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_exclusions'); ?>
                             </table>
+                            <?php submit_button(); ?>
                         </div>
                         <div id="notifications" class="frankdlc-tab-panel">
                             <table class="form-table">
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_notifications'); ?>
                             </table>
+                            <?php submit_button(); ?>
                         </div>
                         <div id="advanced" class="frankdlc-tab-panel">
                             <table class="form-table">
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_advanced'); ?>
                             </table>
+                            <?php submit_button(); ?>
                         </div>
                         <div id="tools" class="frankdlc-tab-panel">
                             <h2 style="margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;">
@@ -344,9 +364,108 @@ class FRANKDLC_Settings
                             </table>
                         </div>
 
+
+                    <div id="free-pro" class="frankdlc-tab-panel">
+                        <div class="frankdlc-pricing-container">
+                            <h2><?php esc_html_e('Upgrade to Pro', 'frank-dead-link-checker'); ?></h2>
+                            <p class="frankdlc-pricing-subtitle"><?php esc_html_e('Unlock powerful features for comprehensive link management', 'frank-dead-link-checker'); ?></p>
+                            
+                            <table class="frankdlc-pricing-table">
+                                <thead>
+                                    <tr>
+                                        <th><?php esc_html_e('Feature', 'frank-dead-link-checker'); ?></th>
+                                        <th><?php esc_html_e('Free', 'frank-dead-link-checker'); ?></th>
+                                        <th><?php esc_html_e('Pro', 'frank-dead-link-checker'); ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="frankdlc-section-header"><td colspan="3"><?php esc_html_e('Scanning', 'frank-dead-link-checker'); ?></td></tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Scan Posts & Pages', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Custom Post Types', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Comments, Widgets, Menus', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Custom Fields (ACF)', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+
+                                    <tr class="frankdlc-section-header"><td colspan="3"><?php esc_html_e('Page Builders', 'frank-dead-link-checker'); ?></td></tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Gutenberg Blocks', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Elementor, Divi, WPBakery', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+
+                                    <tr class="frankdlc-section-header"><td colspan="3"><?php esc_html_e('Features', 'frank-dead-link-checker'); ?></td></tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Scan Frequency', 'frank-dead-link-checker'); ?></td>
+                                        <td><?php esc_html_e('Weekly', 'frank-dead-link-checker'); ?></td>
+                                        <td><?php esc_html_e('Daily / Hourly', 'frank-dead-link-checker'); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Email Notifications', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Create 301/302 Redirects', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Export to CSV/JSON', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Edit Links in Posts', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Scan Images & YouTube', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Multisite Support', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><?php esc_html_e('Priority Support', 'frank-dead-link-checker'); ?></td>
+                                        <td><span class="dashicons dashicons-minus frankdlc-no"></span></td>
+                                        <td><span class="dashicons dashicons-yes frankdlc-yes"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div style="margin-top: 30px;">
+                                <a href="https://awplife.com/wordpress-plugins/dead-link-checker-pro/" target="_blank" class="frankdlc-upgrade-btn">
+                                    <?php esc_html_e('Get Pro Version', 'frank-dead-link-checker'); ?>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <?php submit_button(); ?>
+                </div>
             </form>
         </div>
         <?php
