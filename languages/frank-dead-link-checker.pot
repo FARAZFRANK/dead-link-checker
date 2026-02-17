@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Frank Dead Link Checker plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Frank Dead Link Checker 1.0.0\n"
+"Project-Id-Version: Frank Dead Link Checker 1.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/frank-dead-link-checker\n"
 "POT-Creation-Date: 2026-02-13 13:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
