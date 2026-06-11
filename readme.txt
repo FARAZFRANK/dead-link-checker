@@ -1,191 +1,147 @@
-=== Dead Link Checker ===
+=== Dead Link Checker - SEO and 404 error Fix  ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
-Donate link: https://wpfrank.com/
-Tags: broken links, dead links, seo, 404 error, link checker
-Requires at least: 5.0
-Tested up to: 6.9
+Tags: broken link, dead link, link checker, 404 error, seo
+Requires at least: 5.8
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Find and fix broken links on your WordPress site. Scan posts, pages and Gutenberg blocks for 404 errors to improve SEO.
+Scan your WordPress site for broken links and dead URLs. Detect 404 errors, fix link issues, and keep your SEO healthy.
 
 == Description ==
 
-**Dead Link Checker** is a powerful WordPress plugin that automatically finds and helps you fix broken links on your website. Broken links hurt your SEO and frustrate visitors – this plugin makes it easy to maintain a healthy, professional website.
+Broken links frustrate your visitors and hurt your search rankings. When someone clicks a link on your site and lands on a 404 page, they lose trust — and so does Google.
 
-**Why You Need This Plugin**
+**Dead Link Checker** scans your WordPress posts and pages, finds broken links, and gives you a clear report so you can fix them quickly. It runs in the background without slowing down your site.
 
-* Broken links negatively impact your Google rankings
-* 404 errors create poor user experience
-* Manual link checking is time-consuming and error-prone
-
-= Free Version Features =
-
-* **Scan Posts and Pages** – Automatically scan all your posts and pages for broken links
-* **Gutenberg Support** – Full support for WordPress Block Editor content
-* **Internal and External Links** – Detect and check both internal and external URLs
-* **Modern Dashboard** – Beautiful, responsive admin interface with real-time statistics
-* **Dismiss/Undismiss Links** – Ignore false positives by dismissing links
-* **Recheck Links** – Manually recheck any link to verify its status
-* **Fresh Scan** – Clear all data and start a completely new scan
-* **Scan History** – View past scan results (last 5 scans)
-* **Auto-Recheck** – Broken links are automatically rechecked on weekly schedule
-* **Domain Exclusions** – Exclude up to 3 domains from scanning
-
-= Pro Version Features =
-
-Upgrade to [Dead Link Checker Pro](https://awplife.com/) for advanced features:
-
-**Additional Content Scanning:**
-
-* Custom Post Types
-* Navigation Menus
-* Widgets
-* Comments
-* Custom Fields / ACF
-
-**Page Builder Support:**
-
-* Elementor
-* Divi Builder
-* WPBakery Page Builder
-
-**Additional Link Types:**
-
-* Images
-* YouTube Embeds
-
-**Advanced Scan Settings:**
-
-* Daily, weekly, or monthly scan frequency
-* Configurable concurrent requests (1-10)
-* Configurable request timeout (5-60 seconds)
-
-**Actions:**
-
-* Edit link directly in post content
-
-**Redirects:**
-
-* Create 301/302/307 redirects
-* Full redirect manager
-* Redirect hit counter
-
-**Reports and Export:**
-
-* Export to CSV
-* Export to JSON
-* Unlimited scan history
-
-**Notifications:**
-
-* Email notifications when broken links are found
-* Weekly/monthly digest reports
-
-**Advanced:**
-
-* Unlimited domain exclusions
-* Multisite support
-* Network dashboard for multisite
-* Priority support
-
-[Get Dead Link Checker Pro](https://awplife.com/)
+Whether you have a personal blog or a large content site, keeping your links healthy is one of the simplest things you can do for on-page SEO. This plugin handles the heavy lifting so you don't have to check every link by hand.
 
 = How It Works =
 
-1. Click "Scan Now" to scan your entire website
-2. Review broken, warning, and working links in the dashboard
-3. Dismiss false positives or recheck links manually
-4. Your site's SEO health improves automatically!
+1. Go to **Dead Link Checker → Dashboard** in your WordPress admin.
+2. Click **Scan Now** to start scanning your content.
+3. The plugin checks every link in your posts and pages.
+4. Broken links, redirects, and slow responses show up in a visual report.
+5. Fix or dismiss links directly from the dashboard.
 
-= Why Choose Dead Link Checker? =
+The scanner runs in small batches. This keeps your server running fast. It will not slow down your website for visitors.
 
-Unlike other link checkers, this plugin is:
+== Why Fixing a 404 Error Improves Your SEO ==
 
-* **Lightweight** – Won't slow down your admin area
-* **User-Friendly** – Clean, modern interface anyone can use
-* **Background Processing** – Scans run without interrupting your work
-* **Privacy-Focused** – All data stays on your server
+Search engines prefer websites with working links. Regular scans help keep your pages healthy. 
+
+* The scanner checks both internal and external links.
+* It finds every dead link in your text.
+* It lists all 404 error status codes.
+* You can see redirects and response times.
+* The plugin works with both block and classic editors.
+* You can dismiss links to skip them in future scans.
+
+== How to Clean Up Your Website Links ==
+
+1. Go to the Dead Link Checker menu in your admin dashboard.
+2. Click the Scan Now button to start.
+3. The plugin will check your content in the background.
+4. Open the report to see the results.
+5. Edit your posts to fix the broken links.
+6. Dismiss links that do not need changes.
+
+== Pro Features ==
+
+Take your link management further with [Dead Link Checker Pro](https://awplife.com/wordpress-plugins/dead-link-checker-pro/):
+
+* **Extended Content Scanning** – Scan Custom Post Types, Comments, Navigation Menus, Widgets, and Custom Fields (including ACF).
+* **Page Builder Support** – Full compatibility with Elementor, Divi, and WPBakery page builders.
+* **Redirect Manager** – Create 301, 302, and 307 redirects directly from the broken link report. Includes a hit counter and import/export functionality.
+* **Email Notifications** – Receive email alerts when new broken links are found. Set up weekly or monthly digest reports.
+* **Export Reports** – Download your broken link reports as CSV or JSON files for offline review or sharing with your team.
+* **Multisite Support** – Manage broken links across your entire WordPress multisite network.
+* **Priority Support** – Get dedicated help from the development team with faster response times.
+* **Lifetime Updates** – One-time purchase with lifetime access to plugin updates.
+
+[Learn more about Pro](https://awplife.com/wordpress-plugins/dead-link-checker-pro/)
+
+== Free vs Pro Comparison ==
+
+* **Post & Page Scanning** – Free ✓ | Pro ✓
+* **Internal & External Links** – Free ✓ | Pro ✓
+* **Visual Dashboard** – Free ✓ | Pro ✓
+* **Dismiss Links** – Free ✓ | Pro ✓
+* **Scan History** – Free ✓ | Pro ✓
+* **Custom Post Types** – Free ✗ | Pro ✓
+* **Comments & Menus** – Free ✗ | Pro ✓
+* **Page Builder Support** – Free ✗ | Pro ✓
+* **Redirect Manager** – Free ✗ | Pro ✓
+* **Email Notifications** – Free ✗ | Pro ✓
+* **CSV/JSON Export** – Free ✗ | Pro ✓
+* **Multisite Support** – Free ✗ | Pro ✓
+* **Priority Support** – Free ✗ | Pro ✓
 
 == Installation ==
 
-1. Upload the `dead-link-checker` folder to `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to 'Link Checker' in your admin menu
-4. Click 'Scan Now' to start your first link scan
+1. Upload the plugin folder to your plugins directory.
+2. Activate the plugin in your WordPress admin.
+3. Open the Dead Link Checker page.
+4. Click Scan Now to start checking your site.
 
 == Frequently Asked Questions ==
 
-= How long does a scan take? =
+= How does a dead link or broken link hurt my SEO? =
+Search engines want to give users a good experience. A site with many errors gets crawled less often. This hurts your visibility. Fixing every 404 error keeps your rankings safe.
 
-Scan time depends on your website size. Small sites complete in seconds, while larger sites with hundreds of pages may take a few minutes. The scan runs in the background, so you can continue working.
+= Will this scanner cause server errors? =
+No. The tool checks links in small groups. It uses very little server power. Your website stays fast for all visitors.
 
-= Will this plugin slow down my website? =
+= Can I check external links for errors? =
+Yes. The plugin checks links pointing to other sites. It also checks internal links on your own site.
 
-No. The plugin only runs scans in the WordPress admin area using background processing. It has zero impact on your website's frontend performance or page load speed.
-
-= What content is scanned in the free version? =
-
-The free version scans posts, pages, and Gutenberg blocks for internal and external links.
-
-= Does it work with Gutenberg? =
-
-Yes! The free version fully supports the WordPress Block Editor (Gutenberg) and scans links within all block types.
-
-= Does it work with page builders like Elementor? =
-
-Page builder support (Elementor, Divi, WPBakery) is available in the Pro version. [Upgrade to Pro](https://awplife.com/) to scan page builder content.
-
-= Can I fix broken links directly? =
-
-In the free version, you can dismiss, undismiss, and recheck links. The Pro version adds the ability to edit links directly in your post content.
-
-= Can I create redirects for broken links? =
-
-Redirect management is a Pro feature. [Upgrade to Pro](https://awplife.com/) to create 301/302/307 redirects.
-
-= Can I export broken links to CSV? =
-
-Export functionality is available in the Pro version.
-
-= Is my data secure? =
-
-Absolutely. All link data is stored locally in your WordPress database. The plugin does not send any data to external servers.
-
-= Where can I get support? =
-
-For support, please visit [AWP Life](https://awplife.com/) or contact us through the WordPress support forums.
-
-= How do I upgrade to Pro? =
-
-Visit [AWP Life](https://awplife.com/) to purchase Dead Link Checker Pro and unlock all advanced features.
+= Does it find 404 error status codes? =
+Yes. It reports all 404 error pages. It also flags other server issues like 500 or 403 status codes.
 
 == Screenshots ==
 
-1. Dashboard with real-time link statistics and status overview
-2. Link table with filtering by status, type, and date
-3. Settings page with scan configuration options
-4. Scan history showing past scan results
+1. **Dashboard** – Overview of your site's link health with status cards and scan controls.
+2. **Broken Link Report** – Detailed list of broken, working, and warning links with source information.
+3. **Settings Panel** – Configure scan options, link types, and scanner behavior.
+4. **Redirects**: (Pro) Manage 301 and 302 redirects easily.
 
 == Changelog ==
 
+= 1.0.3 =
+* Improved UI consistency: border-radius, height, padding, and spacing now match across all admin pages.
+* Replaced hardcoded border-radius values with CSS token variables for global consistency.
+* Normalized settings page inputs and selects to uniform 32px height with consistent focus styles.
+* Standardized Tools tab maintenance buttons to fixed 32px height and 150px width.
+* Improved header action buttons: explicit 44px height with proper secondary/primary button distinction.
+* Fixed action button and stat icon radius to use design tokens instead of hardcoded values.
+* Removed remaining !important overrides from check-column, clear-filters, and no-items cell.
+* Added white-space: nowrap to status badges to prevent wrapping on narrow columns.
+* Added sortable column anchor padding for full-cell click area.
+
+= 1.0.2 =
+* Removed edit button and edit link functionality from the dashboard.
+* Removed recheck option and its functionality.
+* Removed images option from link type settings.
+* Added "Upgrade to Pro" submenu page with feature highlights and comparison table.
+* Centered help page content for improved readability.
+* Fixed SQL prepared statement warnings for WordPress Plugin Check compliance.
+* Fixed unescaped database parameter warnings in scanner and uninstall files.
+* Rewrote readme.txt for WordPress.org guideline compliance.
+* Updated plugin name to "Dead Link Checker" for consistency.
+
+= 1.0.1 =
+* Maintenance release.
+* Updated readme for WordPress.org compliance.
+
 = 1.0.0 =
-* Initial release
+* Initial release.
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-First release of Dead Link Checker. Start scanning your website for broken links today!
+= 1.0.3 =
+UI polish release. Consistent heights, padding, spacing, and border-radius across all admin pages.
 
-== Privacy Policy ==
-
-Dead Link Checker respects your privacy:
-
-* **No External Connections** – The plugin only connects to URLs on your own website during scans
-* **No Data Collection** – We do not collect, track, or transmit any personal data
-* **Local Storage** – All scan data is stored in your WordPress database
-* **GDPR Compliant** – No cookies, no tracking, no third-party services
-
-For more information, visit [AWP Life](https://awplife.com/)
+= 1.0.2 =
+Improved WordPress.org compliance, added Upgrade to Pro page, and fixed database query warnings.

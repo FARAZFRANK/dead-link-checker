@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Queue_Manager
+ * Class FRANKDLC_Queue_Manager
  *
  * Abstraction layer for background job scheduling
  */
-class BLC_Queue_Manager
+class FRANKDLC_Queue_Manager
 {
     /**
      * Check if Action Scheduler is available
@@ -206,19 +206,19 @@ class BLC_Queue_Manager
         $status = array(
             'method' => self::get_method(),
             'method_label' => self::has_action_scheduler()
-                ? __('Action Scheduler', 'dead-link-checker')
-                : __('WP-Cron', 'dead-link-checker'),
+                ? __('Action Scheduler', 'frank-dead-link-checker')
+                : __('WP-Cron', 'frank-dead-link-checker'),
             'is_reliable' => self::has_action_scheduler(),
         );
 
         if (self::has_action_scheduler()) {
-            $status['pending_actions'] = self::get_pending_count('blc_process_queue');
+            $status['pending_actions'] = self::get_pending_count('FRANKDLC_process_queue');
             $status['version'] = defined('ActionScheduler_Versions::LATEST_VERSION')
                 ? ActionScheduler_Versions::LATEST_VERSION
-                : 'Unknown';
+                : __('Unknown', 'frank-dead-link-checker');
         } else {
             $status['pending_actions'] = 0;
-            $status['note'] = __('Install WooCommerce or Action Scheduler plugin for more reliable background processing.', 'dead-link-checker');
+            $status['note'] = __('Install WooCommerce or Action Scheduler plugin for more reliable background processing.', 'frank-dead-link-checker');
         }
 
         return $status;

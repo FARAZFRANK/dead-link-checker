@@ -1,6 +1,6 @@
-# Dead Link Checker - WordPress Plugin
+# Frank Dead Link Checker - WordPress Plugin
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-1.0.0-blue)
+![WordPress Plugin Version](https://img.shields.io/badge/version-1.0.3-blue)
 ![WordPress Tested](https://img.shields.io/badge/WordPress-6.9-green)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-orange)
@@ -101,6 +101,15 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 - MySQL 5.6 or higher
 
 ## 📝 Changelog
+
+### 1.0.3 (2026-06-11)
+- Security: Handled all unescaped DB parameters to resolve WordPress.org Plugin Check tool warnings.
+- Layout: Fixed page-load layout shift and notice flashing on dashboard refresh by introducing server-rendered custom notices container.
+- Scanner: Implemented memory-efficient post query chunking (batches of 50) and active cache clearing to prevent memory exhaustion on large sites.
+- Mutex: Added transient-based scan initialization mutex to prevent double-scan race conditions.
+- Permissions: Added braced capability checks for all AJAX action endpoints and validated post-level edit capabilities on link updates.
+- Validation: Enforced strict URL scheme validation (HTTP/HTTPS only) on link updates.
+- Uninstall: Cleaned up uninstaller database variables and removed redundant rewrite rules flush.
 
 ### 1.0.0 (2024-02-07)
 - 🎉 Initial release

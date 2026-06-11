@@ -12,11 +12,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Link
+ * Class FRANKDLC_Link
  *
  * Link data model with constants and helper methods
  */
-class BLC_Link
+class FRANKDLC_Link
 {
 
     // Status codes
@@ -226,26 +226,26 @@ class BLC_Link
     public function get_status_badge()
     {
         if ($this->is_broken) {
-            $class = 'blc-status-broken';
+            $class = 'frankdlc-status-broken';
             // Show HTTP code if available, otherwise show 'Error' for connection failures
             if ($this->status_code !== null && $this->status_code > 0) {
                 $text = $this->status_code;
             } else {
-                $text = $this->error_message ? __('Error', 'dead-link-checker') : __('Error', 'dead-link-checker');
+                $text = $this->error_message ? __('Error', 'frank-dead-link-checker') : __('Error', 'frank-dead-link-checker');
             }
         } elseif ($this->is_warning) {
-            $class = 'blc-status-warning';
-            $text = ($this->status_code !== null && $this->status_code > 0) ? $this->status_code : __('Warning', 'dead-link-checker');
+            $class = 'frankdlc-status-warning';
+            $text = ($this->status_code !== null && $this->status_code > 0) ? $this->status_code : __('Warning', 'frank-dead-link-checker');
         } elseif ($this->status_code === null) {
-            $class = 'blc-status-unchecked';
-            $text = __('Pending', 'dead-link-checker');
+            $class = 'frankdlc-status-unchecked';
+            $text = __('Pending', 'frank-dead-link-checker');
         } else {
-            $class = 'blc-status-ok';
+            $class = 'frankdlc-status-ok';
             $text = $this->status_code;
         }
 
         return sprintf(
-            '<span class="blc-status-badge %s">%s</span>',
+            '<span class="frankdlc-status-badge %s">%s</span>',
             esc_attr($class),
             esc_html($text)
         );
@@ -259,11 +259,11 @@ class BLC_Link
     public function get_type_label()
     {
         $labels = array(
-            self::TYPE_INTERNAL => __('Internal', 'dead-link-checker'),
-            self::TYPE_EXTERNAL => __('External', 'dead-link-checker'),
-            self::TYPE_IMAGE => __('Image', 'dead-link-checker'),
-            self::TYPE_YOUTUBE => __('YouTube', 'dead-link-checker'),
-            self::TYPE_IFRAME => __('iFrame', 'dead-link-checker'),
+            self::TYPE_INTERNAL => __('Internal', 'frank-dead-link-checker'),
+            self::TYPE_EXTERNAL => __('External', 'frank-dead-link-checker'),
+            self::TYPE_IMAGE => __('Image', 'frank-dead-link-checker'),
+            self::TYPE_YOUTUBE => __('YouTube', 'frank-dead-link-checker'),
+            self::TYPE_IFRAME => __('iFrame', 'frank-dead-link-checker'),
         );
 
         return isset($labels[$this->link_type]) ? $labels[$this->link_type] : $this->link_type;
@@ -280,20 +280,20 @@ class BLC_Link
             case self::SOURCE_POST:
             case self::SOURCE_PAGE:
                 $post = get_post($this->source_id);
-                return $post ? $post->post_title : __('(Deleted)', 'dead-link-checker');
+                return $post ? $post->post_title : __('(Deleted)', 'frank-dead-link-checker');
 
             case self::SOURCE_COMMENT:
                 $comment = get_comment($this->source_id);
                 return $comment
                     /* translators: %s: post title */
-                    ? sprintf(__('Comment on "%s"', 'dead-link-checker'), get_the_title($comment->comment_post_ID))
-                    : __('(Deleted)', 'dead-link-checker');
+                    ? sprintf(__('Comment on "%s"', 'frank-dead-link-checker'), get_the_title($comment->comment_post_ID))
+                    : __('(Deleted)', 'frank-dead-link-checker');
 
             case self::SOURCE_WIDGET:
-                return __('Widget', 'dead-link-checker');
+                return __('Widget', 'frank-dead-link-checker');
 
             case self::SOURCE_MENU:
-                return __('Menu', 'dead-link-checker');
+                return __('Menu', 'frank-dead-link-checker');
 
             default:
                 return ucfirst($this->source_type);
@@ -355,10 +355,11 @@ class BLC_Link
     public function get_last_check_human()
     {
         if (!$this->last_check) {
-            return __('Never', 'dead-link-checker');
+            return __('Never', 'frank-dead-link-checker');
         }
 
-        return human_time_diff(strtotime($this->last_check), current_time('timestamp')) . ' ' . __('ago', 'dead-link-checker');
+        /* translators: %s: human-readable time difference */
+        return sprintf(__('%s ago', 'frank-dead-link-checker'), human_time_diff(strtotime($this->last_check), current_time('timestamp')));
     }
 
     /**

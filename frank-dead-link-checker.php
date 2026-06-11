@@ -1,17 +1,18 @@
 <?php
+
 /**
- * Plugin Name:          Dead Link Checker
- * Plugin URI:           https://wordpress.org/plugins/dead-link-checker/
- * Description:          Scan your WordPress website for broken links. Discover and fix dead links in posts and pages with Gutenberg support.
- * Version:              1.0.0
- * Requires at least:    5.0
- * Requires PHP:         7.4
- * Author:               FARAZFRANK
- * Author URI:           https://wpfrank.com/
- * License:              GPL v2 or later
- * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:     dead-link-checker
- * Domain Path:     /languages
+ * Plugin Name: Frank Dead Link Checker
+ * Plugin URI: https://wordpress.org/plugins/frank-dead-link-checker
+ * Description: Scan your WordPress posts and pages for broken links. Detect dead URLs, redirects, and slow responses with a visual dashboard.
+ * Version: 1.0.3
+ * Requires at least: 5.8
+ * Requires PHP: 7.4
+ * Author: A WP Life
+ * Author URI: https://wordpress.org/plugins/frank-dead-link-checker
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: frank-dead-link-checker
+ * Domain Path: /languages
  */
 
 // Prevent direct access
@@ -20,11 +21,11 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('BLC_VERSION', '1.0.0');
-define('BLC_PLUGIN_FILE', __FILE__);
-define('BLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('BLC_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('BLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('FRANKDLC_VERSION', '1.0.3');
+define('FRANKDLC_PLUGIN_FILE', __FILE__);
+define('FRANKDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('FRANKDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('FRANKDLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 /**
  * Autoloader for plugin classes
@@ -33,21 +34,23 @@ define('BLC_PLUGIN_BASENAME', plugin_basename(__FILE__));
  */
 spl_autoload_register(function ($class_name) {
     // Only handle our plugin classes
-    if (strpos($class_name, 'BLC_') !== 0) {
+    if (strpos($class_name, 'FRANKDLC_') !== 0) {
         return;
     }
 
     // Convert class name to file path
+    // Class FRANKDLC_Admin → class-frankdlc-admin.php
     $class_file = strtolower(str_replace('_', '-', $class_name));
+    // File names now use frankdlc- prefix directly
     $class_file = 'class-' . $class_file . '.php';
 
     // Define possible locations
     $locations = array(
-        BLC_PLUGIN_DIR . 'includes/',
-        BLC_PLUGIN_DIR . 'includes/admin/',
-        BLC_PLUGIN_DIR . 'includes/scanner/',
-        BLC_PLUGIN_DIR . 'includes/scanner/parsers/',
-        BLC_PLUGIN_DIR . 'includes/models/',
+        FRANKDLC_PLUGIN_DIR . 'includes/',
+        FRANKDLC_PLUGIN_DIR . 'includes/admin/',
+        FRANKDLC_PLUGIN_DIR . 'includes/scanner/',
+        FRANKDLC_PLUGIN_DIR . 'includes/scanner/parsers/',
+        FRANKDLC_PLUGIN_DIR . 'includes/models/',
     );
 
     // Search for the class file
@@ -64,56 +67,56 @@ spl_autoload_register(function ($class_name) {
  * Plugin Activation Hook
  */
 register_activation_hook(__FILE__, function () {
-    require_once BLC_PLUGIN_DIR . 'includes/class-blc-activator.php';
-    BLC_Activator::activate();
+    require_once FRANKDLC_PLUGIN_DIR . 'includes/class-frankdlc-activator.php';
+    FRANKDLC_Activator::activate();
 });
 
 /**
  * Plugin Deactivation Hook
  */
 register_deactivation_hook(__FILE__, function () {
-    require_once BLC_PLUGIN_DIR . 'includes/class-blc-deactivator.php';
-    BLC_Deactivator::deactivate();
+    require_once FRANKDLC_PLUGIN_DIR . 'includes/class-frankdlc-deactivator.php';
+    FRANKDLC_Deactivator::deactivate();
 });
 
 /**
  * Main Plugin Class
  */
-final class Broken_Link_Checker
+final class FRANKDLC_Plugin
 {
 
     /**
      * Single instance of the plugin
      *
-     * @var Broken_Link_Checker|null
+     * @var FRANKDLC_Plugin|null
      */
     private static $instance = null;
 
     /**
      * Admin instance
      *
-     * @var BLC_Admin|null
+     * @var FRANKDLC_Admin|null
      */
     public $admin = null;
 
     /**
      * Scanner instance
      *
-     * @var BLC_Scanner|null
+     * @var FRANKDLC_Scanner|null
      */
     public $scanner = null;
 
     /**
      * Database instance
      *
-     * @var BLC_Database|null
+     * @var FRANKDLC_Database|null
      */
     public $database = null;
 
     /**
      * Get single instance of the plugin
      *
-     * @return Broken_Link_Checker
+     * @return FRANKDLC_Plugin
      */
     public static function get_instance()
     {
@@ -137,7 +140,6 @@ final class Broken_Link_Checker
     private function init_hooks()
     {
         add_action('plugins_loaded', array($this, 'init'));
-        add_action('init', array($this, 'load_textdomain'));
     }
 
     /**
@@ -146,39 +148,27 @@ final class Broken_Link_Checker
     public function init()
     {
         // Initialize database
-        $this->database = new BLC_Database();
+        $this->database = new FRANKDLC_Database();
 
         // Initialize scanner
-        $this->scanner = new BLC_Scanner();
+        $this->scanner = new FRANKDLC_Scanner();
 
         // Initialize admin (only in admin area)
         if (is_admin()) {
-            $this->admin = new BLC_Admin();
+            $this->admin = new FRANKDLC_Admin();
         }
 
-        // Pro features disabled in Free version:
-        // - Notifications (email alerts)
-        // - Redirects (301/302 management)
-        // - Multisite support
+
 
         /**
          * Fires after the plugin is fully initialized
          *
-         * @param Broken_Link_Checker $this The plugin instance
+         * @param FRANKDLC_Plugin $this The plugin instance
          */
-        do_action('blc_init', $this);
+        do_action('FRANKDLC_init', $this);
     }
 
-    /**
-     * Load plugin text domain for translations
-     * Note: Since WordPress 4.6, translations are automatically loaded
-     * from wordpress.org for plugins with the correct text domain.
-     */
-    public function load_textdomain()
-    {
-        // WordPress automatically loads translations since 4.6
-        // for plugins hosted on WordPress.org
-    }
+
 
     /**
      * Get plugin option with default value
@@ -189,7 +179,7 @@ final class Broken_Link_Checker
      */
     public static function get_option($key, $default = null)
     {
-        $options = get_option('blc_settings', array());
+        $options = get_option('FRANKDLC_settings', array());
         return isset($options[$key]) ? $options[$key] : $default;
     }
 
@@ -202,17 +192,15 @@ final class Broken_Link_Checker
      */
     public static function update_option($key, $value)
     {
-        $options = get_option('blc_settings', array());
+        $options = get_option('FRANKDLC_settings', array());
         $options[$key] = $value;
-        return update_option('blc_settings', $options);
+        return update_option('FRANKDLC_settings', $options);
     }
 
     /**
      * Prevent cloning
      */
-    private function __clone()
-    {
-    }
+    private function __clone() {}
 
     /**
      * Prevent unserialization
@@ -226,12 +214,12 @@ final class Broken_Link_Checker
 /**
  * Get the main plugin instance
  *
- * @return Broken_Link_Checker
+ * @return FRANKDLC_Plugin
  */
-function blc()
+function FRANKDLC()
 {
-    return Broken_Link_Checker::get_instance();
+    return FRANKDLC_Plugin::get_instance();
 }
 
 // Initialize the plugin
-blc();
+FRANKDLC();

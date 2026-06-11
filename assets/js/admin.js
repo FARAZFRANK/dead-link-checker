@@ -1,148 +1,205 @@
 /**
- * Broken Link Checker - Admin JavaScript
+ * Frank Dead Link Checker - Admin JavaScript
  * Handles all interactive functionality
  */
 
 (function ($) {
     'use strict';
 
-    const BLC = {
+    const FRANKDLC = {
         init: function () {
+            this.relocateNotices();
             this.bindEvents();
             this.initTabs();
             this.checkScanStatus();
         },
 
+        /**
+         * Move third-party admin notices out of our layout
+         * WordPress injects notices inside .wrap, which breaks our flexbox header
+         */
+        relocateNotices: function () {
+            var $wrap = $('.frankdlc-wrap');
+            var $header = $wrap.find('.frankdlc-header');
+            if (!$wrap.length || !$header.length) return;
+
+            // Create a container for notices right after the header
+            var $noticeContainer = $('<div class="frankdlc-notices-container"></div>');
+            $header.after($noticeContainer);
+
+            // Move all notice elements from .frankdlc-wrap into the container
+            $wrap.children('.notice, .updated, .error, .update-nag, div[class*="notice"]').not('.frankdlc-notices-container').each(function () {
+                $noticeContainer.append($(this));
+            });
+
+            // Remove container if empty
+            if ($noticeContainer.children().length === 0) {
+                $noticeContainer.remove();
+            }
+        },
+
+
         bindEvents: function () {
             // Scan button
-            $('#blc-scan-btn').on('click', this.startScan.bind(this));
+            $('#frankdlc-scan-btn').on('click', this.startScan.bind(this));
 
             // Stop scan button
-            $('#blc-stop-btn').on('click', this.stopScan.bind(this));
+            $('#frankdlc-stop-btn').on('click', this.stopScan.bind(this));
 
             // Fresh Scan button
-            $('#blc-fresh-scan-btn').on('click', this.freshScan.bind(this));
+            $('#frankdlc-fresh-scan-btn').on('click', this.freshScan.bind(this));
+
+            // Force Stop button
+            $('#frankdlc-force-stop-btn').on('click', this.forceStopScan.bind(this));
+
+            // Reset & Maintenance buttons (Help/Settings page)
+            $(document).on('click', '#frankdlc-reset-settings-btn', this.resetSettings.bind(this));
+            $(document).on('click', '#frankdlc-clear-history-btn', this.clearScanHistory.bind(this));
+            $(document).on('click', '#frankdlc-full-reset-btn', this.fullReset.bind(this));
+
 
             // Select all checkbox
-            $('#blc-select-all').on('change', function () {
-                $('.blc-link-checkbox').prop('checked', $(this).prop('checked'));
+            $('#frankdlc-select-all').on('change', function () {
+                $('.frankdlc-link-checkbox').prop('checked', $(this).prop('checked'));
             });
 
             // Individual actions
-            $(document).on('click', '.blc-recheck', this.recheckLink.bind(this));
-            $(document).on('click', '.blc-dismiss', this.dismissLink.bind(this));
-            $(document).on('click', '.blc-undismiss', this.undismissLink.bind(this));
-            $(document).on('click', '.blc-delete', this.deleteLink.bind(this));
-            $(document).on('click', '.blc-edit', this.openEditModal.bind(this));
-            $(document).on('click', '.blc-redirect', this.openRedirectModal.bind(this));
+
+            $(document).on('click', '.frankdlc-dismiss', this.dismissLink.bind(this));
+            $(document).on('click', '.frankdlc-undismiss', this.undismissLink.bind(this));
+            $(document).on('click', '.frankdlc-delete', this.deleteLink.bind(this));
+
 
             // Bulk action
-            $('#blc-bulk-apply').on('click', this.bulkAction.bind(this));
+            $('#frankdlc-bulk-apply').on('click', this.bulkAction.bind(this));
 
-            // Export dropdown
-            $('#blc-export-btn').on('click', this.toggleExportMenu.bind(this));
-            $(document).on('click', '.blc-export-option', this.exportLinks.bind(this));
-            $(document).on('click', function (e) {
-                if (!$(e.target).closest('.blc-export-dropdown').length) {
-                    $('.blc-export-menu').hide();
-                }
-            });
+
 
             // Modal
-            $(document).on('click', '.blc-modal-close, .blc-modal-cancel', this.closeModal.bind(this));
-            $('#blc-edit-save').on('click', this.saveEdit.bind(this));
-            $('#blc-redirect-save').on('click', this.saveRedirect.bind(this));
+            $(document).on('click', '.frankdlc-modal-close, .frankdlc-modal-cancel', this.closeModal.bind(this));
+
 
             // Close modal on outside click
-            $(document).on('click', '.blc-modal', function (e) {
-                if ($(e.target).hasClass('blc-modal')) {
-                    BLC.closeModal();
+            $(document).on('click', '.frankdlc-modal', function (e) {
+                if ($(e.target).hasClass('frankdlc-modal')) {
+                    FRANKDLC.closeModal();
                 }
             });
 
             // Close modal on ESC
             $(document).on('keydown', function (e) {
                 if (e.key === 'Escape') {
-                    BLC.closeModal();
+                    FRANKDLC.closeModal();
                 }
             });
         },
 
         initTabs: function () {
-            $('.blc-tabs-nav a').on('click', function (e) {
+            $('.frankdlc-tabs-nav a').on('click', function (e) {
                 e.preventDefault();
                 const target = $(this).attr('href');
 
-                $('.blc-tabs-nav a').removeClass('active');
+                $('.frankdlc-tabs-nav a').removeClass('active');
                 $(this).addClass('active');
 
-                $('.blc-tab-panel').removeClass('active');
+                $('.frankdlc-tab-panel').removeClass('active');
                 $(target).addClass('active');
+
+                // Persist active tab in URL hash
+                if (history.replaceState) {
+                    history.replaceState(null, null, target);
+                } else {
+                    window.location.hash = target;
+                }
+
+                // Also save to localStorage for form-submit persistence
+                try { localStorage.setItem('frankdlc_active_tab', target); } catch (e) { }
+            });
+
+            // Restore active tab from URL hash or localStorage on page load
+            var hash = window.location.hash;
+            if (!hash || !$(hash).length || !$(hash).hasClass('frankdlc-tab-panel')) {
+                try { hash = localStorage.getItem('frankdlc_active_tab'); } catch (e) { }
+            }
+            if (hash && $(hash).length && $(hash).hasClass('frankdlc-tab-panel')) {
+                $('.frankdlc-tabs-nav a').removeClass('active');
+                $('.frankdlc-tabs-nav a[href="' + hash + '"]').addClass('active');
+                $('.frankdlc-tab-panel').removeClass('active');
+                $(hash).addClass('active');
+            }
+
+            // Append hash to form action before submit so WordPress redirects back with tab hash
+            $('.frankdlc-settings-page form').on('submit', function () {
+                var activeTab = $('.frankdlc-tabs-nav a.active').attr('href') || '#general';
+                var $form = $(this);
+                var action = $form.attr('action') || '';
+                action = action.replace(/#.*$/, '') + activeTab;
+                $form.attr('action', action);
             });
         },
 
         startScan: function (e) {
             e.preventDefault();
-            const $btn = $('#blc-scan-btn');
-            const $stopBtn = $('#blc-stop-btn');
+            const $btn = $('#frankdlc-scan-btn');
+            const $stopBtn = $('#frankdlc-stop-btn');
 
             $btn.hide();
             $stopBtn.show();
-            $('#blc-scan-progress').show();
+            $('#frankdlc-scan-progress').show();
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_start_scan',
-                    nonce: blcAdmin.nonce
+                    action: 'FRANKDLC_start_scan',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        BLC.pollProgress();
+                        FRANKDLC.pollProgress();
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.scanFailed, 'error');
-                        BLC.resetScanButton();
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanFailed, 'error');
+                        FRANKDLC.resetScanButton();
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.scanFailed, 'error');
-                    BLC.resetScanButton();
+                    FRANKDLC.showToast(frankdlcAdmin.strings.scanFailed, 'error');
+                    FRANKDLC.resetScanButton();
                 }
             });
         },
 
         stopScan: function (e) {
             e.preventDefault();
-            const $stopBtn = $('#blc-stop-btn');
+            const $stopBtn = $('#frankdlc-stop-btn');
 
-            if (!confirm(blcAdmin.strings.confirmStop || 'Are you sure you want to stop the scan?')) {
+            if (!confirm(frankdlcAdmin.strings.confirmStop)) {
                 return;
             }
 
-            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Stopping...');
+            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.stopping);
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_stop_scan',
-                    nonce: blcAdmin.nonce
+                    action: 'FRANKDLC_stop_scan',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(blcAdmin.strings.scanStopped || 'Scan stopped.', 'success');
-                        BLC.resetScanButton();
-                        $('#blc-scan-progress').fadeOut();
+                        FRANKDLC.showToast(frankdlcAdmin.strings.scanStopped, 'success');
+                        FRANKDLC.resetScanButton();
+                        $('#frankdlc-scan-progress').fadeOut();
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                        $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> Stop Scan');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                        $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.error, 'error');
-                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> Stop Scan');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
                 }
             });
         },
@@ -151,41 +208,41 @@
             e.preventDefault();
 
             // Show confirmation dialog
-            if (!confirm(blcAdmin.strings.confirmFreshScan || 'This will DELETE all existing link data and scan history, then start a fresh scan. Are you sure?')) {
+            if (!confirm(frankdlcAdmin.strings.confirmFreshScan)) {
                 return;
             }
 
-            const $btn = $('#blc-fresh-scan-btn');
-            const $scanBtn = $('#blc-scan-btn');
-            const $stopBtn = $('#blc-stop-btn');
+            const $btn = $('#frankdlc-fresh-scan-btn');
+            const $scanBtn = $('#frankdlc-scan-btn');
+            const $stopBtn = $('#frankdlc-stop-btn');
 
             // Disable buttons and show loading state
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> Clearing...');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
             $scanBtn.hide();
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_fresh_scan',
-                    nonce: blcAdmin.nonce
+                    action: 'FRANKDLC_fresh_scan',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
-                        BLC.showToast(blcAdmin.strings.freshScanStarted || 'All data cleared. Fresh scan started.', 'success');
+                        FRANKDLC.showToast(frankdlcAdmin.strings.freshScanStarted, 'success');
                         $btn.hide();
                         $stopBtn.show();
-                        $('#blc-scan-progress').show();
-                        BLC.pollProgress();
+                        $('#frankdlc-scan-progress').show();
+                        FRANKDLC.pollProgress();
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> Fresh Scan');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
                         $scanBtn.show();
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> Fresh Scan');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
                     $scanBtn.show();
                 }
             });
@@ -193,38 +250,42 @@
 
         pollProgress: function () {
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_get_scan_progress',
-                    nonce: blcAdmin.nonce
+                    action: 'FRANKDLC_get_scan_progress',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success) {
                         const data = response.data;
 
                         if (data.status === 'completed' || data.status === 'idle' || data.status === 'cancelled') {
-                            BLC.showToast(blcAdmin.strings.scanComplete, 'success');
-                            BLC.resetScanButton();
-                            $('#blc-scan-progress').fadeOut();
+                            FRANKDLC.showToast(frankdlcAdmin.strings.scanComplete, 'success');
+                            FRANKDLC.resetScanButton();
+                            $('#frankdlc-scan-progress').fadeOut();
                             setTimeout(function () { location.reload(); }, 1500);
                         } else {
                             // Update progress bar
-                            $('.blc-progress-fill').css('width', data.percent + '%');
-                            $('.blc-progress-text').text(
-                                'Checked ' + data.checked + ' of ' + data.total + ' links (' + data.percent + '%) - ' +
-                                data.broken + ' broken, ' + data.warnings + ' warnings'
+                            $('.frankdlc-progress-fill').css('width', data.percent + '%');
+                            $('.frankdlc-progress-text').text(
+                                frankdlcAdmin.strings.progressText
+                                    .replace('%1$s', data.checked)
+                                    .replace('%2$s', data.total)
+                                    .replace('%3$s', data.percent)
+                                    .replace('%4$s', data.broken)
+                                    .replace('%5$s', data.warnings)
                             );
 
                             // Poll again
-                            setTimeout(BLC.pollProgress, 2000);
+                            setTimeout(FRANKDLC.pollProgress, 2000);
                         }
                     } else {
-                        setTimeout(BLC.pollProgress, 3000);
+                        setTimeout(FRANKDLC.pollProgress, 3000);
                     }
                 },
                 error: function () {
-                    setTimeout(BLC.pollProgress, 5000);
+                    setTimeout(FRANKDLC.pollProgress, 5000);
                 }
             });
         },
@@ -232,59 +293,30 @@
         checkScanStatus: function () {
             // Check if scan is running on page load
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_get_scan_progress',
-                    nonce: blcAdmin.nonce
+                    action: 'FRANKDLC_get_scan_progress',
+                    nonce: frankdlcAdmin.nonce
                 },
                 success: function (response) {
                     if (response.success && response.data.status === 'running') {
-                        $('#blc-scan-btn').hide();
-                        $('#blc-stop-btn').show();
-                        $('#blc-scan-progress').show();
-                        $('.blc-progress-fill').css('width', response.data.percent + '%');
-                        BLC.pollProgress();
+                        $('#frankdlc-scan-btn').hide();
+                        $('#frankdlc-stop-btn').show();
+                        $('#frankdlc-scan-progress').show();
+                        $('.frankdlc-progress-fill').css('width', response.data.percent + '%');
+                        FRANKDLC.pollProgress();
                     }
                 }
             });
         },
 
         resetScanButton: function () {
-            $('#blc-scan-btn').show();
-            $('#blc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> Stop Scan');
+            $('#frankdlc-scan-btn').show();
+            $('#frankdlc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
         },
 
-        recheckLink: function (e) {
-            const $btn = $(e.currentTarget);
-            const $row = $btn.closest('tr');
-            const linkId = $btn.data('id');
 
-            $btn.find('.dashicons').addClass('spin');
-
-            $.ajax({
-                url: blcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'blc_recheck_link',
-                    nonce: blcAdmin.nonce,
-                    link_id: linkId
-                },
-                success: function (response) {
-                    $btn.find('.dashicons').removeClass('spin');
-                    if (response.success) {
-                        BLC.showToast(response.data.message, 'success');
-                        setTimeout(function () { location.reload(); }, 1000);
-                    } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                    }
-                },
-                error: function () {
-                    $btn.find('.dashicons').removeClass('spin');
-                    BLC.showToast(blcAdmin.strings.error, 'error');
-                }
-            });
-        },
 
         dismissLink: function (e) {
             const $btn = $(e.currentTarget);
@@ -292,23 +324,23 @@
             const linkId = $btn.data('id');
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_dismiss_link',
-                    nonce: blcAdmin.nonce,
+                    action: 'FRANKDLC_dismiss_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     if (response.success) {
                         $row.fadeOut(300, function () { $(this).remove(); });
-                        BLC.showToast(response.data, 'success');
+                        FRANKDLC.showToast(response.data, 'success');
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -319,23 +351,23 @@
             const linkId = $btn.data('id');
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_undismiss_link',
-                    nonce: blcAdmin.nonce,
+                    action: 'FRANKDLC_undismiss_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     if (response.success) {
                         $row.fadeOut(300, function () { $(this).remove(); });
-                        BLC.showToast(response.data, 'success');
+                        FRANKDLC.showToast(response.data, 'success');
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
@@ -345,257 +377,262 @@
             const $row = $btn.closest('tr');
             const linkId = $btn.data('id');
 
-            if (!confirm(blcAdmin.strings.confirmDelete)) return;
+            if (!confirm(frankdlcAdmin.strings.confirmDelete)) return;
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_delete_link',
-                    nonce: blcAdmin.nonce,
+                    action: 'FRANKDLC_delete_link',
+                    nonce: frankdlcAdmin.nonce,
                     link_id: linkId
                 },
                 success: function (response) {
                     if (response.success) {
                         $row.fadeOut(300, function () { $(this).remove(); });
-                        BLC.showToast(response.data, 'success');
+                        FRANKDLC.showToast(response.data, 'success');
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
 
-        openEditModal: function (e) {
-            const $btn = $(e.currentTarget);
-            const linkId = $btn.data('id');
-            const url = $btn.data('url');
 
-            $('#blc-edit-link-id').val(linkId);
-            $('#blc-edit-old-url').val(url);
-            $('#blc-edit-new-url').val('').focus();
-            $('#blc-edit-modal').fadeIn(200);
-        },
 
         closeModal: function () {
-            $('.blc-modal').fadeOut(200);
-        },
-
-        saveEdit: function () {
-            const linkId = $('#blc-edit-link-id').val();
-            const newUrl = $('#blc-edit-new-url').val();
-
-            if (!newUrl) {
-                BLC.showToast('Please enter a new URL', 'error');
-                return;
-            }
-
-            $('#blc-edit-save').prop('disabled', true).text(blcAdmin.strings.processing);
-
-            $.ajax({
-                url: blcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'blc_edit_link',
-                    nonce: blcAdmin.nonce,
-                    link_id: linkId,
-                    new_url: newUrl
-                },
-                success: function (response) {
-                    $('#blc-edit-save').prop('disabled', false).text('Update Link');
-                    if (response.success) {
-                        BLC.closeModal();
-                        BLC.showToast(response.data, 'success');
-                        setTimeout(function () { location.reload(); }, 1000);
-                    } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                    }
-                },
-                error: function () {
-                    $('#blc-edit-save').prop('disabled', false).text('Update Link');
-                    BLC.showToast(blcAdmin.strings.error, 'error');
-                }
-            });
-        },
-
-        openRedirectModal: function (e) {
-            const $btn = $(e.currentTarget);
-            const linkId = $btn.data('id');
-            const url = $btn.data('url');
-
-            $('#blc-redirect-link-id').val(linkId);
-            $('#blc-redirect-source-url').val(url);
-            $('#blc-redirect-target-url').val('').focus();
-            $('#blc-redirect-type').val('301');
-            $('#blc-redirect-modal').fadeIn(200);
-        },
-
-        saveRedirect: function () {
-            const linkId = $('#blc-redirect-link-id').val();
-            const sourceUrl = $('#blc-redirect-source-url').val();
-            const targetUrl = $('#blc-redirect-target-url').val();
-            const redirectType = $('#blc-redirect-type').val();
-
-            if (!targetUrl) {
-                BLC.showToast('Please enter a target URL', 'error');
-                return;
-            }
-
-            $('#blc-redirect-save').prop('disabled', true).text(blcAdmin.strings.processing);
-
-            $.ajax({
-                url: blcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'blc_create_redirect',
-                    nonce: blcAdmin.nonce,
-                    link_id: linkId,
-                    source_url: sourceUrl,
-                    target_url: targetUrl,
-                    redirect_type: redirectType
-                },
-                success: function (response) {
-                    $('#blc-redirect-save').prop('disabled', false).text('Create Redirect');
-                    if (response.success) {
-                        BLC.closeModal();
-                        BLC.showToast(response.data.message || 'Redirect created successfully!', 'success');
-                    } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
-                    }
-                },
-                error: function () {
-                    $('#blc-redirect-save').prop('disabled', false).text('Create Redirect');
-                    BLC.showToast(blcAdmin.strings.error, 'error');
-                }
-            });
+            $('.frankdlc-modal').fadeOut(200);
         },
 
         bulkAction: function () {
-            const action = $('#blc-bulk-action').val();
+            const action = $('#frankdlc-bulk-action').val();
             const linkIds = [];
 
-            $('.blc-link-checkbox:checked').each(function () {
+            $('.frankdlc-link-checkbox:checked').each(function () {
                 linkIds.push($(this).val());
             });
 
             if (!action) {
-                BLC.showToast('Please select an action', 'error');
+                FRANKDLC.showToast(frankdlcAdmin.strings.selectAction, 'error');
                 return;
             }
 
             if (linkIds.length === 0) {
-                BLC.showToast('Please select at least one link', 'error');
+                FRANKDLC.showToast(frankdlcAdmin.strings.selectLink, 'error');
                 return;
             }
 
-            if (action === 'delete' && !confirm(blcAdmin.strings.confirmDelete)) {
+            if (action === 'delete' && !confirm(frankdlcAdmin.strings.confirmDelete)) {
                 return;
             }
 
-            $('#blc-bulk-apply').prop('disabled', true).text(blcAdmin.strings.processing);
+            $('#frankdlc-bulk-apply').prop('disabled', true).text(frankdlcAdmin.strings.processing);
 
             $.ajax({
-                url: blcAdmin.ajaxUrl,
+                url: frankdlcAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'blc_bulk_action',
-                    nonce: blcAdmin.nonce,
+                    action: 'FRANKDLC_bulk_action',
+                    nonce: frankdlcAdmin.nonce,
                     bulk_action: action,
                     link_ids: linkIds
                 },
                 success: function (response) {
-                    $('#blc-bulk-apply').prop('disabled', false).text('Apply');
+                    $('#frankdlc-bulk-apply').prop('disabled', false).text(frankdlcAdmin.strings.apply);
                     if (response.success) {
-                        BLC.showToast(response.data.message, 'success');
+                        FRANKDLC.showToast(response.data.message, 'success');
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
-                        BLC.showToast(response.data || blcAdmin.strings.error, 'error');
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
                 },
                 error: function () {
-                    $('#blc-bulk-apply').prop('disabled', false).text('Apply');
-                    BLC.showToast(blcAdmin.strings.error, 'error');
+                    $('#frankdlc-bulk-apply').prop('disabled', false).text(frankdlcAdmin.strings.apply);
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                 }
             });
         },
 
-        toggleExportMenu: function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $('.blc-export-menu').toggle();
-        },
 
-        exportLinks: function (e) {
-            e.preventDefault();
-            const format = $(e.currentTarget).data('format');
-            const $btn = $('#blc-export-btn');
-            const originalText = $btn.html();
-
-            $('.blc-export-menu').hide();
-            $btn.html('<span class="dashicons dashicons-update spin"></span> ' + blcAdmin.strings.exporting);
-            $btn.prop('disabled', true);
-
-            $.ajax({
-                url: blcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'blc_export_links',
-                    nonce: blcAdmin.nonce,
-                    format: format,
-                    status: new URLSearchParams(window.location.search).get('status') || 'all'
-                },
-                success: function (response) {
-                    if (response.success && response.data && response.data.download_url) {
-                        BLC.showToast(blcAdmin.strings.exportSuccess || 'Export created successfully!', 'success');
-                        // Trigger download
-                        window.location.href = response.data.download_url;
-                    } else {
-                        // Handle error message properly
-                        var errorMsg = blcAdmin.strings.exportFailed || 'Export failed';
-                        if (response.data) {
-                            if (typeof response.data === 'string') {
-                                errorMsg = response.data;
-                            } else if (response.data.message) {
-                                errorMsg = response.data.message;
-                            }
-                        }
-                        BLC.showToast(errorMsg, 'error');
-                    }
-                },
-                error: function () {
-                    BLC.showToast(blcAdmin.strings.exportFailed || 'Export failed', 'error');
-                },
-                complete: function () {
-                    $btn.html(originalText);
-                    $btn.prop('disabled', false);
-                }
-            });
-        },
 
         showToast: function (message, type) {
             type = type || 'success';
 
             // Remove existing toasts
-            $('.blc-toast').remove();
+            $('.frankdlc-toast').remove();
 
-            const $toast = $('<div class="blc-toast ' + type + '">' + message + '</div>');
+            const $toast = $('<div class="frankdlc-toast ' + type + '">' + message + '</div>');
             $('body').append($toast);
 
             setTimeout(function () {
                 $toast.fadeOut(300, function () { $(this).remove(); });
             }, 3000);
+        },
+
+        /**
+         * Force Stop Scan
+         */
+        forceStopScan: function (e) {
+            e.preventDefault();
+            if (!confirm(frankdlcAdmin.strings.confirmForceStop)) {
+                return;
+            }
+            const $btn = $('#frankdlc-force-stop-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.forceStopping);
+            $.ajax({
+                url: frankdlcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'FRANKDLC_force_stop_scan', nonce: frankdlcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.allScansForceStopped, 'success');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedForceStop, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
+                    }
+                },
+                error: function () {
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
+                }
+            });
+        },
+
+        /**
+         * Reset Settings to Defaults
+         */
+        resetSettings: function (e) {
+            e.preventDefault();
+            if (!confirm(frankdlcAdmin.strings.confirmResetSettings)) {
+                return;
+            }
+            const $btn = $('#frankdlc-reset-settings-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resetting);
+            $.ajax({
+                url: frankdlcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'FRANKDLC_reset_settings', nonce: frankdlcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.settingsResetDefaults, 'success');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetSettings, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
+                    }
+                },
+                error: function () {
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
+                }
+            });
+        },
+
+        /**
+         * Clear Scan History
+         */
+        clearScanHistory: function (e) {
+            e.preventDefault();
+            if (!confirm(frankdlcAdmin.strings.confirmClearHistory)) {
+                return;
+            }
+            const $btn = $('#frankdlc-clear-history-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
+            $.ajax({
+                url: frankdlcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'FRANKDLC_clear_scan_history', nonce: frankdlcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanHistoryCleared, 'success');
+                        setTimeout(function () { location.reload(); }, 1500);
+                    } else {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedClearHistory, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
+                    }
+                },
+                error: function () {
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
+                }
+            });
+        },
+
+        /**
+         * Full Plugin Reset
+         */
+        fullReset: function (e) {
+            e.preventDefault();
+            if (!confirm(frankdlcAdmin.strings.confirmFullReset)) {
+                return;
+            }
+            // Double confirmation for destructive action
+            if (!confirm(frankdlcAdmin.strings.confirmFullResetDouble)) {
+                return;
+            }
+            const $btn = $('#frankdlc-full-reset-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resettingEverything);
+            $.ajax({
+                url: frankdlcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'FRANKDLC_full_reset', nonce: frankdlcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.pluginFullyReset, 'success');
+                        setTimeout(function () { location.reload(); }, 2000);
+                    } else {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetPlugin, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
+                    }
+                },
+                error: function () {
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
+                }
+            });
+        },
+
+        /**
+         * Cleanup Export Files
+         */
+        cleanupExports: function (e) {
+            e.preventDefault();
+            if (!confirm(frankdlcAdmin.strings.confirmCleanupExports)) {
+                return;
+            }
+            const $btn = $('#frankdlc-cleanup-exports-btn');
+            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.cleaning);
+            $.ajax({
+                url: frankdlcAdmin.ajaxUrl,
+                type: 'POST',
+                data: { action: 'FRANKDLC_cleanup_exports', nonce: frankdlcAdmin.nonce },
+                success: function (response) {
+                    if (response.success) {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.exportFilesCleaned, 'success');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
+                    } else {
+                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedCleanupExports, 'error');
+                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
+                    }
+                },
+                error: function () {
+                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
+                }
+            });
         }
     };
 
     // Initialize on document ready
     $(document).ready(function () {
-        BLC.init();
+        FRANKDLC.init();
     });
 
     // Add spin animation
-    $('<style>.spin { animation: blc-spin 1s linear infinite; } @keyframes blc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>').appendTo('head');
+    $('<style>.spin { animation: frankdlc-spin 1s linear infinite; } @keyframes frankdlc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>').appendTo('head');
 
 })(jQuery);

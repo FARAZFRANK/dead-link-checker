@@ -10,7 +10,7 @@
 
 defined('ABSPATH') || exit;
 
-class BLC_Parser_Gutenberg
+class FRANKDLC_Parser_Gutenberg
 {
     /**
      * Check if Gutenberg is available

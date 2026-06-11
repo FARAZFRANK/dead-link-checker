@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database Handler
  *
@@ -12,11 +13,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Database
+ * Class FRANKDLC_Database
  *
  * Database abstraction layer for links and scans
  */
-class BLC_Database
+class FRANKDLC_Database
 {
 
     /**
@@ -39,8 +40,8 @@ class BLC_Database
     public function __construct()
     {
         global $wpdb;
-        $this->table_links = $wpdb->prefix . 'blc_links';
-        $this->table_scans = $wpdb->prefix . 'blc_scans';
+        $this->table_links = $wpdb->prefix . 'FRANKDLC_links';
+        $this->table_scans = $wpdb->prefix . 'FRANKDLC_scans';
     }
 
     /**
@@ -89,18 +90,17 @@ class BLC_Database
         );
 
         if ($existing) {
-            // Update existing link
+            // Update existing link (do NOT modify last_check during discovery)
             $update_data = array(
                 'anchor_text' => $data['anchor_text'] ?? $existing->anchor_text,
-                'last_check' => current_time('mysql'),
             );
 
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->update(
                 $this->table_links,
                 $update_data,
                 array('id' => $existing->id),
-                array('%s', '%s'),
+                array('%s'),
                 array('%d')
             );
 
@@ -123,8 +123,11 @@ class BLC_Database
             'check_count' => 0,
         );
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table, no WP function available
-        $wpdb->insert($this->table_links, $insert_data);
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+        $inserted = $wpdb->insert($this->table_links, $insert_data);
+        if ($inserted === false) {
+            return false;
+        }
 
         return $wpdb->insert_id ?: false;
     }
@@ -153,21 +156,26 @@ class BLC_Database
         );
 
         // Increment check count
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "UPDATE {$this->table_links} SET check_count = check_count + 1 WHERE id = %d",
                 $link_id
             )
         );
-        // phpcs:enable
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
-        return (bool) $wpdb->update(
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $update_success = (bool) $wpdb->update(
             $this->table_links,
             $data,
             array('id' => $link_id)
         );
+
+        // Clear stats cache so dashboard shows updated counts immediately
+        $this->clear_stats_cache();
+
+        return $update_success;
     }
 
     /**
@@ -180,14 +188,14 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_links} WHERE id = %d",
                 $link_id
             )
         );
-        // phpcs:enable
     }
 
     /**
@@ -205,9 +213,10 @@ class BLC_Database
 
         $url_hash = md5($url);
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_links} 
                 WHERE url_hash = %s 
                 AND source_id = %d 
@@ -219,7 +228,6 @@ class BLC_Database
                 $source_field
             )
         );
-        // phpcs:enable
     }
 
     /**
@@ -250,6 +258,12 @@ class BLC_Database
         );
 
         $args = wp_parse_args($args, $defaults);
+
+        // Whitelist status parameter
+        $allowed_statuses = array('all', 'broken', 'warning', 'working', 'dismissed');
+        if (!in_array($args['status'], $allowed_statuses, true)) {
+            $args['status'] = 'all';
+        }
 
         // Build WHERE clause
         $where = array('1=1');
@@ -313,8 +327,12 @@ class BLC_Database
 
         // HTTP status code filter
         if (!empty($args['http_status'])) {
-            $where[] = 'status_code = %d';
-            $values[] = intval($args['http_status']);
+            if ($args['http_status'] === 'error') {
+                $where[] = '(status_code IS NULL OR status_code = 0)';
+            } else {
+                $where[] = 'status_code = %d';
+                $values[] = intval($args['http_status']);
+            }
         }
 
         // Build query
@@ -339,17 +357,16 @@ class BLC_Database
         $offset = ($args['page'] - 1) * $args['per_page'];
 
         // Build final query
-        $sql = "SELECT * FROM {$this->table_links} WHERE {$where_clause} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $query = 'SELECT * FROM `' . esc_sql($this->table_links) . '` WHERE ' . $where_clause . ' ORDER BY ' . $orderby . ' ' . $order . ' LIMIT %d OFFSET %d';
         $values[] = $args['per_page'];
         $values[] = $offset;
 
-        if (!empty($values)) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL is prepared with wpdb->prepare above
-            $sql = $wpdb->prepare($sql, $values);
-        }
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $prepared_query = $wpdb->prepare($query, $values);
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Using custom table, SQL is prepared, variables are from trusted sources
-        return $wpdb->get_results($sql);
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+        return $wpdb->get_results($prepared_query);
     }
 
     /**
@@ -367,9 +384,20 @@ class BLC_Database
             'link_type' => 'all',
             'source_type' => 'all',
             'search' => '',
+            'date_from' => '',
+            'date_to' => '',
+            'response_time_min' => '',
+            'response_time_max' => '',
+            'http_status' => '',
         );
 
         $args = wp_parse_args($args, $defaults);
+
+        // Whitelist status parameter
+        $allowed_statuses = array('all', 'broken', 'warning', 'working', 'dismissed');
+        if (!in_array($args['status'], $allowed_statuses, true)) {
+            $args['status'] = 'all';
+        }
 
         // Build WHERE clause (same as get_links)
         $where = array('1=1');
@@ -407,16 +435,45 @@ class BLC_Database
             $values[] = $search_term;
         }
 
-        $where_clause = implode(' AND ', $where);
-        $sql = "SELECT COUNT(*) FROM {$this->table_links} WHERE {$where_clause}";
-
-        if (!empty($values)) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL is prepared with wpdb->prepare above
-            $sql = $wpdb->prepare($sql, $values);
+        // Date range filter
+        if (!empty($args['date_from'])) {
+            $where[] = 'last_check >= %s';
+            $values[] = $args['date_from'] . ' 00:00:00';
+        }
+        if (!empty($args['date_to'])) {
+            $where[] = 'last_check <= %s';
+            $values[] = $args['date_to'] . ' 23:59:59';
         }
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Using custom table, SQL is prepared, variables are from trusted sources
-        return (int) $wpdb->get_var($sql);
+        // Response time filter
+        if ($args['response_time_min'] !== '' && is_numeric($args['response_time_min'])) {
+            $where[] = 'response_time >= %d';
+            $values[] = intval($args['response_time_min']);
+        }
+        if ($args['response_time_max'] !== '' && is_numeric($args['response_time_max'])) {
+            $where[] = 'response_time <= %d';
+            $values[] = intval($args['response_time_max']);
+        }
+
+        // HTTP status code filter
+        if (!empty($args['http_status'])) {
+            if ($args['http_status'] === 'error') {
+                $where[] = '(status_code IS NULL OR status_code = 0)';
+            } else {
+                $where[] = 'status_code = %d';
+                $values[] = intval($args['http_status']);
+            }
+        }
+
+        $where_clause = implode(' AND ', $where);
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $query = 'SELECT COUNT(*) FROM `' . esc_sql($this->table_links) . '` WHERE ' . $where_clause;
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        $prepared_query = $wpdb->prepare($query, $values);
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+        return (int) $wpdb->get_var($prepared_query);
     }
 
     /**
@@ -428,21 +485,26 @@ class BLC_Database
     {
         global $wpdb;
 
-        $cache_key = 'blc_stats_cache';
+        $cache_key = 'FRANKDLC_stats_cache';
         $stats = get_transient($cache_key);
 
         if ($stats === false) {
-            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table, results are cached via transient
             $stats = array(
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'total' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'broken' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 1 AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'warning' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_warning = 1 AND is_broken = 0 AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'working' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 0 AND is_warning = 0 AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'dismissed' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 1"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'internal' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'internal' AND is_dismissed = 0"),
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 'external' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'external' AND is_dismissed = 0"),
             );
-            // phpcs:enable
 
             set_transient($cache_key, $stats, 5 * MINUTE_IN_SECONDS);
         }
@@ -455,7 +517,7 @@ class BLC_Database
      */
     public function clear_stats_cache()
     {
-        delete_transient('blc_stats_cache');
+        delete_transient('FRANKDLC_stats_cache');
     }
 
     /**
@@ -468,7 +530,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->update(
             $this->table_links,
             array('is_dismissed' => 1),
@@ -492,7 +554,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->update(
             $this->table_links,
             array('is_dismissed' => 0),
@@ -516,7 +578,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->delete(
             $this->table_links,
             array('id' => $link_id),
@@ -526,6 +588,51 @@ class BLC_Database
         $this->clear_stats_cache();
 
         return (bool) $result;
+    }
+
+    /**
+     * Update a link's data
+     *
+     * @param int   $link_id Link ID
+     * @param array $data    Associative array of columns to update (e.g. url, anchor_text)
+     * @return bool
+     */
+    public function update_link($link_id, $data)
+    {
+        global $wpdb;
+
+        if (empty($data)) {
+            return false;
+        }
+
+        $update = array();
+        $format = array();
+
+        if (isset($data['url'])) {
+            $update['url'] = $data['url'];
+            $format[] = '%s';
+        }
+        if (isset($data['anchor_text'])) {
+            $update['anchor_text'] = $data['anchor_text'];
+            $format[] = '%s';
+        }
+
+        if (empty($update)) {
+            return false;
+        }
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $result = $wpdb->update(
+            $this->table_links,
+            $update,
+            array('id' => $link_id),
+            $format,
+            array('%d')
+        );
+
+        $this->clear_stats_cache();
+
+        return $result !== false;
     }
 
     /**
@@ -539,7 +646,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, bulk delete operation
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $result = $wpdb->delete(
             $this->table_links,
             array(
@@ -566,9 +673,10 @@ class BLC_Database
 
         $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-1 day'));
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_links} 
                 WHERE is_dismissed = 0 
                 AND (last_check IS NULL OR last_check < %s)
@@ -578,7 +686,6 @@ class BLC_Database
                 $limit
             )
         );
-        // phpcs:enable
     }
 
     // =========================================================================
@@ -595,7 +702,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table, no WP function available
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $wpdb->insert(
             $this->table_scans,
             array(
@@ -620,7 +727,7 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->update(
             $this->table_scans,
             $data,
@@ -650,7 +757,7 @@ class BLC_Database
 
         $this->clear_stats_cache();
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, data changes frequently
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->update(
             $this->table_scans,
             $data,
@@ -667,35 +774,34 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row(
-            "SELECT * FROM {$this->table_scans} ORDER BY id DESC LIMIT 1"
+            $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                'SELECT * FROM `' . esc_sql($this->table_scans) . '` ORDER BY id DESC LIMIT %d',
+                1
+            )
         );
-        // phpcs:enable
     }
 
     /**
      * Get scan history
-     * FREE VERSION: Limited to 5 scans
      *
-     * @param int $limit Number of records (max 5 in Free)
+     * @param int $limit Number of records
      * @return array
      */
-    public function get_scan_history($limit = 5)
+    public function get_scan_history($limit = 10)
     {
         global $wpdb;
 
-        // FREE: Limit to 5 scan history records
-        $limit = min(5, absint($limit));
-
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
                 "SELECT * FROM {$this->table_scans} ORDER BY id DESC LIMIT %d",
                 $limit
             )
         );
-        // phpcs:enable
     }
 
     /**
@@ -707,11 +813,15 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $running = $wpdb->get_var(
-            "SELECT COUNT(*) FROM {$this->table_scans} WHERE status IN ('pending', 'running')"
+            $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                'SELECT COUNT(*) FROM `' . esc_sql($this->table_scans) . '` WHERE status IN (%s, %s)',
+                'pending',
+                'running'
+            )
         );
-        // phpcs:enable
 
         return $running > 0;
     }
@@ -725,11 +835,16 @@ class BLC_Database
     {
         global $wpdb;
 
-        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_row(
-            "SELECT * FROM {$this->table_scans} WHERE status IN ('pending', 'running') ORDER BY id DESC LIMIT 1"
+            $wpdb->prepare(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                'SELECT * FROM `' . esc_sql($this->table_scans) . '` WHERE status IN (%s, %s) ORDER BY id DESC LIMIT %d',
+                'pending',
+                'running',
+                1
+            )
         );
-        // phpcs:enable
     }
 
     /**
@@ -744,17 +859,109 @@ class BLC_Database
         global $wpdb;
 
         // Delete all links
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table, TRUNCATE for performance
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
         $links_result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
 
         // Delete all scans
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table, TRUNCATE for performance
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
         $scans_result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
 
         // Clear any transients
-        delete_transient('blc_current_scan_id');
-        delete_transient('blc_scan_progress');
+        delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_scan_progress');
+        $this->clear_stats_cache();
 
         return ($links_result !== false && $scans_result !== false);
+    }
+
+    /**
+     * Clear only scan history (keep links data)
+     *
+     * @return bool
+     */
+    public function clear_scan_history()
+    {
+        global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        $result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
+
+        delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_scan_progress');
+
+        return $result !== false;
+    }
+
+    /**
+     * Clear only links data (keep scan history)
+     *
+     * @return bool
+     */
+    public function clear_links_data()
+    {
+        global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        $result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
+
+        $this->clear_stats_cache();
+
+        return $result !== false;
+    }
+
+    /**
+     * Cleanup old scan data
+     *
+     * @param int $days Number of days to keep
+     * @return int Number of deleted records
+     */
+    public function cleanup_old_data($days = 90)
+    {
+        global $wpdb;
+
+        $threshold = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
+
+        // Delete old completed/cancelled/failed scans
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $deleted = $wpdb->query($wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "DELETE FROM {$this->table_scans} WHERE status IN ('completed', 'cancelled', 'failed') AND started_at < %s",
+            $threshold
+        ));
+
+        return $deleted;
+    }
+
+    /**
+     * Get default settings
+     *
+     * @return array
+     */
+    public static function get_default_settings()
+    {
+        return array(
+            'scan_frequency'     => 'daily',
+            'scan_type'          => 'automatic',
+            'timeout'            => 30,
+            'scan_posts'         => true,
+            'scan_pages'         => true,
+            'scan_comments'      => false,
+            'scan_widgets'       => true,
+            'scan_menus'         => true,
+            'scan_custom_fields' => false,
+            'scan_custom_post_types' => array(),
+            'check_internal'     => true,
+            'check_external'     => true,
+            'check_images'       => true,
+            'excluded_domains'   => array(),
+            'email_notifications' => true,
+            'email_frequency'    => 'weekly',
+            'email_recipients'   => array(get_option('admin_email')),
+            'concurrent_requests' => 3,
+            'delay_between'      => 500,
+            'user_agent'         => 'Mozilla/5.0 (compatible; DeadLinkCheckerPro/' . FRANKDLC_VERSION . ')',
+            'verify_ssl'         => true,
+            'auto_cleanup_days'  => 90,
+        );
     }
 }

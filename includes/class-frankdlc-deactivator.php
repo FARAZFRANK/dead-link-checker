@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Deactivator
  *
@@ -12,11 +13,11 @@
 defined('ABSPATH') || exit;
 
 /**
- * Class BLC_Deactivator
+ * Class FRANKDLC_Deactivator
  *
  * Fired during plugin deactivation
  */
-class BLC_Deactivator
+class FRANKDLC_Deactivator
 {
 
     /**
@@ -41,11 +42,10 @@ class BLC_Deactivator
     private static function clear_scheduled_events()
     {
         $events = array(
-            'blc_scheduled_scan',
-            'blc_recheck_broken',
-            'blc_send_digest',
-            'blc_cleanup_old_data',
-            'blc_process_queue',
+            'FRANKDLC_scheduled_scan',
+            'FRANKDLC_recheck_broken',
+
+            'FRANKDLC_process_queue',
         );
 
         foreach ($events as $event) {
@@ -66,19 +66,19 @@ class BLC_Deactivator
         global $wpdb;
 
         // Delete all plugin transients
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Bulk cleanup of plugin transients
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query(
             $wpdb->prepare(
                 "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-                '_transient_blc_%',
-                '_transient_timeout_blc_%'
+                '_transient_FRANKDLC_%',
+                '_transient_timeout_FRANKDLC_%'
             )
         );
 
         // Clear specific transients
-        delete_transient('blc_activation_redirect');
-        delete_transient('blc_scan_progress');
-        delete_transient('blc_stats_cache');
+        delete_transient('FRANKDLC_activation_redirect');
+        delete_transient('FRANKDLC_scan_progress');
+        delete_transient('FRANKDLC_stats_cache');
     }
 
     /**
@@ -88,16 +88,16 @@ class BLC_Deactivator
     {
         global $wpdb;
 
-        $table_scans = $wpdb->prefix . 'blc_scans';
+        $table_scans = $wpdb->prefix . 'FRANKDLC_scans';
 
         // Mark running scans as cancelled
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, deactivation cleanup
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $table_scans,
             array(
                 'status' => 'cancelled',
                 'completed_at' => current_time('mysql'),
-                'error_message' => __('Scan cancelled: Plugin deactivated', 'dead-link-checker'),
+                'error_message' => __('Scan cancelled: Plugin deactivated', 'frank-dead-link-checker'),
             ),
             array('status' => 'running'),
             array('%s', '%s', '%s'),
@@ -105,12 +105,12 @@ class BLC_Deactivator
         );
 
         // Also mark pending scans
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table, deactivation cleanup
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->update(
             $table_scans,
             array(
                 'status' => 'cancelled',
-                'error_message' => __('Scan cancelled: Plugin deactivated', 'dead-link-checker'),
+                'error_message' => __('Scan cancelled: Plugin deactivated', 'frank-dead-link-checker'),
             ),
             array('status' => 'pending'),
             array('%s', '%s'),
