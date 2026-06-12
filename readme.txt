@@ -4,7 +4,7 @@ Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,14 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
+= 1.0.4 =
+* Fixed wpdb::prepare query missing placeholder notice.
+* Added 'Recheck' and 'Edit' buttons to link actions with 'Upgrade to Pro' prompt.
+* Added 'Export' button dropdown (CSV & JSON) as a PRO preview feature.
+* Added 'Notifications' tab in Settings displaying disabled email notification options for PRO preview.
+* Replaced native browser confirm alerts with stylized custom HTML modals across the dashboard.
+
+
 = 1.0.3 =
 * Improved UI consistency: border-radius, height, padding, and spacing now match across all admin pages.
 * Replaced hardcoded border-radius values with CSS token variables for global consistency.
@@ -139,6 +147,9 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+Bug fixes and UI improvements, including custom confirmation modals and new PRO preview features.
 
 = 1.0.3 =
 UI polish release. Consistent heights, padding, spacing, and border-radius across all admin pages.

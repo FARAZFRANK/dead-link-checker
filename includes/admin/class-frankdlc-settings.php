@@ -38,6 +38,10 @@ class FRANKDLC_Settings
         add_settings_section('FRANKDLC_exclusions', __('Exclusions', 'frank-dead-link-checker'), null, 'frankdlc-settings');
         add_settings_field('excluded_domains', __('Excluded Domains', 'frank-dead-link-checker'), array($this, 'field_excluded_domains'), 'frankdlc-settings', 'FRANKDLC_exclusions');
 
+        // Notifications Section
+        add_settings_section('FRANKDLC_notifications', __('Notifications', 'frank-dead-link-checker'), null, 'frankdlc-settings');
+        add_settings_field('email_notifications', __('Email Notifications', 'frank-dead-link-checker'), array($this, 'field_email_notifications'), 'frankdlc-settings', 'FRANKDLC_notifications');
+
         // Advanced Section
         add_settings_section('FRANKDLC_advanced', __('Advanced', 'frank-dead-link-checker'), null, 'frankdlc-settings');
         add_settings_field('concurrent_requests', __('Concurrent Requests', 'frank-dead-link-checker'), array($this, 'field_concurrent_requests'), 'frankdlc-settings', 'FRANKDLC_advanced');
@@ -93,6 +97,15 @@ class FRANKDLC_Settings
         $value = $this->get_option('scan_frequency', 'weekly');
     ?>
         <select name="FRANKDLC_settings[scan_frequency]">
+            <option value="hourly" disabled>
+                <?php esc_html_e('Hourly PRO Upgrade', 'frank-dead-link-checker'); ?>
+            </option>
+            <option value="twicedaily" disabled>
+                <?php esc_html_e('Twice Daily PRO Upgrade', 'frank-dead-link-checker'); ?>
+            </option>
+            <option value="daily" disabled>
+                <?php esc_html_e('Daily PRO Upgrade', 'frank-dead-link-checker'); ?>
+            </option>
             <option value="weekly" <?php selected($value, 'weekly'); ?>>
                 <?php esc_html_e('Weekly', 'frank-dead-link-checker'); ?>
             </option>
@@ -125,6 +138,16 @@ class FRANKDLC_Settings
             $checked = $this->get_option($key, in_array($key, array('scan_posts', 'scan_pages'), true));
             printf('<label><input type="checkbox" name="FRANKDLC_settings[%s]" value="1" %s> %s</label><br>', esc_attr($key), checked($checked, true, false), esc_html($label));
         }
+
+        $pro_types = array(
+            __('Comments', 'frank-dead-link-checker'),
+            __('Widgets', 'frank-dead-link-checker'),
+            __('Menus', 'frank-dead-link-checker'),
+            __('Custom Fields (ACF)', 'frank-dead-link-checker'),
+        );
+        foreach ($pro_types as $label) {
+            echo '<label style="opacity: 0.6; cursor: not-allowed;"><input type="checkbox" disabled> ' . esc_html($label) . ' <span style="background: #2271b1; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-left: 4px; vertical-align: middle;">PRO</span> <span style="color: #2271b1; font-size: 13px; margin-left: 4px;">Upgrade</span></label><br>';
+        }
     }
 
     public function field_link_types()
@@ -134,6 +157,8 @@ class FRANKDLC_Settings
             $checked = $this->get_option($key, true);
             printf('<label><input type="checkbox" name="FRANKDLC_settings[%s]" value="1" %s> %s</label><br>', esc_attr($key), checked($checked, true, false), esc_html($label));
         }
+
+        echo '<label style="opacity: 0.6; cursor: not-allowed;"><input type="checkbox" disabled> ' . esc_html__('Images', 'frank-dead-link-checker') . ' <span style="background: #2271b1; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-left: 4px; vertical-align: middle;">PRO</span> <span style="color: #2271b1; font-size: 13px; margin-left: 4px;">Upgrade</span></label><br>';
     }
 
     public function field_excluded_domains()
@@ -146,6 +171,33 @@ class FRANKDLC_Settings
             <?php esc_html_e('Enter one domain per line (e.g., example.com). Links to these domains will be ignored.', 'frank-dead-link-checker'); ?>
         </p>
     <?php
+    }
+
+    public function field_email_notifications()
+    {
+        ?>
+        <div style="opacity: 0.6; cursor: not-allowed; max-width: 400px;">
+            <label style="display: flex; align-items: center; margin-bottom: 15px;">
+                <input type="checkbox" disabled style="cursor: not-allowed;"> 
+                <span style="margin-left: 5px;"><?php esc_html_e('Enable email notifications', 'frank-dead-link-checker'); ?></span>
+                <span style="background: #2271b1; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-left: 8px;">PRO</span>
+                <span style="color: #2271b1; font-size: 13px; margin-left: 4px;">Upgrade</span>
+            </label>
+            
+            <label style="display: flex; align-items: center; margin-bottom: 15px;">
+                <span style="display: inline-block; width: 80px;"><?php esc_html_e('Frequency:', 'frank-dead-link-checker'); ?></span>
+                <select disabled style="cursor: not-allowed;">
+                    <option><?php esc_html_e('Weekly', 'frank-dead-link-checker'); ?></option>
+                </select>
+            </label>
+
+            <label style="display: block; margin-bottom: 5px;"><?php esc_html_e('Recipients:', 'frank-dead-link-checker'); ?></label>
+            <textarea disabled rows="3" style="width: 100%; max-width: 350px; cursor: not-allowed; border: 1px solid #8c8f94; box-shadow: inset 0 1px 2px rgba(0,0,0,.07); border-radius: 4px; padding: 5px; resize: none; color: #2c3338;">farazfrank777@gmail.com</textarea>
+            <p class="description" style="margin-top: 5px;">
+                <?php esc_html_e('One email per line.', 'frank-dead-link-checker'); ?>
+            </p>
+        </div>
+        <?php
     }
 
     public function field_concurrent_requests()
@@ -196,6 +248,9 @@ class FRANKDLC_Settings
                         <a href="#exclusions">
                             <?php esc_html_e('Exclusions', 'frank-dead-link-checker'); ?>
                         </a>
+                        <a href="#notifications">
+                            <?php esc_html_e('Notifications', 'frank-dead-link-checker'); ?>
+                        </a>
                         <a href="#advanced">
                             <?php esc_html_e('Advanced', 'frank-dead-link-checker'); ?>
                         </a>
@@ -222,6 +277,11 @@ class FRANKDLC_Settings
                                 <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_exclusions'); ?>
                             </table>
                             <?php submit_button(); ?>
+                        </div>
+                        <div id="notifications" class="frankdlc-tab-panel">
+                            <table class="form-table">
+                                <?php do_settings_fields('frankdlc-settings', 'FRANKDLC_notifications'); ?>
+                            </table>
                         </div>
                         <div id="advanced" class="frankdlc-tab-panel">
                             <table class="form-table">

@@ -111,6 +111,25 @@ class FRANKDLC_Dashboard
                         <?php esc_html_e('Stop Scan', 'frank-dead-link-checker'); ?>
                     </button>
 
+                    <div class="frankdlc-export-wrap" style="display:inline-block; position:relative; vertical-align:top; margin-left:4px;">
+                        <style>
+                            .frankdlc-export-wrap:hover .frankdlc-export-dropdown { display: block !important; }
+                            .frankdlc-export-dropdown a:hover { background: #f0f0f1; }
+                        </style>
+                        <button type="button" class="button button-hero">
+                            <span class="dashicons dashicons-download" style="line-height: inherit; margin-top: 4px;"></span>
+                            <?php esc_html_e('Export', 'frank-dead-link-checker'); ?>
+                            <span class="dashicons dashicons-arrow-down-alt2" style="line-height: inherit; margin-top: 4px; margin-left: 2px; font-size: 16px;"></span>
+                        </button>
+                        <div class="frankdlc-export-dropdown" style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #c3c4c7; box-shadow:0 1px 3px rgba(0,0,0,.04); border-radius:3px; padding:4px 0; min-width:160px; z-index:100; margin-top:2px; text-align: left;">
+                            <a href="#" style="display:block; padding:8px 12px; color:#3c434a; text-decoration:none; opacity:0.5; cursor:not-allowed; line-height: 20px; font-weight: normal; font-size: 13px;" title="<?php esc_attr_e('Upgrade to Pro', 'frank-dead-link-checker'); ?>" onclick="return false;">
+                                <span class="dashicons dashicons-media-spreadsheet" style="color:#82878c; margin-right:4px;"></span> <?php esc_html_e('Export as CSV', 'frank-dead-link-checker'); ?> <span style="background: #2271b1; color: #fff; font-size: 10px; padding: 2px 4px; border-radius: 3px; font-weight: bold; margin-left: 4px; vertical-align: middle;">PRO</span>
+                            </a>
+                            <a href="#" style="display:block; padding:8px 12px; color:#3c434a; text-decoration:none; opacity:0.5; cursor:not-allowed; line-height: 20px; font-weight: normal; font-size: 13px;" title="<?php esc_attr_e('Upgrade to Pro', 'frank-dead-link-checker'); ?>" onclick="return false;">
+                                <span class="dashicons dashicons-editor-code" style="color:#82878c; margin-right:4px;"></span> <?php esc_html_e('Export as JSON', 'frank-dead-link-checker'); ?> <span style="background: #2271b1; color: #fff; font-size: 10px; padding: 2px 4px; border-radius: 3px; font-weight: bold; margin-left: 4px; vertical-align: middle;">PRO</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <?php FRANKDLC()->admin->render_custom_notices(); ?>
@@ -437,7 +456,12 @@ class FRANKDLC_Dashboard
                                 </td>
                                 <td class="frankdlc-col-actions">
                                     <div class="frankdlc-actions-wrap">
-
+                                        <button type="button" class="frankdlc-action-btn" style="opacity: 0.5; cursor: not-allowed;"
+                                            title="<?php esc_attr_e('Upgrade to pro', 'frank-dead-link-checker'); ?>" onclick="return false;"><span
+                                                class="dashicons dashicons-update"></span></button>
+                                        <button type="button" class="frankdlc-action-btn" style="opacity: 0.5; cursor: not-allowed;"
+                                            title="<?php esc_attr_e('Upgrade to pro', 'frank-dead-link-checker'); ?>" onclick="return false;"><span
+                                                class="dashicons dashicons-edit"></span></button>
                                         <?php if ($link->is_dismissed): ?>
                                             <button type="button" class="frankdlc-action-btn frankdlc-undismiss"
                                                 data-id="<?php echo esc_attr($link->id); ?>"

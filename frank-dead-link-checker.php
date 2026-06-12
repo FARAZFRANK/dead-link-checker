@@ -4,7 +4,7 @@
  * Plugin Name: Frank Dead Link Checker
  * Plugin URI: https://wordpress.org/plugins/frank-dead-link-checker
  * Description: Scan your WordPress posts and pages for broken links. Detect dead URLs, redirects, and slow responses with a visual dashboard.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('FRANKDLC_VERSION', '1.0.3');
+define('FRANKDLC_VERSION', '1.0.4');
 define('FRANKDLC_PLUGIN_FILE', __FILE__);
 define('FRANKDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FRANKDLC_PLUGIN_URL', plugin_dir_url(__FILE__));

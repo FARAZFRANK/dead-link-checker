@@ -470,7 +470,11 @@ class FRANKDLC_Database
         $query = 'SELECT COUNT(*) FROM `' . esc_sql($this->table_links) . '` WHERE ' . $where_clause;
 
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $prepared_query = $wpdb->prepare($query, $values);
+        if ( ! empty( $values ) ) {
+            $prepared_query = $wpdb->prepare($query, $values);
+        } else {
+            $prepared_query = $query;
+        }
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         return (int) $wpdb->get_var($prepared_query);

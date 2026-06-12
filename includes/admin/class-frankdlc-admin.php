@@ -247,7 +247,7 @@ class FRANKDLC_Admin
 
                 <!-- Bottom CTA -->
                 <div style="text-align:center; margin-top:28px; margin-bottom:10px;">
-                    <a href="https://awplife.com/wordpress-plugins/dead-link-checker-pro/" target="_blank" rel="noopener noreferrer" class="button button-primary" style="font-size:15px; padding:10px 32px; height:auto; background:#2563eb; border-color:#2563eb;">
+                    <a href="https://awplife.com/wordpress-plugins/dead-link-checker-pro/" target="_blank" rel="noopener noreferrer" class="button button-primary" style="font-size:15px; padding:10px 32px; height:auto; background:#2563eb; border-color:#2563eb; color:#ffffff !important;">
                         <?php esc_html_e('Upgrade to Pro Now →', 'frank-dead-link-checker'); ?>
                     </a>
                 </div>
@@ -281,6 +281,9 @@ class FRANKDLC_Admin
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('FRANKDLC_admin_nonce'),
             'strings' => array(
+                'confirmTitle' => __('Please Confirm', 'frank-dead-link-checker'),
+                'ok' => __('OK', 'frank-dead-link-checker'),
+                'cancel' => __('Cancel', 'frank-dead-link-checker'),
                 'scanning' => __('Scanning...', 'frank-dead-link-checker'),
                 'scanComplete' => __('Scan complete!', 'frank-dead-link-checker'),
                 'scanFailed' => __('Scan failed.', 'frank-dead-link-checker'),

@@ -173,78 +173,73 @@
             e.preventDefault();
             const $stopBtn = $('#frankdlc-stop-btn');
 
-            if (!confirm(frankdlcAdmin.strings.confirmStop)) {
-                return;
-            }
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmStop, function() {
+                $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.stopping);
 
-            $stopBtn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.stopping);
-
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'FRANKDLC_stop_scan',
-                    nonce: frankdlcAdmin.nonce
-                },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(frankdlcAdmin.strings.scanStopped, 'success');
-                        FRANKDLC.resetScanButton();
-                        $('#frankdlc-scan-progress').fadeOut();
-                        setTimeout(function () { location.reload(); }, 1000);
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: {
+                        action: 'FRANKDLC_stop_scan',
+                        nonce: frankdlcAdmin.nonce
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            FRANKDLC.showToast(frankdlcAdmin.strings.scanStopped, 'success');
+                            FRANKDLC.resetScanButton();
+                            $('#frankdlc-scan-progress').fadeOut();
+                            setTimeout(function () { location.reload(); }, 1000);
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                            $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                         $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $stopBtn.prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
-                }
+                });
             });
         },
 
         freshScan: function (e) {
             e.preventDefault();
 
-            // Show confirmation dialog
-            if (!confirm(frankdlcAdmin.strings.confirmFreshScan)) {
-                return;
-            }
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmFreshScan, function() {
+                const $btn = $('#frankdlc-fresh-scan-btn');
+                const $scanBtn = $('#frankdlc-scan-btn');
+                const $stopBtn = $('#frankdlc-stop-btn');
 
-            const $btn = $('#frankdlc-fresh-scan-btn');
-            const $scanBtn = $('#frankdlc-scan-btn');
-            const $stopBtn = $('#frankdlc-stop-btn');
+                // Disable buttons and show loading state
+                $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
+                $scanBtn.hide();
 
-            // Disable buttons and show loading state
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
-            $scanBtn.hide();
-
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'FRANKDLC_fresh_scan',
-                    nonce: frankdlcAdmin.nonce
-                },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(frankdlcAdmin.strings.freshScanStarted, 'success');
-                        $btn.hide();
-                        $stopBtn.show();
-                        $('#frankdlc-scan-progress').show();
-                        FRANKDLC.pollProgress();
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: {
+                        action: 'FRANKDLC_fresh_scan',
+                        nonce: frankdlcAdmin.nonce
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            FRANKDLC.showToast(frankdlcAdmin.strings.freshScanStarted, 'success');
+                            $btn.hide();
+                            $stopBtn.show();
+                            $('#frankdlc-scan-progress').show();
+                            FRANKDLC.pollProgress();
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
+                            $scanBtn.show();
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                         $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
                         $scanBtn.show();
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-update"></span> ' + frankdlcAdmin.strings.freshScan);
-                    $scanBtn.show();
-                }
+                });
             });
         },
 
@@ -377,27 +372,27 @@
             const $row = $btn.closest('tr');
             const linkId = $btn.data('id');
 
-            if (!confirm(frankdlcAdmin.strings.confirmDelete)) return;
-
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'FRANKDLC_delete_link',
-                    nonce: frankdlcAdmin.nonce,
-                    link_id: linkId
-                },
-                success: function (response) {
-                    if (response.success) {
-                        $row.fadeOut(300, function () { $(this).remove(); });
-                        FRANKDLC.showToast(response.data, 'success');
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmDelete, function() {
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: {
+                        action: 'FRANKDLC_delete_link',
+                        nonce: frankdlcAdmin.nonce,
+                        link_id: linkId
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $row.fadeOut(300, function () { $(this).remove(); });
+                            FRANKDLC.showToast(response.data, 'success');
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                }
+                });
             });
         },
 
@@ -425,10 +420,16 @@
                 return;
             }
 
-            if (action === 'delete' && !confirm(frankdlcAdmin.strings.confirmDelete)) {
-                return;
+            if (action === 'delete') {
+                FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmDelete, function() {
+                    FRANKDLC.processBulkAction(action, linkIds);
+                });
+            } else {
+                FRANKDLC.processBulkAction(action, linkIds);
             }
+        },
 
+        processBulkAction: function(action, linkIds) {
             $('#frankdlc-bulk-apply').prop('disabled', true).text(frankdlcAdmin.strings.processing);
 
             $.ajax({
@@ -472,33 +473,60 @@
             }, 3000);
         },
 
+        confirmModal: function (message, onConfirm) {
+            $('.frankdlc-confirm-modal').remove();
+            const modalHtml = `
+                <div class="frankdlc-modal frankdlc-confirm-modal" style="display:flex; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:99999; align-items:center; justify-content:center;">
+                    <div style="background:#fff; border-radius:8px; width:400px; max-width:90%; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.2);">
+                        <h3 style="margin-top:0; margin-bottom:15px; font-size:18px; color:#1d2327;">${frankdlcAdmin.strings.confirmTitle || 'Please Confirm'}</h3>
+                        <p style="font-size:14px; color:#3c434a; margin-bottom:24px; line-height:1.5;">${message}</p>
+                        <div style="text-align:right;">
+                            <button type="button" class="button frankdlc-modal-cancel" style="margin-right:8px;">${frankdlcAdmin.strings.cancel || 'Cancel'}</button>
+                            <button type="button" class="button button-primary frankdlc-modal-confirm">${frankdlcAdmin.strings.ok || 'OK'}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            $('body').append(modalHtml);
+            
+            $('.frankdlc-modal-cancel').on('click', function() {
+                $('.frankdlc-confirm-modal').fadeOut(200, function() { $(this).remove(); });
+            });
+            
+            $('.frankdlc-modal-confirm').on('click', function() {
+                $('.frankdlc-confirm-modal').fadeOut(200, function() { $(this).remove(); });
+                if (typeof onConfirm === 'function') {
+                    onConfirm();
+                }
+            });
+        },
+
         /**
          * Force Stop Scan
          */
         forceStopScan: function (e) {
             e.preventDefault();
-            if (!confirm(frankdlcAdmin.strings.confirmForceStop)) {
-                return;
-            }
-            const $btn = $('#frankdlc-force-stop-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.forceStopping);
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: { action: 'FRANKDLC_force_stop_scan', nonce: frankdlcAdmin.nonce },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.allScansForceStopped, 'success');
-                        setTimeout(function () { location.reload(); }, 1500);
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedForceStop, 'error');
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmForceStop, function() {
+                const $btn = $('#frankdlc-force-stop-btn');
+                $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.forceStopping);
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: { action: 'FRANKDLC_force_stop_scan', nonce: frankdlcAdmin.nonce },
+                    success: function (response) {
+                        if (response.success) {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.allScansForceStopped, 'success');
+                            setTimeout(function () { location.reload(); }, 1500);
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedForceStop, 'error');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                         $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-dismiss"></span> ' + frankdlcAdmin.strings.forceStop);
-                }
+                });
             });
         },
 
@@ -507,28 +535,27 @@
          */
         resetSettings: function (e) {
             e.preventDefault();
-            if (!confirm(frankdlcAdmin.strings.confirmResetSettings)) {
-                return;
-            }
-            const $btn = $('#frankdlc-reset-settings-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resetting);
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: { action: 'FRANKDLC_reset_settings', nonce: frankdlcAdmin.nonce },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.settingsResetDefaults, 'success');
-                        setTimeout(function () { location.reload(); }, 1500);
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetSettings, 'error');
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmResetSettings, function() {
+                const $btn = $('#frankdlc-reset-settings-btn');
+                $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resetting);
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: { action: 'FRANKDLC_reset_settings', nonce: frankdlcAdmin.nonce },
+                    success: function (response) {
+                        if (response.success) {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.settingsResetDefaults, 'success');
+                            setTimeout(function () { location.reload(); }, 1500);
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetSettings, 'error');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                         $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-undo"></span> ' + frankdlcAdmin.strings.resetSettings);
-                }
+                });
             });
         },
 
@@ -537,28 +564,27 @@
          */
         clearScanHistory: function (e) {
             e.preventDefault();
-            if (!confirm(frankdlcAdmin.strings.confirmClearHistory)) {
-                return;
-            }
-            const $btn = $('#frankdlc-clear-history-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: { action: 'FRANKDLC_clear_scan_history', nonce: frankdlcAdmin.nonce },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanHistoryCleared, 'success');
-                        setTimeout(function () { location.reload(); }, 1500);
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedClearHistory, 'error');
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmClearHistory, function() {
+                const $btn = $('#frankdlc-clear-history-btn');
+                $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.clearing);
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: { action: 'FRANKDLC_clear_scan_history', nonce: frankdlcAdmin.nonce },
+                    success: function (response) {
+                        if (response.success) {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.scanHistoryCleared, 'success');
+                            setTimeout(function () { location.reload(); }, 1500);
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedClearHistory, 'error');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                         $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.clearHistory);
-                }
+                });
             });
         },
 
@@ -567,32 +593,30 @@
          */
         fullReset: function (e) {
             e.preventDefault();
-            if (!confirm(frankdlcAdmin.strings.confirmFullReset)) {
-                return;
-            }
-            // Double confirmation for destructive action
-            if (!confirm(frankdlcAdmin.strings.confirmFullResetDouble)) {
-                return;
-            }
-            const $btn = $('#frankdlc-full-reset-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resettingEverything);
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: { action: 'FRANKDLC_full_reset', nonce: frankdlcAdmin.nonce },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.pluginFullyReset, 'success');
-                        setTimeout(function () { location.reload(); }, 2000);
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetPlugin, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
-                    }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
-                }
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmFullReset, function() {
+                // Double confirmation for destructive action
+                FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmFullResetDouble, function() {
+                    const $btn = $('#frankdlc-full-reset-btn');
+                    $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.resettingEverything);
+                    $.ajax({
+                        url: frankdlcAdmin.ajaxUrl,
+                        type: 'POST',
+                        data: { action: 'FRANKDLC_full_reset', nonce: frankdlcAdmin.nonce },
+                        success: function (response) {
+                            if (response.success) {
+                                FRANKDLC.showToast(response.data || frankdlcAdmin.strings.pluginFullyReset, 'success');
+                                setTimeout(function () { location.reload(); }, 2000);
+                            } else {
+                                FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedResetPlugin, 'error');
+                                $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
+                            }
+                        },
+                        error: function () {
+                            FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-warning"></span> ' + frankdlcAdmin.strings.fullReset);
+                        }
+                    });
+                });
             });
         },
 
@@ -601,28 +625,27 @@
          */
         cleanupExports: function (e) {
             e.preventDefault();
-            if (!confirm(frankdlcAdmin.strings.confirmCleanupExports)) {
-                return;
-            }
-            const $btn = $('#frankdlc-cleanup-exports-btn');
-            $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.cleaning);
-            $.ajax({
-                url: frankdlcAdmin.ajaxUrl,
-                type: 'POST',
-                data: { action: 'FRANKDLC_cleanup_exports', nonce: frankdlcAdmin.nonce },
-                success: function (response) {
-                    if (response.success) {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.exportFilesCleaned, 'success');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
-                    } else {
-                        FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedCleanupExports, 'error');
+            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmCleanupExports, function() {
+                const $btn = $('#frankdlc-cleanup-exports-btn');
+                $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.cleaning);
+                $.ajax({
+                    url: frankdlcAdmin.ajaxUrl,
+                    type: 'POST',
+                    data: { action: 'FRANKDLC_cleanup_exports', nonce: frankdlcAdmin.nonce },
+                    success: function (response) {
+                        if (response.success) {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.exportFilesCleaned, 'success');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
+                        } else {
+                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedCleanupExports, 'error');
+                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
+                        }
+                    },
+                    error: function () {
+                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
                         $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
                     }
-                },
-                error: function () {
-                    FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                    $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
-                }
+                });
             });
         }
     };
