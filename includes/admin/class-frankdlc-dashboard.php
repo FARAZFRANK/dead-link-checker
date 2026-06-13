@@ -428,7 +428,12 @@ class FRANKDLC_Dashboard
                                             </span>
                                         <?php endif; ?>
                                         <?php if ($link->anchor_text): ?>
-                                            <span class="frankdlc-anchor-text">"<?php echo esc_html(wp_trim_words($link->anchor_text, 5)); ?>"</span>
+                                            <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
+                                                <span class="frankdlc-anchor-text" style="color:#646970; font-style:italic;">"<?php echo esc_html(wp_trim_words($link->anchor_text, 5)); ?>"</span>
+                                                <button type="button" class="frankdlc-action-btn frankdlc-copy-text-btn" data-text="<?php echo esc_attr($link->anchor_text); ?>" title="<?php esc_attr_e('Copy link text', 'frank-dead-link-checker'); ?>" style="padding:0; margin:0; width:18px; height:18px; min-height:18px; line-height:1;">
+                                                    <span class="dashicons dashicons-admin-page" style="font-size:14px; width:14px; height:14px; color:#a7aaad;"></span>
+                                                </button>
+                                            </div>
                                         <?php endif; ?>
                                     </div>
                                 </td>
@@ -447,7 +452,7 @@ class FRANKDLC_Dashboard
                                              <?php $view_url = $link->get_source_view_url(); ?>
                                              <?php if ($view_url): ?>
                                                  <a href="<?php echo esc_url($view_url); ?>" class="frankdlc-source-action-btn frankdlc-source-view" target="_blank" rel="noopener" title="<?php esc_attr_e('View Source', 'frank-dead-link-checker'); ?>">
-                                                     <span class="dashicons dashicons-visibility"></span>
+                                                     <span class="dashicons dashicons-external"></span>
                                                  </a>
                                              <?php endif; ?>
                                          </span>

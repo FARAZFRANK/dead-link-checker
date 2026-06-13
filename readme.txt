@@ -4,7 +4,7 @@ Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,10 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
+= 1.0.6 =
+* Tweak: Added a "Copy" icon badge in the URL column to easily copy anchor text.
+* Tweak: Changed "View Source" icon to an external link icon for better consistency.
+
 = 1.0.5 =
 * Contextual Bulk Actions: Conditional options display based on active status tab (e.g. hides Restore in active tabs, Dismiss in Dismissed tab).
 * User-Friendly Bulk Notice: Clearer feedback message with plurals and fallback when no state changes occur.
@@ -156,6 +160,9 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+Added copy badge for anchor text and improved view source icon.
 
 = 1.0.5 =
 Adds contextual bulk actions, improves notification visibility, refines source column links/icons, and expands URL display length.

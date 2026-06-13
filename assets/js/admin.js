@@ -78,6 +78,9 @@
             // Modal
             $(document).on('click', '.frankdlc-modal-close, .frankdlc-modal-cancel', this.closeModal.bind(this));
 
+            // Copy text button
+            $(document).on('click', '.frankdlc-copy-text-btn', this.copyTextToClipboard.bind(this));
+
 
             // Close modal on outside click
             $(document).on('click', '.frankdlc-modal', function (e) {
@@ -400,6 +403,36 @@
 
         closeModal: function () {
             $('.frankdlc-modal').fadeOut(200);
+        },
+
+        copyTextToClipboard: function (e) {
+            e.preventDefault();
+            const $btn = $(e.currentTarget);
+            const textToCopy = $btn.data('text');
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    FRANKDLC.showToast(frankdlcAdmin.strings && frankdlcAdmin.strings.textCopied ? frankdlcAdmin.strings.textCopied : 'Text copied to clipboard', 'success');
+                }).catch(function(err) {
+                    FRANKDLC.showToast('Failed to copy text', 'error');
+                });
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    FRANKDLC.showToast(frankdlcAdmin.strings && frankdlcAdmin.strings.textCopied ? frankdlcAdmin.strings.textCopied : 'Text copied to clipboard', 'success');
+                } catch (err) {
+                    FRANKDLC.showToast('Failed to copy text', 'error');
+                }
+                textArea.remove();
+            }
         },
 
         bulkAction: function () {

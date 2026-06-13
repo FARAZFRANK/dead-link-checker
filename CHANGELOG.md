@@ -4,6 +4,10 @@ A WordPress plugin to find and fix broken links on your website.
 
 ## Changelog
 
+### 1.0.6 (2026-06-13)
+- Feature: Added a "Copy" icon badge in the URL column to easily copy anchor text.
+- UI: Changed "View Source" icon to an external link icon for better consistency.
+
 ### 1.0.5 (2026-06-13)
 - UX: Conditional bulk action options based on active status tab.
 - Feedback: Clearer, pluralized bulk action success and fallback messages.
