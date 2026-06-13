@@ -300,13 +300,16 @@ class FRANKDLC_Dashboard
                         <option value="">
                             <?php esc_html_e('Bulk Actions', 'frank-dead-link-checker'); ?>
                         </option>
-
-                        <option value="dismiss">
-                            <?php esc_html_e('Dismiss', 'frank-dead-link-checker'); ?>
-                        </option>
-                        <option value="undismiss">
-                            <?php esc_html_e('Restore', 'frank-dead-link-checker'); ?>
-                        </option>
+                        <?php if ($current_status !== 'dismissed'): ?>
+                            <option value="dismiss">
+                                <?php esc_html_e('Dismiss', 'frank-dead-link-checker'); ?>
+                            </option>
+                        <?php endif; ?>
+                        <?php if ($current_status === 'all' || $current_status === 'dismissed'): ?>
+                            <option value="undismiss">
+                                <?php esc_html_e('Restore', 'frank-dead-link-checker'); ?>
+                            </option>
+                        <?php endif; ?>
                         <option value="delete">
                             <?php esc_html_e('Delete', 'frank-dead-link-checker'); ?>
                         </option>
@@ -414,7 +417,7 @@ class FRANKDLC_Dashboard
                                     <div class="frankdlc-url-wrap">
                                         <a href="<?php echo esc_url($link->url); ?>" target="_blank" rel="noopener"
                                             title="<?php echo esc_attr($link->url); ?>">
-                                            <?php echo esc_html($link->get_display_url(50)); ?>
+                                            <?php echo esc_html($link->get_display_url(80)); ?>
                                         </a>
                                         <?php if ($link->redirect_url): ?>
                                             <span class="frankdlc-redirect-info">→
@@ -429,16 +432,27 @@ class FRANKDLC_Dashboard
                                         <?php endif; ?>
                                     </div>
                                 </td>
-                                <td class="frankdlc-col-source">
-                                    <?php $edit_url = $link->get_source_edit_url();
-                                    if ($edit_url): ?>
-                                        <a href="<?php echo esc_url($edit_url); ?>">
-                                            <?php echo esc_html(wp_trim_words($link->get_source_title(), 5)); ?>
-                                        </a>
-                                    <?php else: ?>
-                                        <?php echo esc_html($link->get_source_title()); ?>
-                                    <?php endif; ?>
-                                </td>
+                                 <td class="frankdlc-col-source">
+                                     <div class="frankdlc-source-cell">
+                                          <span class="frankdlc-source-title" title="<?php echo esc_attr($link->get_source_title()); ?>">
+                                              <?php echo esc_html($link->get_source_title()); ?>
+                                          </span>
+                                         <span class="frankdlc-source-actions">
+                                             <?php $edit_url = $link->get_source_edit_url(); ?>
+                                             <?php if ($edit_url): ?>
+                                                 <a href="<?php echo esc_url($edit_url); ?>" class="frankdlc-source-action-btn frankdlc-source-edit" target="_blank" rel="noopener" title="<?php esc_attr_e('Edit Source', 'frank-dead-link-checker'); ?>">
+                                                     <span class="dashicons dashicons-edit"></span>
+                                                 </a>
+                                             <?php endif; ?>
+                                             <?php $view_url = $link->get_source_view_url(); ?>
+                                             <?php if ($view_url): ?>
+                                                 <a href="<?php echo esc_url($view_url); ?>" class="frankdlc-source-action-btn frankdlc-source-view" target="_blank" rel="noopener" title="<?php esc_attr_e('View Source', 'frank-dead-link-checker'); ?>">
+                                                     <span class="dashicons dashicons-visibility"></span>
+                                                 </a>
+                                             <?php endif; ?>
+                                         </span>
+                                     </div>
+                                 </td>
                                 <td class="frankdlc-col-type"><span
                                         class="frankdlc-type-badge frankdlc-type-<?php echo esc_attr($link->link_type); ?>">
                                         <?php echo esc_html($link->get_type_label()); ?>

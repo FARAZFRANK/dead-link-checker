@@ -32,3 +32,6 @@ wp-config.php
 # Environment
 .env
 .env.local
+
+# CodeGraph Index
+.codegraph/

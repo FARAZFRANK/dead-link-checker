@@ -637,8 +637,13 @@ class FRANKDLC_Admin
                     break;
             }
         }
-        /* translators: %d: number of links processed */
-        wp_send_json_success(array('message' => sprintf(__('%d links processed.', 'frank-dead-link-checker'), $count), 'count' => $count));
+        if ($count > 0) {
+            /* translators: %d: number of links processed */
+            $message = sprintf(_n('%d link updated successfully.', '%d links updated successfully.', $count, 'frank-dead-link-checker'), $count);
+        } else {
+            $message = __('No changes were made (selected links were already in the requested state).', 'frank-dead-link-checker');
+        }
+        wp_send_json_success(array('message' => $message, 'count' => $count));
     }
 
 

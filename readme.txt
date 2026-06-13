@@ -4,7 +4,7 @@ Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,15 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
+= 1.0.5 =
+* Contextual Bulk Actions: Conditional options display based on active status tab (e.g. hides Restore in active tabs, Dismiss in Dismissed tab).
+* User-Friendly Bulk Notice: Clearer feedback message with plurals and fallback when no state changes occur.
+* Synchronized Toast & Reload: Extended toast visibility to 5s and delayed page refresh to 4s to make notifications fully readable.
+* Unlinked Source Titles: Converted source title to normal text (unlinked) to prevent misclicks.
+* Dedicated Edit & View Icons: Rendered pencil and eye dashicon buttons next to the title that open in a new window/tab.
+* Ellipsis Truncation: CSS single-line truncation for long source titles.
+* URL Display Limit: Slightly increased displayed URL length threshold from 50 to 80 characters.
+
 = 1.0.4 =
 * Fixed wpdb::prepare query missing placeholder notice.
 * Added 'Recheck' and 'Edit' buttons to link actions with 'Upgrade to Pro' prompt.
@@ -147,6 +156,9 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Adds contextual bulk actions, improves notification visibility, refines source column links/icons, and expands URL display length.
 
 = 1.0.4 =
 Bug fixes and UI improvements, including custom confirmation modals and new PRO preview features.

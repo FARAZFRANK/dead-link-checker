@@ -321,6 +321,27 @@ class FRANKDLC_Link
     }
 
     /**
+     * Get source view URL (frontend permalink)
+     *
+     * @return string|null
+     */
+    public function get_source_view_url()
+    {
+        switch ($this->source_type) {
+            case self::SOURCE_POST:
+            case self::SOURCE_PAGE:
+                return get_permalink($this->source_id);
+
+            case self::SOURCE_COMMENT:
+                $comment = get_comment($this->source_id);
+                return $comment ? get_comment_link($comment) : null;
+
+            default:
+                return null;
+        }
+    }
+
+    /**
      * Get truncated URL for display
      *
      * @param int $max_length Maximum length

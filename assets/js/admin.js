@@ -445,7 +445,7 @@
                     $('#frankdlc-bulk-apply').prop('disabled', false).text(frankdlcAdmin.strings.apply);
                     if (response.success) {
                         FRANKDLC.showToast(response.data.message, 'success');
-                        setTimeout(function () { location.reload(); }, 1000);
+                        setTimeout(function () { location.reload(); }, 4000);
                     } else {
                         FRANKDLC.showToast(response.data || frankdlcAdmin.strings.error, 'error');
                     }
@@ -470,7 +470,7 @@
 
             setTimeout(function () {
                 $toast.fadeOut(300, function () { $(this).remove(); });
-            }, 3000);
+            }, 5000);
         },
 
         confirmModal: function (message, onConfirm) {

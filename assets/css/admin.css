@@ -2193,3 +2193,66 @@
     box-shadow: 0 10px 15px -3px rgba(109, 40, 217, 0.4);
     color: #fff;
 }
+
+/* Source Column Actions */
+.frankdlc-source-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.frankdlc-source-title {
+    color: var(--frankdlc-gray-800);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 8px;
+    flex: 1;
+}
+
+.frankdlc-source-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.frankdlc-source-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: var(--frankdlc-gray-50);
+    color: var(--frankdlc-gray-500);
+    border: 1px solid var(--frankdlc-gray-200);
+    transition: var(--frankdlc-transition);
+}
+
+.frankdlc-source-action-btn:hover {
+    background: var(--frankdlc-gray-100);
+    color: var(--frankdlc-gray-800);
+    border-color: var(--frankdlc-gray-300);
+}
+
+.frankdlc-source-action-btn.frankdlc-source-edit:hover {
+    background: #ecfdf5;
+    color: var(--frankdlc-success);
+    border-color: #a7f3d0;
+}
+
+.frankdlc-source-action-btn.frankdlc-source-view:hover {
+    background: #eff6ff;
+    color: var(--frankdlc-primary);
+    border-color: #bfdbfe;
+}
+
+.frankdlc-source-action-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 1;
+}
