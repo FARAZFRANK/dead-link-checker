@@ -10,962 +10,934 @@
  */
 
 // Prevent direct access
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class FRANKDLC_Database
  *
  * Database abstraction layer for links and scans
  */
-class FRANKDLC_Database
-{
+class FRANKDLC_Database {
 
-    /**
-     * Links table name
-     *
-     * @var string
-     */
-    private $table_links;
+	/**
+	 * Links table name
+	 *
+	 * @var string
+	 */
+	private $table_links;
 
-    /**
-     * Scans table name
-     *
-     * @var string
-     */
-    private $table_scans;
+	/**
+	 * Scans table name
+	 *
+	 * @var string
+	 */
+	private $table_scans;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        global $wpdb;
-        $this->table_links = $wpdb->prefix . 'FRANKDLC_links';
-        $this->table_scans = $wpdb->prefix . 'FRANKDLC_scans';
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		global $wpdb;
+		$this->table_links = $wpdb->prefix . 'FRANKDLC_links';
+		$this->table_scans = $wpdb->prefix . 'FRANKDLC_scans';
+	}
 
-    /**
-     * Get links table name
-     *
-     * @return string
-     */
-    public function get_links_table()
-    {
-        return $this->table_links;
-    }
+	/**
+	 * Get links table name
+	 *
+	 * @return string
+	 */
+	public function get_links_table() {
+		return $this->table_links;
+	}
 
-    /**
-     * Get scans table name
-     *
-     * @return string
-     */
-    public function get_scans_table()
-    {
-        return $this->table_scans;
-    }
+	/**
+	 * Get scans table name
+	 *
+	 * @return string
+	 */
+	public function get_scans_table() {
+		return $this->table_scans;
+	}
 
-    // =========================================================================
-    // LINK OPERATIONS
-    // =========================================================================
+	// =========================================================================
+	// LINK OPERATIONS
+	// =========================================================================
 
-    /**
-     * Insert or update a link
-     *
-     * @param array $data Link data
-     * @return int|false Link ID on success, false on failure
-     */
-    public function save_link($data)
-    {
-        global $wpdb;
+	/**
+	 * Insert or update a link
+	 *
+	 * @param array $data Link data
+	 * @return int|false Link ID on success, false on failure
+	 */
+	public function save_link( $data ) {
+		global $wpdb;
 
-        // Generate URL hash for indexing
-        $data['url_hash'] = md5($data['url']);
+		// Generate URL hash for indexing
+		$data['url_hash'] = md5( $data['url'] );
 
-        // Check if link already exists
-        $existing = $this->get_link_by_url_and_source(
-            $data['url'],
-            $data['source_id'],
-            $data['source_type'],
-            $data['source_field'] ?? 'post_content'
-        );
+		// Check if link already exists
+		$existing = $this->get_link_by_url_and_source(
+			$data['url'],
+			$data['source_id'],
+			$data['source_type'],
+			$data['source_field'] ?? 'post_content'
+		);
 
-        if ($existing) {
-            // Update existing link (do NOT modify last_check during discovery)
-            $update_data = array(
-                'anchor_text' => $data['anchor_text'] ?? $existing->anchor_text,
-            );
+		if ( $existing ) {
+			// Update existing link (do NOT modify last_check during discovery)
+			$update_data = array(
+				'anchor_text' => $data['anchor_text'] ?? $existing->anchor_text,
+			);
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            $wpdb->update(
-                $this->table_links,
-                $update_data,
-                array('id' => $existing->id),
-                array('%s'),
-                array('%d')
-            );
+			$wpdb->update(
+				$this->table_links,
+				$update_data,
+				array( 'id' => $existing->id ),
+				array( '%s' ),
+				array( '%d' )
+			);
 
-            return $existing->id;
-        }
+			return $existing->id;
+		}
 
-        // Insert new link
-        $insert_data = array(
-            'url' => $data['url'],
-            'url_hash' => $data['url_hash'],
-            'link_type' => $data['link_type'] ?? 'internal',
-            'source_id' => $data['source_id'],
-            'source_type' => $data['source_type'] ?? 'post',
-            'source_field' => $data['source_field'] ?? 'post_content',
-            'anchor_text' => $data['anchor_text'] ?? null,
-            'first_detected' => current_time('mysql'),
-            'is_broken' => 0,
-            'is_warning' => 0,
-            'is_dismissed' => 0,
-            'check_count' => 0,
-        );
+		// Insert new link
+		$insert_data = array(
+			'url'            => $data['url'],
+			'url_hash'       => $data['url_hash'],
+			'link_type'      => $data['link_type'] ?? 'internal',
+			'source_id'      => $data['source_id'],
+			'source_type'    => $data['source_type'] ?? 'post',
+			'source_field'   => $data['source_field'] ?? 'post_content',
+			'anchor_text'    => $data['anchor_text'] ?? null,
+			'first_detected' => current_time( 'mysql' ),
+			'is_broken'      => 0,
+			'is_warning'     => 0,
+			'is_dismissed'   => 0,
+			'check_count'    => 0,
+		);
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-        $inserted = $wpdb->insert($this->table_links, $insert_data);
-        if ($inserted === false) {
-            return false;
-        }
+		$inserted = $wpdb->insert( $this->table_links, $insert_data );
+		if ( false === $inserted ) {
+			return false;
+		}
 
-        return $wpdb->insert_id ?: false;
-    }
+		return $wpdb->insert_id ? $wpdb->insert_id : false;
+	}
 
-    /**
-     * Update link check result
-     *
-     * @param int   $link_id Link ID
-     * @param array $result  Check result data
-     * @return bool
-     */
-    public function update_link_result($link_id, $result)
-    {
-        global $wpdb;
+	/**
+	 * Update link check result
+	 *
+	 * @param int   $link_id Link ID
+	 * @param array $result  Check result data
+	 * @return bool
+	 */
+	public function update_link_result( $link_id, $result ) {
+		global $wpdb;
 
-        $data = array(
-            'status_code' => $result['status_code'] ?? null,
-            'status_text' => $result['status_text'] ?? null,
-            'is_broken' => $result['is_broken'] ?? 0,
-            'is_warning' => $result['is_warning'] ?? 0,
-            'redirect_url' => $result['redirect_url'] ?? null,
-            'redirect_count' => $result['redirect_count'] ?? 0,
-            'response_time' => $result['response_time'] ?? null,
-            'last_check' => current_time('mysql'),
-            'error_message' => $result['error_message'] ?? null,
-        );
+		$data = array(
+			'status_code'    => $result['status_code'] ?? null,
+			'status_text'    => $result['status_text'] ?? null,
+			'is_broken'      => $result['is_broken'] ?? 0,
+			'is_warning'     => $result['is_warning'] ?? 0,
+			'redirect_url'   => $result['redirect_url'] ?? null,
+			'redirect_count' => $result['redirect_count'] ?? 0,
+			'response_time'  => $result['response_time'] ?? null,
+			'last_check'     => current_time( 'mysql' ),
+			'error_message'  => $result['error_message'] ?? null,
+		);
 
-        // Increment check count
+		// Increment check count
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->query(
-            $wpdb->prepare(
+		$wpdb->query(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "UPDATE {$this->table_links} SET check_count = check_count + 1 WHERE id = %d",
-                $link_id
-            )
-        );
+				"UPDATE {$this->table_links} SET check_count = check_count + 1 WHERE id = %d",
+				$link_id
+			)
+		);
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $update_success = (bool) $wpdb->update(
-            $this->table_links,
-            $data,
-            array('id' => $link_id)
-        );
+		$update_success = (bool) $wpdb->update(
+			$this->table_links,
+			$data,
+			array( 'id' => $link_id )
+		);
 
-        // Clear stats cache so dashboard shows updated counts immediately
-        $this->clear_stats_cache();
+		// Clear stats cache so dashboard shows updated counts immediately
+		$this->clear_stats_cache();
 
-        return $update_success;
-    }
+		return $update_success;
+	}
 
-    /**
-     * Get link by ID
-     *
-     * @param int $link_id Link ID
-     * @return object|null
-     */
-    public function get_link($link_id)
-    {
-        global $wpdb;
+	/**
+	 * Get link by ID
+	 *
+	 * @param int $link_id Link ID
+	 * @return object|null
+	 */
+	public function get_link( $link_id ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_row(
-            $wpdb->prepare(
+		return $wpdb->get_row(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "SELECT * FROM {$this->table_links} WHERE id = %d",
-                $link_id
-            )
-        );
-    }
+				"SELECT * FROM {$this->table_links} WHERE id = %d",
+				$link_id
+			)
+		);
+	}
 
-    /**
-     * Get link by URL and source
-     *
-     * @param string $url          Link URL
-     * @param int    $source_id    Source post ID
-     * @param string $source_type  Source type
-     * @param string $source_field Source field
-     * @return object|null
-     */
-    public function get_link_by_url_and_source($url, $source_id, $source_type, $source_field)
-    {
-        global $wpdb;
+	/**
+	 * Get link by URL and source
+	 *
+	 * @param string $url          Link URL
+	 * @param int    $source_id    Source post ID
+	 * @param string $source_type  Source type
+	 * @param string $source_field Source field
+	 * @return object|null
+	 */
+	public function get_link_by_url_and_source( $url, $source_id, $source_type, $source_field ) {
+		global $wpdb;
 
-        $url_hash = md5($url);
+		$url_hash = md5( $url );
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_row(
-            $wpdb->prepare(
+		return $wpdb->get_row(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "SELECT * FROM {$this->table_links} 
-                WHERE url_hash = %s 
-                AND source_id = %d 
-                AND source_type = %s 
+				"SELECT * FROM {$this->table_links}
+                WHERE url_hash = %s
+                AND source_id = %d
+                AND source_type = %s
                 AND source_field = %s",
-                $url_hash,
-                $source_id,
-                $source_type,
-                $source_field
-            )
-        );
-    }
+				$url_hash,
+				$source_id,
+				$source_type,
+				$source_field
+			)
+		);
+	}
 
-    /**
-     * Get links with filters
-     *
-     * @param array $args Query arguments
-     * @return array
-     */
-    public function get_links($args = array())
-    {
-        global $wpdb;
+	/**
+	 * Get links with filters
+	 *
+	 * @param array $args Query arguments
+	 * @return array
+	 */
+	public function get_links( $args = array() ) {
+		global $wpdb;
 
-        $defaults = array(
-            'status' => 'all', // all, broken, warning, working, dismissed
-            'link_type' => 'all', // all, internal, external, image
-            'source_type' => 'all', // all, post, page, menu, widget
-            'search' => '',
-            'orderby' => 'last_check',
-            'order' => 'DESC',
-            'per_page' => 20,
-            'page' => 1,
-            // New filters
-            'date_from' => '',
-            'date_to' => '',
-            'response_time_min' => '',
-            'response_time_max' => '',
-            'http_status' => '', // e.g., 404, 500
-        );
+		$defaults = array(
+			'status'            => 'all', // all, broken, warning, working, dismissed
+			'link_type'         => 'all', // all, internal, external, image
+			'source_type'       => 'all', // all, post, page, menu, widget
+			'search'            => '',
+			'orderby'           => 'last_check',
+			'order'             => 'DESC',
+			'per_page'          => 20,
+			'page'              => 1,
+			// New filters
+			'date_from'         => '',
+			'date_to'           => '',
+			'response_time_min' => '',
+			'response_time_max' => '',
+			'http_status'       => '', // e.g., 404, 500
+		);
 
-        $args = wp_parse_args($args, $defaults);
+		$args = wp_parse_args( $args, $defaults );
 
-        // Whitelist status parameter
-        $allowed_statuses = array('all', 'broken', 'warning', 'working', 'dismissed');
-        if (!in_array($args['status'], $allowed_statuses, true)) {
-            $args['status'] = 'all';
-        }
+		// Whitelist status parameter
+		$allowed_statuses = array( 'all', 'broken', 'warning', 'working', 'dismissed' );
+		if ( ! in_array( $args['status'], $allowed_statuses, true ) ) {
+			$args['status'] = 'all';
+		}
 
-        // Build WHERE clause
-        $where = array('1=1');
-        $values = array();
+		// Build WHERE clause
+		$where  = array( '1=1' );
+		$values = array();
 
-        // Status filter
-        switch ($args['status']) {
-            case 'broken':
-                $where[] = 'is_broken = 1 AND is_dismissed = 0';
-                break;
-            case 'warning':
-                $where[] = 'is_warning = 1 AND is_broken = 0 AND is_dismissed = 0';
-                break;
-            case 'working':
-                $where[] = 'is_broken = 0 AND is_warning = 0 AND is_dismissed = 0';
-                break;
-            case 'dismissed':
-                $where[] = 'is_dismissed = 1';
-                break;
-        }
+		// Status filter
+		switch ( $args['status'] ) {
+			case 'broken':
+				$where[] = 'is_broken = 1 AND is_dismissed = 0';
+				break;
+			case 'warning':
+				$where[] = 'is_warning = 1 AND is_broken = 0 AND is_dismissed = 0';
+				break;
+			case 'working':
+				$where[] = 'is_broken = 0 AND is_warning = 0 AND is_dismissed = 0';
+				break;
+			case 'dismissed':
+				$where[] = 'is_dismissed = 1';
+				break;
+		}
 
-        // Link type filter
-        if ($args['link_type'] !== 'all') {
-            $where[] = 'link_type = %s';
-            $values[] = $args['link_type'];
-        }
+		// Link type filter
+		if ( 'all' !== $args['link_type'] ) {
+			$where[]  = 'link_type = %s';
+			$values[] = $args['link_type'];
+		}
 
-        // Source type filter
-        if ($args['source_type'] !== 'all') {
-            $where[] = 'source_type = %s';
-            $values[] = $args['source_type'];
-        }
+		// Source type filter
+		if ( 'all' !== $args['source_type'] ) {
+			$where[]  = 'source_type = %s';
+			$values[] = $args['source_type'];
+		}
 
-        // Search filter
-        if (!empty($args['search'])) {
-            $where[] = '(url LIKE %s OR anchor_text LIKE %s)';
-            $search_term = '%' . $wpdb->esc_like($args['search']) . '%';
-            $values[] = $search_term;
-            $values[] = $search_term;
-        }
+		// Search filter
+		if ( ! empty( $args['search'] ) ) {
+			$where[]     = '(url LIKE %s OR anchor_text LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$values[]    = $search_term;
+			$values[]    = $search_term;
+		}
 
-        // Date range filter
-        if (!empty($args['date_from'])) {
-            $where[] = 'last_check >= %s';
-            $values[] = $args['date_from'] . ' 00:00:00';
-        }
-        if (!empty($args['date_to'])) {
-            $where[] = 'last_check <= %s';
-            $values[] = $args['date_to'] . ' 23:59:59';
-        }
+		// Date range filter
+		if ( ! empty( $args['date_from'] ) ) {
+			$where[]  = 'last_check >= %s';
+			$values[] = $args['date_from'] . ' 00:00:00';
+		}
+		if ( ! empty( $args['date_to'] ) ) {
+			$where[]  = 'last_check <= %s';
+			$values[] = $args['date_to'] . ' 23:59:59';
+		}
 
-        // Response time filter
-        if ($args['response_time_min'] !== '' && is_numeric($args['response_time_min'])) {
-            $where[] = 'response_time >= %d';
-            $values[] = intval($args['response_time_min']);
-        }
-        if ($args['response_time_max'] !== '' && is_numeric($args['response_time_max'])) {
-            $where[] = 'response_time <= %d';
-            $values[] = intval($args['response_time_max']);
-        }
+		// Response time filter
+		if ( '' !== $args['response_time_min'] && is_numeric( $args['response_time_min'] ) ) {
+			$where[]  = 'response_time >= %d';
+			$values[] = intval( $args['response_time_min'] );
+		}
+		if ( '' !== $args['response_time_max'] && is_numeric( $args['response_time_max'] ) ) {
+			$where[]  = 'response_time <= %d';
+			$values[] = intval( $args['response_time_max'] );
+		}
 
-        // HTTP status code filter
-        if (!empty($args['http_status'])) {
-            if ($args['http_status'] === 'error') {
-                $where[] = '(status_code IS NULL OR status_code = 0)';
-            } else {
-                $where[] = 'status_code = %d';
-                $values[] = intval($args['http_status']);
-            }
-        }
+		// HTTP status code filter
+		if ( ! empty( $args['http_status'] ) ) {
+			if ( 'error' === $args['http_status'] ) {
+				$where[] = '(status_code IS NULL OR status_code = 0)';
+			} else {
+				$where[]  = 'status_code = %d';
+				$values[] = intval( $args['http_status'] );
+			}
+		}
 
-        // Build query
-        $where_clause = implode(' AND ', $where);
+		// Build query
+		$where_clause = implode( ' AND ', $where );
 
-        // Validate orderby - expanded list
-        $allowed_orderby = array(
-            'id',
-            'url',
-            'status_code',
-            'last_check',
-            'first_detected',
-            'response_time',
-            'redirect_count',
-            'source_type',
-            'link_type'
-        );
-        $orderby = in_array($args['orderby'], $allowed_orderby, true) ? $args['orderby'] : 'last_check';
-        $order = strtoupper($args['order']) === 'ASC' ? 'ASC' : 'DESC';
+		// Validate orderby - expanded list
+		$allowed_orderby = array(
+			'id',
+			'url',
+			'status_code',
+			'last_check',
+			'first_detected',
+			'response_time',
+			'redirect_count',
+			'source_type',
+			'link_type',
+		);
+		$orderby         = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'last_check';
+		$order           = strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
 
-        // Calculate offset
-        $offset = ($args['page'] - 1) * $args['per_page'];
+		// Calculate offset
+		$offset = ( $args['page'] - 1 ) * $args['per_page'];
 
-        // Build final query
+		// Build final query
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $query = 'SELECT * FROM `' . esc_sql($this->table_links) . '` WHERE ' . $where_clause . ' ORDER BY ' . $orderby . ' ' . $order . ' LIMIT %d OFFSET %d';
-        $values[] = $args['per_page'];
-        $values[] = $offset;
+		$query    = 'SELECT * FROM `' . esc_sql( $this->table_links ) . '` WHERE ' . $where_clause . ' ORDER BY ' . $orderby . ' ' . $order . ' LIMIT %d OFFSET %d';
+		$values[] = $args['per_page'];
+		$values[] = $offset;
 
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $prepared_query = $wpdb->prepare($query, $values);
+		$prepared_query = $wpdb->prepare( $query, $values );
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-        return $wpdb->get_results($prepared_query);
-    }
+		return $wpdb->get_results( $prepared_query );
+	}
 
-    /**
-     * Get total link count with filters
-     *
-     * @param array $args Query arguments (same as get_links)
-     * @return int
-     */
-    public function get_links_count($args = array())
-    {
-        global $wpdb;
+	/**
+	 * Get total link count with filters
+	 *
+	 * @param array $args Query arguments (same as get_links)
+	 * @return int
+	 */
+	public function get_links_count( $args = array() ) {
+		global $wpdb;
 
-        $defaults = array(
-            'status' => 'all',
-            'link_type' => 'all',
-            'source_type' => 'all',
-            'search' => '',
-            'date_from' => '',
-            'date_to' => '',
-            'response_time_min' => '',
-            'response_time_max' => '',
-            'http_status' => '',
-        );
+		$defaults = array(
+			'status'            => 'all',
+			'link_type'         => 'all',
+			'source_type'       => 'all',
+			'search'            => '',
+			'date_from'         => '',
+			'date_to'           => '',
+			'response_time_min' => '',
+			'response_time_max' => '',
+			'http_status'       => '',
+		);
 
-        $args = wp_parse_args($args, $defaults);
+		$args = wp_parse_args( $args, $defaults );
 
-        // Whitelist status parameter
-        $allowed_statuses = array('all', 'broken', 'warning', 'working', 'dismissed');
-        if (!in_array($args['status'], $allowed_statuses, true)) {
-            $args['status'] = 'all';
-        }
+		// Whitelist status parameter
+		$allowed_statuses = array( 'all', 'broken', 'warning', 'working', 'dismissed' );
+		if ( ! in_array( $args['status'], $allowed_statuses, true ) ) {
+			$args['status'] = 'all';
+		}
 
-        // Build WHERE clause (same as get_links)
-        $where = array('1=1');
-        $values = array();
+		// Build WHERE clause (same as get_links)
+		$where  = array( '1=1' );
+		$values = array();
 
-        switch ($args['status']) {
-            case 'broken':
-                $where[] = 'is_broken = 1 AND is_dismissed = 0';
-                break;
-            case 'warning':
-                $where[] = 'is_warning = 1 AND is_broken = 0 AND is_dismissed = 0';
-                break;
-            case 'working':
-                $where[] = 'is_broken = 0 AND is_warning = 0 AND is_dismissed = 0';
-                break;
-            case 'dismissed':
-                $where[] = 'is_dismissed = 1';
-                break;
-        }
+		switch ( $args['status'] ) {
+			case 'broken':
+				$where[] = 'is_broken = 1 AND is_dismissed = 0';
+				break;
+			case 'warning':
+				$where[] = 'is_warning = 1 AND is_broken = 0 AND is_dismissed = 0';
+				break;
+			case 'working':
+				$where[] = 'is_broken = 0 AND is_warning = 0 AND is_dismissed = 0';
+				break;
+			case 'dismissed':
+				$where[] = 'is_dismissed = 1';
+				break;
+		}
 
-        if ($args['link_type'] !== 'all') {
-            $where[] = 'link_type = %s';
-            $values[] = $args['link_type'];
-        }
+		if ( 'all' !== $args['link_type'] ) {
+			$where[]  = 'link_type = %s';
+			$values[] = $args['link_type'];
+		}
 
-        if ($args['source_type'] !== 'all') {
-            $where[] = 'source_type = %s';
-            $values[] = $args['source_type'];
-        }
+		if ( 'all' !== $args['source_type'] ) {
+			$where[]  = 'source_type = %s';
+			$values[] = $args['source_type'];
+		}
 
-        if (!empty($args['search'])) {
-            $where[] = '(url LIKE %s OR anchor_text LIKE %s)';
-            $search_term = '%' . $wpdb->esc_like($args['search']) . '%';
-            $values[] = $search_term;
-            $values[] = $search_term;
-        }
+		if ( ! empty( $args['search'] ) ) {
+			$where[]     = '(url LIKE %s OR anchor_text LIKE %s)';
+			$search_term = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+			$values[]    = $search_term;
+			$values[]    = $search_term;
+		}
 
-        // Date range filter
-        if (!empty($args['date_from'])) {
-            $where[] = 'last_check >= %s';
-            $values[] = $args['date_from'] . ' 00:00:00';
-        }
-        if (!empty($args['date_to'])) {
-            $where[] = 'last_check <= %s';
-            $values[] = $args['date_to'] . ' 23:59:59';
-        }
+		// Date range filter
+		if ( ! empty( $args['date_from'] ) ) {
+			$where[]  = 'last_check >= %s';
+			$values[] = $args['date_from'] . ' 00:00:00';
+		}
+		if ( ! empty( $args['date_to'] ) ) {
+			$where[]  = 'last_check <= %s';
+			$values[] = $args['date_to'] . ' 23:59:59';
+		}
 
-        // Response time filter
-        if ($args['response_time_min'] !== '' && is_numeric($args['response_time_min'])) {
-            $where[] = 'response_time >= %d';
-            $values[] = intval($args['response_time_min']);
-        }
-        if ($args['response_time_max'] !== '' && is_numeric($args['response_time_max'])) {
-            $where[] = 'response_time <= %d';
-            $values[] = intval($args['response_time_max']);
-        }
+		// Response time filter
+		if ( '' !== $args['response_time_min'] && is_numeric( $args['response_time_min'] ) ) {
+			$where[]  = 'response_time >= %d';
+			$values[] = intval( $args['response_time_min'] );
+		}
+		if ( '' !== $args['response_time_max'] && is_numeric( $args['response_time_max'] ) ) {
+			$where[]  = 'response_time <= %d';
+			$values[] = intval( $args['response_time_max'] );
+		}
 
-        // HTTP status code filter
-        if (!empty($args['http_status'])) {
-            if ($args['http_status'] === 'error') {
-                $where[] = '(status_code IS NULL OR status_code = 0)';
-            } else {
-                $where[] = 'status_code = %d';
-                $values[] = intval($args['http_status']);
-            }
-        }
+		// HTTP status code filter
+		if ( ! empty( $args['http_status'] ) ) {
+			if ( 'error' === $args['http_status'] ) {
+				$where[] = '(status_code IS NULL OR status_code = 0)';
+			} else {
+				$where[]  = 'status_code = %d';
+				$values[] = intval( $args['http_status'] );
+			}
+		}
 
-        $where_clause = implode(' AND ', $where);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $query = 'SELECT COUNT(*) FROM `' . esc_sql($this->table_links) . '` WHERE ' . $where_clause;
+		$where_clause = implode( ' AND ', $where );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- table name is esc_sql()'d, WHERE clause built from a whitelisted column set.
+		$query = 'SELECT COUNT(*) FROM `' . esc_sql( $this->table_links ) . '` WHERE ' . $where_clause;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        if ( ! empty( $values ) ) {
-            $prepared_query = $wpdb->prepare($query, $values);
-        } else {
-            $prepared_query = $query;
-        }
+		if ( ! empty( $values ) ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is a dynamically-assembled but non-user-controlled identifier string; values are passed separately for prepare() to placeholder-bind.
+			$prepared_query = $wpdb->prepare( $query, $values );
+		} else {
+			$prepared_query = $query;
+		}
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
-        return (int) $wpdb->get_var($prepared_query);
-    }
+		return (int) $wpdb->get_var( $prepared_query );
+	}
 
-    /**
-     * Get link statistics
-     *
-     * @return array
-     */
-    public function get_stats()
-    {
-        global $wpdb;
+	/**
+	 * Get link statistics
+	 *
+	 * @return array
+	 */
+	public function get_stats() {
+		global $wpdb;
 
-        $cache_key = 'FRANKDLC_stats_cache';
-        $stats = get_transient($cache_key);
+		$cache_key = 'FRANKDLC_stats_cache';
+		$stats     = get_transient( $cache_key );
 
-        if ($stats === false) {
-            $stats = array(
+		if ( false === $stats ) {
+			$stats = array(
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'total' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 0"),
+				'total'     => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 0" ),
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'broken' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 1 AND is_dismissed = 0"),
+				'broken'    => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 1 AND is_dismissed = 0" ),
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'warning' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_warning = 1 AND is_broken = 0 AND is_dismissed = 0"),
+				'warning'   => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE is_warning = 1 AND is_broken = 0 AND is_dismissed = 0" ),
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'working' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 0 AND is_warning = 0 AND is_dismissed = 0"),
+				'working'   => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE is_broken = 0 AND is_warning = 0 AND is_dismissed = 0" ),
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'dismissed' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 1"),
+				'dismissed' => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE is_dismissed = 1" ),
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'internal' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'internal' AND is_dismissed = 0"),
+				'internal'  => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'internal' AND is_dismissed = 0" ),
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                'external' => (int) $wpdb->get_var("SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'external' AND is_dismissed = 0"),
-            );
+				'external'  => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->table_links} WHERE link_type = 'external' AND is_dismissed = 0" ),
+			);
 
-            set_transient($cache_key, $stats, 5 * MINUTE_IN_SECONDS);
-        }
+			set_transient( $cache_key, $stats, 5 * MINUTE_IN_SECONDS );
+		}
 
-        return $stats;
-    }
+		return $stats;
+	}
 
-    /**
-     * Clear stats cache
-     */
-    public function clear_stats_cache()
-    {
-        delete_transient('FRANKDLC_stats_cache');
-    }
+	/**
+	 * Clear stats cache
+	 */
+	public function clear_stats_cache() {
+		delete_transient( 'FRANKDLC_stats_cache' );
+	}
 
-    /**
-     * Dismiss a link
-     *
-     * @param int $link_id Link ID
-     * @return bool
-     */
-    public function dismiss_link($link_id)
-    {
-        global $wpdb;
+	/**
+	 * Dismiss a link
+	 *
+	 * @param int $link_id Link ID
+	 * @return bool
+	 */
+	public function dismiss_link( $link_id ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = $wpdb->update(
-            $this->table_links,
-            array('is_dismissed' => 1),
-            array('id' => $link_id),
-            array('%d'),
-            array('%d')
-        );
+		$result = $wpdb->update(
+			$this->table_links,
+			array( 'is_dismissed' => 1 ),
+			array( 'id' => $link_id ),
+			array( '%d' ),
+			array( '%d' )
+		);
 
-        $this->clear_stats_cache();
+		$this->clear_stats_cache();
 
-        return (bool) $result;
-    }
+		return (bool) $result;
+	}
 
-    /**
-     * Undismiss a link
-     *
-     * @param int $link_id Link ID
-     * @return bool
-     */
-    public function undismiss_link($link_id)
-    {
-        global $wpdb;
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = $wpdb->update(
-            $this->table_links,
-            array('is_dismissed' => 0),
-            array('id' => $link_id),
-            array('%d'),
-            array('%d')
-        );
-
-        $this->clear_stats_cache();
-
-        return (bool) $result;
-    }
-
-    /**
-     * Delete a link
-     *
-     * @param int $link_id Link ID
-     * @return bool
-     */
-    public function delete_link($link_id)
-    {
-        global $wpdb;
+	/**
+	 * Undismiss a link
+	 *
+	 * @param int $link_id Link ID
+	 * @return bool
+	 */
+	public function undismiss_link( $link_id ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = $wpdb->delete(
-            $this->table_links,
-            array('id' => $link_id),
-            array('%d')
-        );
+		$result = $wpdb->update(
+			$this->table_links,
+			array( 'is_dismissed' => 0 ),
+			array( 'id' => $link_id ),
+			array( '%d' ),
+			array( '%d' )
+		);
 
-        $this->clear_stats_cache();
+		$this->clear_stats_cache();
 
-        return (bool) $result;
-    }
+		return (bool) $result;
+	}
 
-    /**
-     * Update a link's data
-     *
-     * @param int   $link_id Link ID
-     * @param array $data    Associative array of columns to update (e.g. url, anchor_text)
-     * @return bool
-     */
-    public function update_link($link_id, $data)
-    {
-        global $wpdb;
-
-        if (empty($data)) {
-            return false;
-        }
-
-        $update = array();
-        $format = array();
-
-        if (isset($data['url'])) {
-            $update['url'] = $data['url'];
-            $format[] = '%s';
-        }
-        if (isset($data['anchor_text'])) {
-            $update['anchor_text'] = $data['anchor_text'];
-            $format[] = '%s';
-        }
-
-        if (empty($update)) {
-            return false;
-        }
+	/**
+	 * Delete a link
+	 *
+	 * @param int $link_id Link ID
+	 * @return bool
+	 */
+	public function delete_link( $link_id ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = $wpdb->update(
-            $this->table_links,
-            $update,
-            array('id' => $link_id),
-            $format,
-            array('%d')
-        );
+		$result = $wpdb->delete(
+			$this->table_links,
+			array( 'id' => $link_id ),
+			array( '%d' )
+		);
 
-        $this->clear_stats_cache();
+		$this->clear_stats_cache();
 
-        return $result !== false;
-    }
+		return (bool) $result;
+	}
 
-    /**
-     * Delete links by source
-     *
-     * @param int    $source_id   Source ID
-     * @param string $source_type Source type
-     * @return int Number of deleted rows
-     */
-    public function delete_links_by_source($source_id, $source_type = 'post')
-    {
-        global $wpdb;
+	/**
+	 * Update a link's data
+	 *
+	 * @param int   $link_id Link ID
+	 * @param array $data    Associative array of columns to update (e.g. url, anchor_text)
+	 * @return bool
+	 */
+	public function update_link( $link_id, $data ) {
+		global $wpdb;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = $wpdb->delete(
-            $this->table_links,
-            array(
-                'source_id' => $source_id,
-                'source_type' => $source_type,
-            ),
-            array('%d', '%s')
-        );
+		if ( empty( $data ) ) {
+			return false;
+		}
 
-        $this->clear_stats_cache();
+		$update = array();
+		$format = array();
 
-        return $result;
-    }
+		if ( isset( $data['url'] ) ) {
+			$update['url'] = $data['url'];
+			$format[]      = '%s';
+		}
+		if ( isset( $data['anchor_text'] ) ) {
+			$update['anchor_text'] = $data['anchor_text'];
+			$format[]              = '%s';
+		}
 
-    /**
-     * Get links that need checking
-     *
-     * @param int $limit Maximum number of links to return
-     * @return array
-     */
-    public function get_links_to_check($limit = 50)
-    {
-        global $wpdb;
-
-        $stale_threshold = gmdate('Y-m-d H:i:s', strtotime('-1 day'));
+		if ( empty( $update ) ) {
+			return false;
+		}
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_results(
-            $wpdb->prepare(
+		$result = $wpdb->update(
+			$this->table_links,
+			$update,
+			array( 'id' => $link_id ),
+			$format,
+			array( '%d' )
+		);
+
+		$this->clear_stats_cache();
+
+		return false !== $result;
+	}
+
+	/**
+	 * Delete links by source
+	 *
+	 * @param int    $source_id   Source ID
+	 * @param string $source_type Source type
+	 * @return int Number of deleted rows
+	 */
+	public function delete_links_by_source( $source_id, $source_type = 'post' ) {
+		global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$result = $wpdb->delete(
+			$this->table_links,
+			array(
+				'source_id'   => $source_id,
+				'source_type' => $source_type,
+			),
+			array( '%d', '%s' )
+		);
+
+		$this->clear_stats_cache();
+
+		return $result;
+	}
+
+	/**
+	 * Get links that need checking
+	 *
+	 * @param int $limit Maximum number of links to return
+	 * @return array
+	 */
+	public function get_links_to_check( $limit = 50 ) {
+		global $wpdb;
+
+		$stale_threshold = gmdate( 'Y-m-d H:i:s', strtotime( '-1 day' ) );
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "SELECT * FROM {$this->table_links} 
-                WHERE is_dismissed = 0 
+				"SELECT * FROM {$this->table_links}
+                WHERE is_dismissed = 0
                 AND (last_check IS NULL OR last_check < %s)
                 ORDER BY last_check ASC, first_detected ASC
                 LIMIT %d",
-                $stale_threshold,
-                $limit
-            )
-        );
-    }
+				$stale_threshold,
+				$limit
+			)
+		);
+	}
 
-    // =========================================================================
-    // SCAN OPERATIONS
-    // =========================================================================
+	// =========================================================================
+	// SCAN OPERATIONS
+	// =========================================================================
 
-    /**
-     * Create a new scan record
-     *
-     * @param string $scan_type Scan type (full, partial)
-     * @return int|false Scan ID on success
-     */
-    public function create_scan($scan_type = 'full')
-    {
-        global $wpdb;
+	/**
+	 * Create a new scan record
+	 *
+	 * @param string $scan_type Scan type (full, partial)
+	 * @return int|false Scan ID on success
+	 */
+	public function create_scan( $scan_type = 'full' ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-        $wpdb->insert(
-            $this->table_scans,
-            array(
-                'scan_type' => $scan_type,
-                'status' => 'pending',
-                'started_at' => current_time('mysql'),
-            ),
-            array('%s', '%s', '%s')
-        );
+		$wpdb->insert(
+			$this->table_scans,
+			array(
+				'scan_type'  => $scan_type,
+				'status'     => 'pending',
+				'started_at' => current_time( 'mysql' ),
+			),
+			array( '%s', '%s', '%s' )
+		);
 
-        return $wpdb->insert_id ?: false;
-    }
+		return $wpdb->insert_id ? $wpdb->insert_id : false;
+	}
 
-    /**
-     * Update scan progress
-     *
-     * @param int   $scan_id Scan ID
-     * @param array $data    Update data
-     * @return bool
-     */
-    public function update_scan($scan_id, $data)
-    {
-        global $wpdb;
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return (bool) $wpdb->update(
-            $this->table_scans,
-            $data,
-            array('id' => $scan_id)
-        );
-    }
-
-    /**
-     * Complete a scan
-     *
-     * @param int   $scan_id Scan ID
-     * @param array $results Scan results
-     * @return bool
-     */
-    public function complete_scan($scan_id, $results = array())
-    {
-        global $wpdb;
-
-        $data = array(
-            'status' => 'completed',
-            'completed_at' => current_time('mysql'),
-            'total_links' => $results['total_links'] ?? 0,
-            'checked_links' => $results['checked_links'] ?? 0,
-            'broken_links' => $results['broken_links'] ?? 0,
-            'warning_links' => $results['warning_links'] ?? 0,
-        );
-
-        $this->clear_stats_cache();
+	/**
+	 * Update scan progress
+	 *
+	 * @param int   $scan_id Scan ID
+	 * @param array $data    Update data
+	 * @return bool
+	 */
+	public function update_scan( $scan_id, $data ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return (bool) $wpdb->update(
-            $this->table_scans,
-            $data,
-            array('id' => $scan_id)
-        );
-    }
+		return (bool) $wpdb->update(
+			$this->table_scans,
+			$data,
+			array( 'id' => $scan_id )
+		);
+	}
 
-    /**
-     * Get latest scan
-     *
-     * @return object|null
-     */
-    public function get_latest_scan()
-    {
-        global $wpdb;
+	/**
+	 * Complete a scan
+	 *
+	 * @param int   $scan_id Scan ID
+	 * @param array $results Scan results
+	 * @return bool
+	 */
+	public function complete_scan( $scan_id, $results = array() ) {
+		global $wpdb;
+
+		$data = array(
+			'status'        => 'completed',
+			'completed_at'  => current_time( 'mysql' ),
+			'total_links'   => $results['total_links'] ?? 0,
+			'checked_links' => $results['checked_links'] ?? 0,
+			'broken_links'  => $results['broken_links'] ?? 0,
+			'warning_links' => $results['warning_links'] ?? 0,
+		);
+
+		$this->clear_stats_cache();
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_row(
-            $wpdb->prepare(
+		return (bool) $wpdb->update(
+			$this->table_scans,
+			$data,
+			array( 'id' => $scan_id )
+		);
+	}
+
+	/**
+	 * Get latest scan
+	 *
+	 * @return object|null
+	 */
+	public function get_latest_scan() {
+		global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_row(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                'SELECT * FROM `' . esc_sql($this->table_scans) . '` ORDER BY id DESC LIMIT %d',
-                1
-            )
-        );
-    }
+				'SELECT * FROM `' . esc_sql( $this->table_scans ) . '` ORDER BY id DESC LIMIT %d',
+				1
+			)
+		);
+	}
 
-    /**
-     * Get scan history
-     *
-     * @param int $limit Number of records
-     * @return array
-     */
-    public function get_scan_history($limit = 10)
-    {
-        global $wpdb;
+	/**
+	 * Get scan history
+	 *
+	 * @param int $limit Number of records
+	 * @return array
+	 */
+	public function get_scan_history( $limit = 10 ) {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_results(
-            $wpdb->prepare(
+		return $wpdb->get_results(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "SELECT * FROM {$this->table_scans} ORDER BY id DESC LIMIT %d",
-                $limit
-            )
-        );
-    }
+				"SELECT * FROM {$this->table_scans} ORDER BY id DESC LIMIT %d",
+				$limit
+			)
+		);
+	}
 
-    /**
-     * Check if a scan is running
-     *
-     * @return bool
-     */
-    public function is_scan_running()
-    {
-        global $wpdb;
+	/**
+	 * Check if a scan is running
+	 *
+	 * @return bool
+	 */
+	public function is_scan_running() {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $running = $wpdb->get_var(
-            $wpdb->prepare(
+		$running = $wpdb->get_var(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                'SELECT COUNT(*) FROM `' . esc_sql($this->table_scans) . '` WHERE status IN (%s, %s)',
-                'pending',
-                'running'
-            )
-        );
+				'SELECT COUNT(*) FROM `' . esc_sql( $this->table_scans ) . '` WHERE status IN (%s, %s)',
+				'pending',
+				'running'
+			)
+		);
 
-        return $running > 0;
-    }
+		return $running > 0;
+	}
 
-    /**
-     * Get running scan
-     *
-     * @return object|null
-     */
-    public function get_running_scan()
-    {
-        global $wpdb;
+	/**
+	 * Get running scan
+	 *
+	 * @return object|null
+	 */
+	public function get_running_scan() {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return $wpdb->get_row(
-            $wpdb->prepare(
+		return $wpdb->get_row(
+			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-                'SELECT * FROM `' . esc_sql($this->table_scans) . '` WHERE status IN (%s, %s) ORDER BY id DESC LIMIT %d',
-                'pending',
-                'running',
-                1
-            )
-        );
-    }
+				'SELECT * FROM `' . esc_sql( $this->table_scans ) . '` WHERE status IN (%s, %s) ORDER BY id DESC LIMIT %d',
+				'pending',
+				'running',
+				1
+			)
+		);
+	}
 
-    /**
-     * Clear all links and scan data
-     *
-     * Used for Fresh Scan feature to start with a clean slate.
-     *
-     * @return bool True on success, false on failure
-     */
-    public function clear_all_data()
-    {
-        global $wpdb;
+	/**
+	 * Clear all links and scan data
+	 *
+	 * Used for Fresh Scan feature to start with a clean slate.
+	 *
+	 * @return bool True on success, false on failure
+	 */
+	public function clear_all_data() {
+		global $wpdb;
 
-        // Delete all links
+		// Delete all links
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
-        $links_result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
+		$links_result = $wpdb->query( "TRUNCATE TABLE {$this->table_links}" );
 
-        // Delete all scans
+		// Delete all scans
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
-        $scans_result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
+		$scans_result = $wpdb->query( "TRUNCATE TABLE {$this->table_scans}" );
 
-        // Clear any transients
-        delete_transient('FRANKDLC_current_scan_id');
-        delete_transient('FRANKDLC_scan_progress');
-        $this->clear_stats_cache();
+		// Clear any transients
+		delete_transient( 'FRANKDLC_current_scan_id' );
+		delete_transient( 'FRANKDLC_scan_progress' );
+		$this->clear_stats_cache();
 
-        return ($links_result !== false && $scans_result !== false);
-    }
+		return ( false !== $links_result && false !== $scans_result );
+	}
 
-    /**
-     * Clear only scan history (keep links data)
-     *
-     * @return bool
-     */
-    public function clear_scan_history()
-    {
-        global $wpdb;
+	/**
+	 * Clear only scan history (keep links data)
+	 *
+	 * @return bool
+	 */
+	public function clear_scan_history() {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
-        $result = $wpdb->query("TRUNCATE TABLE {$this->table_scans}");
+		$result = $wpdb->query( "TRUNCATE TABLE {$this->table_scans}" );
 
-        delete_transient('FRANKDLC_current_scan_id');
-        delete_transient('FRANKDLC_scan_progress');
+		delete_transient( 'FRANKDLC_current_scan_id' );
+		delete_transient( 'FRANKDLC_scan_progress' );
 
-        return $result !== false;
-    }
+		return false !== $result;
+	}
 
-    /**
-     * Clear only links data (keep scan history)
-     *
-     * @return bool
-     */
-    public function clear_links_data()
-    {
-        global $wpdb;
+	/**
+	 * Clear only links data (keep scan history)
+	 *
+	 * @return bool
+	 */
+	public function clear_links_data() {
+		global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
-        $result = $wpdb->query("TRUNCATE TABLE {$this->table_links}");
+		$result = $wpdb->query( "TRUNCATE TABLE {$this->table_links}" );
 
-        $this->clear_stats_cache();
+		$this->clear_stats_cache();
 
-        return $result !== false;
-    }
+		return false !== $result;
+	}
 
-    /**
-     * Cleanup old scan data
-     *
-     * @param int $days Number of days to keep
-     * @return int Number of deleted records
-     */
-    public function cleanup_old_data($days = 90)
-    {
-        global $wpdb;
+	/**
+	 * Cleanup old scan data
+	 *
+	 * @param int $days Number of days to keep
+	 * @return int Number of deleted records
+	 */
+	public function cleanup_old_data( $days = 90 ) {
+		global $wpdb;
 
-        $threshold = gmdate('Y-m-d H:i:s', strtotime("-{$days} days"));
+		$threshold = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days} days" ) );
 
-        // Delete old completed/cancelled/failed scans
+		// Delete old completed/cancelled/failed scans
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $deleted = $wpdb->query($wpdb->prepare(
+		$deleted = $wpdb->query(
+			$wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            "DELETE FROM {$this->table_scans} WHERE status IN ('completed', 'cancelled', 'failed') AND started_at < %s",
-            $threshold
-        ));
+				"DELETE FROM {$this->table_scans} WHERE status IN ('completed', 'cancelled', 'failed') AND started_at < %s",
+				$threshold
+			)
+		);
 
-        return $deleted;
-    }
+		return $deleted;
+	}
 
-    /**
-     * Get default settings
-     *
-     * @return array
-     */
-    public static function get_default_settings()
-    {
-        return array(
-            'scan_frequency'     => 'daily',
-            'scan_type'          => 'automatic',
-            'timeout'            => 30,
-            'scan_posts'         => true,
-            'scan_pages'         => true,
-            'scan_comments'      => false,
-            'scan_widgets'       => true,
-            'scan_menus'         => true,
-            'scan_custom_fields' => false,
-            'scan_custom_post_types' => array(),
-            'check_internal'     => true,
-            'check_external'     => true,
-            'check_images'       => true,
-            'excluded_domains'   => array(),
-            'email_notifications' => true,
-            'email_frequency'    => 'weekly',
-            'email_recipients'   => array(get_option('admin_email')),
-            'concurrent_requests' => 3,
-            'delay_between'      => 500,
-            'user_agent'         => 'Mozilla/5.0 (compatible; DeadLinkCheckerPro/' . FRANKDLC_VERSION . ')',
-            'verify_ssl'         => true,
-            'auto_cleanup_days'  => 90,
-        );
-    }
+	/**
+	 * Get default settings
+	 *
+	 * @return array
+	 */
+	public static function get_default_settings() {
+		return array(
+			'scan_frequency'         => 'daily',
+			'scan_type'              => 'automatic',
+			'timeout'                => 30,
+			'scan_posts'             => true,
+			'scan_pages'             => true,
+			'scan_comments'          => false,
+			'scan_widgets'           => true,
+			'scan_menus'             => true,
+			'scan_custom_fields'     => false,
+			'scan_custom_post_types' => array(),
+			'check_internal'         => true,
+			'check_external'         => true,
+			'check_images'           => true,
+			'excluded_domains'       => array(),
+			'email_notifications'    => true,
+			'email_frequency'        => 'weekly',
+			'email_recipients'       => array( get_option( 'admin_email' ) ),
+			'concurrent_requests'    => 3,
+			'delay_between'          => 500,
+			'user_agent'             => 'Mozilla/5.0 (compatible; DeadLinkCheckerPro/' . FRANKDLC_VERSION . ')',
+			'verify_ssl'             => true,
+			'auto_cleanup_days'      => 90,
+		);
+	}
 }

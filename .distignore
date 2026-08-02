@@ -1,0 +1,8 @@
+.git
+.github
+.gitignore
+.gitattributes
+.distignore
+phpcs.xml.dist
+CHANGELOG.md
+how-to-use-dead-link-checker-wordpress-plugin.md
