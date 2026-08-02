@@ -18,7 +18,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class FRANKDLC_Link {
 
-
 	// Status codes
 	const STATUS_OK            = 200;
 	const STATUS_REDIRECT      = 301;

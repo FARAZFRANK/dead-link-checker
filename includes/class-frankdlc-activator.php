@@ -20,7 +20,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class FRANKDLC_Activator {
 
-
 	/**
 	 * Database version for migrations
 	 *

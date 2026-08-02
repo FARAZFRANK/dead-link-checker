@@ -19,7 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class FRANKDLC_Deactivator {
 
-
 	/**
 	 * Deactivate the plugin
 	 *

@@ -12,7 +12,6 @@ defined( 'ABSPATH' ) || exit;
 
 class FRANKDLC_Parser {
 
-
 	/**
 	 * Plugin settings, used to gate which link types get parsed and to read excluded domains.
 	 *

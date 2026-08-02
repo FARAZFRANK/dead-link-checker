@@ -13,7 +13,6 @@ defined( 'ABSPATH' ) || exit;
 
 class FRANKDLC_Settings {
 
-
 	/**
 	 * Constructor.
 	 */

@@ -722,8 +722,6 @@ class FRANKDLC_Admin {
 		);
 	}
 
-
-
 	/**
 	 * AJAX handler for Fresh Scan
 	 *
@@ -824,8 +822,6 @@ class FRANKDLC_Admin {
 
 		wp_send_json_success( __( 'Plugin fully reset to factory defaults.', 'frank-dead-link-checker' ) );
 	}
-
-
 
 	/**
 	 * Render a static "broken links detected" notice on the plugin's own admin pages.

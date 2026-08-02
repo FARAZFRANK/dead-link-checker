@@ -92,7 +92,6 @@ register_deactivation_hook(
  */
 final class FRANKDLC_Plugin {
 
-
 	/**
 	 * Single instance of the plugin
 	 *
@@ -169,8 +168,6 @@ final class FRANKDLC_Plugin {
 		 */
 		do_action( 'frankdlc_init', $this );
 	}
-
-
 
 	/**
 	 * Get plugin option with default value

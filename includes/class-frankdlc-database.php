@@ -19,7 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class FRANKDLC_Database {
 
-
 	/**
 	 * Links table name
 	 *
@@ -210,10 +209,10 @@ class FRANKDLC_Database {
 		return $wpdb->get_row(
 			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT * FROM {$this->table_links} 
-                WHERE url_hash = %s 
-                AND source_id = %d 
-                AND source_type = %s 
+				"SELECT * FROM {$this->table_links}
+                WHERE url_hash = %s
+                AND source_id = %d
+                AND source_type = %s
                 AND source_field = %s",
 				$url_hash,
 				$source_id,
@@ -664,8 +663,8 @@ class FRANKDLC_Database {
 		return $wpdb->get_results(
 			$wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT * FROM {$this->table_links} 
-                WHERE is_dismissed = 0 
+				"SELECT * FROM {$this->table_links}
+                WHERE is_dismissed = 0
                 AND (last_check IS NULL OR last_check < %s)
                 ORDER BY last_check ASC, first_detected ASC
                 LIMIT %d",

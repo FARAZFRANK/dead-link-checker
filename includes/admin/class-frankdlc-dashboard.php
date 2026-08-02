@@ -541,9 +541,6 @@ class FRANKDLC_Dashboard {
 				</div>
 			<?php endif; ?>
 
-
-
-
 		</div>
 		<?php
 	}
