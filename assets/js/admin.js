@@ -38,7 +38,6 @@
             }
         },
 
-
         bindEvents: function () {
             // Scan button
             $('#frankdlc-scan-btn').on('click', this.startScan.bind(this));
@@ -57,30 +56,24 @@
             $(document).on('click', '#frankdlc-clear-history-btn', this.clearScanHistory.bind(this));
             $(document).on('click', '#frankdlc-full-reset-btn', this.fullReset.bind(this));
 
-
             // Select all checkbox
             $('#frankdlc-select-all').on('change', function () {
                 $('.frankdlc-link-checkbox').prop('checked', $(this).prop('checked'));
             });
 
             // Individual actions
-
             $(document).on('click', '.frankdlc-dismiss', this.dismissLink.bind(this));
             $(document).on('click', '.frankdlc-undismiss', this.undismissLink.bind(this));
             $(document).on('click', '.frankdlc-delete', this.deleteLink.bind(this));
 
-
             // Bulk action
             $('#frankdlc-bulk-apply').on('click', this.bulkAction.bind(this));
-
-
 
             // Modal
             $(document).on('click', '.frankdlc-modal-close, .frankdlc-modal-cancel', this.closeModal.bind(this));
 
             // Copy text button
             $(document).on('click', '.frankdlc-copy-text-btn', this.copyTextToClipboard.bind(this));
-
 
             // Close modal on outside click
             $(document).on('click', '.frankdlc-modal', function (e) {
@@ -314,8 +307,6 @@
             $('#frankdlc-stop-btn').hide().prop('disabled', false).html('<span class="dashicons dashicons-no"></span> ' + frankdlcAdmin.strings.stopScan);
         },
 
-
-
         dismissLink: function (e) {
             const $btn = $(e.currentTarget);
             const $row = $btn.closest('tr');
@@ -399,8 +390,6 @@
             });
         },
 
-
-
         closeModal: function () {
             $('.frankdlc-modal').fadeOut(200);
         },
@@ -414,7 +403,7 @@
                 navigator.clipboard.writeText(textToCopy).then(function() {
                     FRANKDLC.showToast(frankdlcAdmin.strings && frankdlcAdmin.strings.textCopied ? frankdlcAdmin.strings.textCopied : 'Text copied to clipboard', 'success');
                 }).catch(function(err) {
-                    FRANKDLC.showToast('Failed to copy text', 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings && frankdlcAdmin.strings.copyFailed ? frankdlcAdmin.strings.copyFailed : 'Failed to copy text', 'error');
                 });
             } else {
                 const textArea = document.createElement("textarea");
@@ -429,7 +418,7 @@
                     document.execCommand('copy');
                     FRANKDLC.showToast(frankdlcAdmin.strings && frankdlcAdmin.strings.textCopied ? frankdlcAdmin.strings.textCopied : 'Text copied to clipboard', 'success');
                 } catch (err) {
-                    FRANKDLC.showToast('Failed to copy text', 'error');
+                    FRANKDLC.showToast(frankdlcAdmin.strings && frankdlcAdmin.strings.copyFailed ? frankdlcAdmin.strings.copyFailed : 'Failed to copy text', 'error');
                 }
                 textArea.remove();
             }
@@ -489,8 +478,6 @@
                 }
             });
         },
-
-
 
         showToast: function (message, type) {
             type = type || 'success';

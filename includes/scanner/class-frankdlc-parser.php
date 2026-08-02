@@ -8,229 +8,272 @@
  * @since 1.0.0
  */
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
-class FRANKDLC_Parser
-{
+class FRANKDLC_Parser {
 
-    private $settings;
 
-    public function __construct()
-    {
-        $this->settings = get_option('FRANKDLC_settings', array());
-    }
+	/**
+	 * Plugin settings, used to gate which link types get parsed and to read excluded domains.
+	 *
+	 * @var array
+	 */
+	private $settings;
 
-    public function parse_content($content)
-    {
-        $links = array();
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->settings = get_option( 'FRANKDLC_settings', array() );
+	}
 
-        if (empty($content)) {
-            return $links;
-        }
+	/**
+	 * Parse HTML content for links, honoring shortcode expansion and dedup by URL.
+	 *
+	 * @param string $content Raw post content (or excerpt) to scan.
+	 * @return array List of link data arrays with url/link_type/anchor_text keys.
+	 */
+	public function parse_content( $content ) {
+		$links = array();
 
-        // Process shortcodes first
-        $content = do_shortcode($content);
+		if ( empty( $content ) ) {
+			return $links;
+		}
 
-        // Parse anchor tags
-        $links = array_merge($links, $this->parse_anchors($content));
+		// Process shortcodes first
+		$content = do_shortcode( $content );
 
-        // Parse images
-        if (!empty($this->settings['check_images'])) {
-            $links = array_merge($links, $this->parse_images($content));
-        }
+		// Parse anchor tags
+		$links = array_merge( $links, $this->parse_anchors( $content ) );
 
-        // Remove duplicates
-        $unique = array();
-        foreach ($links as $link) {
-            $key = md5($link['url']);
-            if (!isset($unique[$key])) {
-                $unique[$key] = $link;
-            }
-        }
+		// Parse images
+		if ( ! empty( $this->settings['check_images'] ) ) {
+			$links = array_merge( $links, $this->parse_images( $content ) );
+		}
 
-        return array_values($unique);
-    }
+		// Remove duplicates
+		$unique = array();
+		foreach ( $links as $link ) {
+			$key = md5( $link['url'] );
+			if ( ! isset( $unique[ $key ] ) ) {
+				$unique[ $key ] = $link;
+			}
+		}
 
-    private function parse_anchors($content)
-    {
-        $links = array();
-        $pattern = '/<a\s[^>]*href\s*=\s*["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/is';
+		return array_values( $unique );
+	}
 
-        if (!preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
-            return $links;
-        }
+	/**
+	 * Extract links from anchor (`<a>`) tags, filtering out invalid/excluded/disabled-type links.
+	 *
+	 * @param string $content HTML content to scan.
+	 * @return array List of link data arrays with url/link_type/anchor_text keys.
+	 */
+	private function parse_anchors( $content ) {
+		$links   = array();
+		$pattern = '/<a\s[^>]*href\s*=\s*["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/is';
 
-        foreach ($matches as $match) {
-            $url = $this->normalize_url($match[1]);
-            if (!$this->is_valid_url($url)) {
-                continue;
-            }
+		if ( ! preg_match_all( $pattern, $content, $matches, PREG_SET_ORDER ) ) {
+			return $links;
+		}
 
-            if ($this->is_excluded($url)) {
-                continue;
-            }
+		foreach ( $matches as $match ) {
+			$url = $this->normalize_url( $match[1] );
+			if ( ! $this->is_valid_url( $url ) ) {
+				continue;
+			}
 
-            $anchor_text = wp_strip_all_tags($match[2]);
-            $link_type = FRANKDLC_Link::determine_type($url, 'a');
+			if ( $this->is_excluded( $url ) ) {
+				continue;
+			}
 
-            // Check if type is enabled
-            if (!$this->is_type_enabled($link_type)) {
-                continue;
-            }
+			$anchor_text = wp_strip_all_tags( $match[2] );
+			$link_type   = FRANKDLC_Link::determine_type( $url, 'a' );
 
-            $links[] = array(
-                'url' => $url,
-                'link_type' => $link_type,
-                'anchor_text' => mb_substr($anchor_text, 0, 500),
-            );
-        }
+			// Check if type is enabled
+			if ( ! $this->is_type_enabled( $link_type ) ) {
+				continue;
+			}
 
-        return $links;
-    }
+			$links[] = array(
+				'url'         => $url,
+				'link_type'   => $link_type,
+				'anchor_text' => mb_substr( $anchor_text, 0, 500 ),
+			);
+		}
 
-    private function parse_images($content)
-    {
-        $links = array();
-        $pattern = '/<img\s[^>]*src\s*=\s*["\']([^"\']+)["\'][^>]*>/is';
+		return $links;
+	}
 
-        if (!preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
-            return $links;
-        }
+	/**
+	 * Extract links from image (`<img>`) tags, filtering out invalid/excluded links.
+	 *
+	 * @param string $content HTML content to scan.
+	 * @return array List of link data arrays with url/link_type/anchor_text keys.
+	 */
+	private function parse_images( $content ) {
+		$links   = array();
+		$pattern = '/<img\s[^>]*src\s*=\s*["\']([^"\']+)["\'][^>]*>/is';
 
-        foreach ($matches as $match) {
-            $url = $this->normalize_url($match[1]);
-            if (!$this->is_valid_url($url)) {
-                continue;
-            }
+		if ( ! preg_match_all( $pattern, $content, $matches, PREG_SET_ORDER ) ) {
+			return $links;
+		}
 
-            if ($this->is_excluded($url)) {
-                continue;
-            }
+		foreach ( $matches as $match ) {
+			$url = $this->normalize_url( $match[1] );
+			if ( ! $this->is_valid_url( $url ) ) {
+				continue;
+			}
 
-            // Get alt text
-            $alt = '';
-            if (preg_match('/alt\s*=\s*["\']([^"\']*)["\']/', $match[0], $alt_match)) {
-                $alt = $alt_match[1];
-            }
+			if ( $this->is_excluded( $url ) ) {
+				continue;
+			}
 
-            $links[] = array(
-                'url' => $url,
-                'link_type' => FRANKDLC_Link::TYPE_IMAGE,
-                'anchor_text' => mb_substr($alt, 0, 500),
-            );
-        }
+			// Get alt text
+			$alt = '';
+			if ( preg_match( '/alt\s*=\s*["\']([^"\']*)["\']/', $match[0], $alt_match ) ) {
+				$alt = $alt_match[1];
+			}
 
-        return $links;
-    }
+			$links[] = array(
+				'url'         => $url,
+				'link_type'   => FRANKDLC_Link::TYPE_IMAGE,
+				'anchor_text' => mb_substr( $alt, 0, 500 ),
+			);
+		}
 
-    private function normalize_url($url)
-    {
-        $url = trim($url);
+		return $links;
+	}
 
-        // Skip empty, anchors, javascript, mailto, tel
-        if (empty($url) || $url[0] === '#') {
-            return '';
-        }
+	/**
+	 * Normalize a raw URL extracted from HTML: skip unsupported schemes/anchors,
+	 * resolve relative URLs to absolute, and clean up via esc_url_raw().
+	 *
+	 * @param string $url Raw URL as found in the href/src attribute.
+	 * @return string Normalized absolute URL, or '' if it should be skipped.
+	 */
+	private function normalize_url( $url ) {
+		$url = trim( $url );
 
-        $skip_protocols = array('javascript:', 'mailto:', 'tel:', 'data:', 'blob:');
-        foreach ($skip_protocols as $protocol) {
-            if (stripos($url, $protocol) === 0) {
-                return '';
-            }
-        }
+		// Skip empty, anchors, javascript, mailto, tel
+		if ( empty( $url ) || '#' === $url[0] ) {
+			return '';
+		}
 
-        // Convert relative URLs to absolute
-        if (strpos($url, '//') === 0) {
-            $url = 'https:' . $url;
-        } elseif (strpos($url, '/') === 0) {
-            $url = home_url($url);
-        } elseif (!preg_match('/^https?:\/\//i', $url)) {
-            $url = home_url('/' . $url);
-        }
+		$skip_protocols = array( 'javascript:', 'mailto:', 'tel:', 'data:', 'blob:' );
+		foreach ( $skip_protocols as $protocol ) {
+			if ( stripos( $url, $protocol ) === 0 ) {
+				return '';
+			}
+		}
 
-        // Clean up URL
-        $url = esc_url_raw($url);
+		// Convert relative URLs to absolute
+		if ( strpos( $url, '//' ) === 0 ) {
+			$url = 'https:' . $url;
+		} elseif ( strpos( $url, '/' ) === 0 ) {
+			$url = home_url( $url );
+		} elseif ( ! preg_match( '/^https?:\/\//i', $url ) ) {
+			$url = home_url( '/' . $url );
+		}
 
-        return $url;
-    }
+		// Clean up URL
+		$url = esc_url_raw( $url );
 
-    private function is_valid_url($url)
-    {
-        if (empty($url)) {
-            return false;
-        }
+		return $url;
+	}
 
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
-    }
+	/**
+	 * Check whether a normalized URL is well-formed.
+	 *
+	 * @param string $url URL to validate.
+	 * @return bool
+	 */
+	private function is_valid_url( $url ) {
+		if ( empty( $url ) ) {
+			return false;
+		}
 
-    private function is_excluded($url)
-    {
-        $excluded_domains = isset($this->settings['excluded_domains']) ? (array) $this->settings['excluded_domains'] : array();
+		return filter_var( $url, FILTER_VALIDATE_URL ) !== false;
+	}
 
-        if (empty($excluded_domains)) {
-            return false;
-        }
+	/**
+	 * Check whether a URL's host matches one of the user-configured excluded domains.
+	 *
+	 * @param string $url URL to check.
+	 * @return bool
+	 */
+	private function is_excluded( $url ) {
+		$excluded_domains = isset( $this->settings['excluded_domains'] ) ? (array) $this->settings['excluded_domains'] : array();
 
-        $url_host = wp_parse_url($url, PHP_URL_HOST);
-        if (!$url_host) {
-            return false;
-        }
+		if ( empty( $excluded_domains ) ) {
+			return false;
+		}
 
-        foreach ($excluded_domains as $domain) {
-            $domain = trim(strtolower($domain));
-            if (empty($domain))
-                continue;
+		$url_host = wp_parse_url( $url, PHP_URL_HOST );
+		if ( ! $url_host ) {
+			return false;
+		}
 
-            // Remove protocol if present
-            $domain = preg_replace('/^https?:\/\//', '', $domain);
-            $domain = rtrim($domain, '/');
+		foreach ( $excluded_domains as $domain ) {
+			$domain = trim( strtolower( $domain ) );
+			if ( empty( $domain ) ) {
+				continue;
+			}
 
-            if (strcasecmp($url_host, $domain) === 0 || stripos($url_host, '.' . $domain) !== false) {
-                return true;
-            }
-        }
+			// Remove protocol if present
+			$domain = preg_replace( '/^https?:\/\//', '', $domain );
+			$domain = rtrim( $domain, '/' );
 
-        return false;
-    }
+			if ( strcasecmp( $url_host, $domain ) === 0 || stripos( $url_host, '.' . $domain ) !== false ) {
+				return true;
+			}
+		}
 
-    private function is_type_enabled($link_type)
-    {
-        switch ($link_type) {
-            case FRANKDLC_Link::TYPE_INTERNAL:
-                return !empty($this->settings['check_internal']);
-            case FRANKDLC_Link::TYPE_EXTERNAL:
-                return !empty($this->settings['check_external']);
-            case FRANKDLC_Link::TYPE_IMAGE:
-                return !empty($this->settings['check_images']);
-            default:
-                return true;
-        }
-    }
+		return false;
+	}
 
-    /**
-     * Check if a URL is an internal link
-     *
-     * Compares the URL's host against the site's host to determine
-     * if the link points to the same WordPress installation.
-     *
-     * @param string $url The URL to check
-     * @return bool True if the URL is internal, false otherwise
-     */
-    public function is_internal_link($url)
-    {
-        if (empty($url)) {
-            return false;
-        }
+	/**
+	 * Check whether scanning is enabled for a given link type per plugin settings.
+	 *
+	 * @param string $link_type One of the FRANKDLC_Link::TYPE_* constants.
+	 * @return bool
+	 */
+	private function is_type_enabled( $link_type ) {
+		switch ( $link_type ) {
+			case FRANKDLC_Link::TYPE_INTERNAL:
+				return ! empty( $this->settings['check_internal'] );
+			case FRANKDLC_Link::TYPE_EXTERNAL:
+				return ! empty( $this->settings['check_external'] );
+			case FRANKDLC_Link::TYPE_IMAGE:
+				return ! empty( $this->settings['check_images'] );
+			default:
+				return true;
+		}
+	}
 
-        $site_host = wp_parse_url(home_url(), PHP_URL_HOST);
-        $url_host = wp_parse_url($url, PHP_URL_HOST);
+	/**
+	 * Check if a URL is an internal link
+	 *
+	 * Compares the URL's host against the site's host to determine
+	 * if the link points to the same WordPress installation.
+	 *
+	 * @param string $url The URL to check
+	 * @return bool True if the URL is internal, false otherwise
+	 */
+	public function is_internal_link( $url ) {
+		if ( empty( $url ) ) {
+			return false;
+		}
 
-        // If we can't parse the host, treat as internal (relative URL)
-        if (empty($url_host)) {
-            return true;
-        }
+		$site_host = wp_parse_url( home_url(), PHP_URL_HOST );
+		$url_host  = wp_parse_url( $url, PHP_URL_HOST );
 
-        // Compare hosts (case-insensitive)
-        return strcasecmp($site_host, $url_host) === 0;
-    }
+		// If we can't parse the host, treat as internal (relative URL)
+		if ( empty( $url_host ) ) {
+			return true;
+		}
+
+		// Compare hosts (case-insensitive)
+		return strcasecmp( $site_host, $url_host ) === 0;
+	}
 }

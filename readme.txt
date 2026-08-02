@@ -1,14 +1,14 @@
-=== Dead Link Checker - SEO and 404 error Fix  ===
-Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
+=== Dead Link Checker - SEO and 404 error Fix ===
+Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK, alkesh7
 Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Scan your WordPress site for broken links and dead URLs. Detect 404 errors, fix link issues, and keep your SEO healthy.
+Scan posts and pages for broken links, dead URLs, and redirects. Get a visual dashboard report and fix issues fast to protect your SEO.
 
 == Description ==
 
@@ -109,6 +109,14 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
+= 1.0.7 =
+* Security: Added SSRF hardening to the link checker (blocks requests to internal/private-network addresses, including through redirect chains).
+* Security: Fixed a link-editing attribute-escaping gap that could allow malformed HTML when saving an edited link.
+* Fix: Corrected a settings sanitizer so the request timeout is properly clamped to its intended 5-120 second range.
+* Fix: Corrected a display bug where broken links without an HTTP status code always showed the same fallback text.
+* Compliance: Resolved WordPress.org Plugin Check findings and brought the codebase in line with WordPress Coding Standards (WPCS).
+* i18n: Fixed a missing translator string and stale Pro-plugin file path references on the Help page.
+
 = 1.0.6 =
 * Tweak: Added a "Copy" icon badge in the URL column to easily copy anchor text.
 * Tweak: Changed "View Source" icon to an external link icon for better consistency.
@@ -160,6 +168,9 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Security hardening (SSRF protection for the link checker) plus WordPress Coding Standards and Plugin Check compliance fixes. Recommended update.
 
 = 1.0.6 =
 Added copy badge for anchor text and improved view source icon.
