@@ -108,6 +108,8 @@ class FRANKDLC_Scanner
                     continue;
                 }
 
+                $post_url_hashes = array();
+
                 // Check if this post uses Gutenberg blocks
                 $uses_page_builder = false;
 
@@ -125,11 +127,12 @@ class FRANKDLC_Scanner
                         if (FRANKDLC()->database->save_link($link)) {
                             $count++;
                         }
+                        $post_url_hashes[] = md5($link['url']);
                     }
                 }
 
                 // Parse with Gutenberg parser
-                $count += $this->parse_page_builder_content($post_id, $post_type);
+                $count += $this->parse_page_builder_content($post_id, $post_type, $post_url_hashes);
 
                 // Parse excerpt (always parse, as this is separate from main content)
                 if (!empty($post->post_excerpt)) {
@@ -141,8 +144,12 @@ class FRANKDLC_Scanner
                         if (FRANKDLC()->database->save_link($link)) {
                             $count++;
                         }
+                        $post_url_hashes[] = md5($link['url']);
                     }
                 }
+
+                // Clean up any links previously associated with this post that are no longer present
+                FRANKDLC()->database->cleanup_stale_source_links($post_id, $post_type, array_unique($post_url_hashes));
 
                 clean_post_cache($post_id);
             }
@@ -156,11 +163,12 @@ class FRANKDLC_Scanner
     /**
      * Parse content using Gutenberg block detection
      *
-     * @param int    $post_id   Post ID
-     * @param string $post_type Post type
+     * @param int    $post_id          Post ID
+     * @param string $post_type        Post type
+     * @param array  &$post_url_hashes Array to collect discovered URL hashes for stale cleanup
      * @return int Number of links saved
      */
-    private function parse_page_builder_content($post_id, $post_type)
+    private function parse_page_builder_content($post_id, $post_type, &$post_url_hashes = array())
     {
         $count = 0;
 
@@ -197,6 +205,7 @@ class FRANKDLC_Scanner
                     if (FRANKDLC()->database->save_link($link)) {
                         $count++;
                     }
+                    $post_url_hashes[] = md5($url);
                 }
             }
         }

@@ -666,6 +666,57 @@ class FRANKDLC_Database
     }
 
     /**
+     * Remove stale links for a specific source that no longer exist in content.
+     *
+     * @param int    $source_id    Source post/page ID
+     * @param string $source_type  Source type ('post', 'page')
+     * @param array  $valid_hashes Array of md5 url_hash values currently in the source
+     * @return int Number of deleted stale links
+     */
+    public function cleanup_stale_source_links($source_id, $source_type = 'post', $valid_hashes = array())
+    {
+        global $wpdb;
+
+        if (empty($valid_hashes)) {
+            // No valid links found in source; remove all existing entries for this source
+            return (int) $this->delete_links_by_source($source_id, $source_type);
+        }
+
+        // Sanitize hashes (md5 strings are 32-char hex)
+        $clean_hashes = array();
+        foreach ($valid_hashes as $hash) {
+            if (is_string($hash) && preg_match('/^[a-f0-9]{32}$/', $hash)) {
+                $clean_hashes[] = $hash;
+            }
+        }
+
+        if (empty($clean_hashes)) {
+            return 0;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($clean_hashes), '%s'));
+        $query_params = array_merge(array($source_id, $source_type), $clean_hashes);
+
+        // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $deleted = $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$this->table_links} 
+                WHERE source_id = %d 
+                AND source_type = %s 
+                AND url_hash NOT IN ($placeholders)",
+                $query_params
+            )
+        );
+        // phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+        if ($deleted) {
+            $this->clear_stats_cache();
+        }
+
+        return $deleted !== false ? (int) $deleted : 0;
+    }
+
+    /**
      * Get links that need checking
      *
      * @param int $limit Maximum number of links to return
