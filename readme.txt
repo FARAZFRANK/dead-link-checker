@@ -109,7 +109,7 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
-= 1.0.7 =
+= 1.0.7 - 2026-11-03 =
 * Security: Added SSRF (Server-Side Request Forgery) protection with IP validation and loopback/internal IP blocking.
 * Fix: Handled protocol-relative URL redirects safely in HTTP link checker.
 * Fix: Resolved WordPress Plugin Check warnings and errors (missing translators comments, SQL prepared statements, line endings).
