@@ -50,10 +50,13 @@ class FRANKDLC_Settings
 
     public function sanitize_settings($input)
     {
-        $sanitized = array();
+        $existing = get_option('FRANKDLC_settings', array());
+        $sanitized = is_array($existing) ? $existing : array();
+
         $sanitized['scan_type'] = in_array(($input['scan_type'] ?? 'automatic'), array('manual', 'automatic'), true) ? $input['scan_type'] : 'automatic';
         $sanitized['scan_frequency'] = sanitize_key($input['scan_frequency'] ?? 'weekly');
-        $sanitized['timeout'] = absint($input['timeout'] ?? 30);
+        $raw_timeout = absint($input['timeout'] ?? 30);
+        $sanitized['timeout'] = min(120, max(5, $raw_timeout ?: 30));
         $sanitized['scan_posts'] = !empty($input['scan_posts']);
         $sanitized['scan_pages'] = !empty($input['scan_pages']);
         $sanitized['check_internal'] = !empty($input['check_internal']);
@@ -64,9 +67,17 @@ class FRANKDLC_Settings
         $sanitized['concurrent_requests'] = min(3, max(1, absint($input['concurrent_requests'] ?? 3)));
         $sanitized['user_agent'] = sanitize_text_field($input['user_agent'] ?? '');
         $sanitized['verify_ssl'] = !empty($input['verify_ssl']);
+
+        // Reschedule automatic scan cron if frequency or type changed
+        wp_clear_scheduled_hook('FRANKDLC_scheduled_scan');
+        if ($sanitized['scan_type'] !== 'manual' && $sanitized['scan_frequency'] !== 'manual') {
+            $recurrence = in_array($sanitized['scan_frequency'], array('daily', 'weekly'), true) ? $sanitized['scan_frequency'] : 'weekly';
+            $first_run = ($recurrence === 'weekly') ? (time() + 7 * DAY_IN_SECONDS) : (time() + DAY_IN_SECONDS);
+            wp_schedule_event($first_run, $recurrence, 'FRANKDLC_scheduled_scan');
+        }
+
         return $sanitized;
     }
-
     private function get_option($key, $default = null)
     {
         $options = get_option('FRANKDLC_settings', array());
@@ -192,7 +203,7 @@ class FRANKDLC_Settings
             </label>
 
             <label style="display: block; margin-bottom: 5px;"><?php esc_html_e('Recipients:', 'frank-dead-link-checker'); ?></label>
-            <textarea disabled rows="3" style="width: 100%; max-width: 350px; cursor: not-allowed; border: 1px solid #8c8f94; box-shadow: inset 0 1px 2px rgba(0,0,0,.07); border-radius: 4px; padding: 5px; resize: none; color: #2c3338;">farazfrank777@gmail.com</textarea>
+            <textarea disabled rows="3" style="width: 100%; max-width: 350px; cursor: not-allowed; border: 1px solid #8c8f94; box-shadow: inset 0 1px 2px rgba(0,0,0,.07); border-radius: 4px; padding: 5px; resize: none; color: #2c3338;"><?php echo esc_textarea(get_option('admin_email')); ?></textarea>
             <p class="description" style="margin-top: 5px;">
                 <?php esc_html_e('One email per line.', 'frank-dead-link-checker'); ?>
             </p>

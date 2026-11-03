@@ -81,7 +81,7 @@ class FRANKDLC_Parser
             $links[] = array(
                 'url' => $url,
                 'link_type' => $link_type,
-                'anchor_text' => mb_substr($anchor_text, 0, 500),
+                'anchor_text' => function_exists('mb_substr') ? mb_substr($anchor_text, 0, 500) : substr($anchor_text, 0, 500),
             );
         }
 
@@ -123,7 +123,7 @@ class FRANKDLC_Parser
         return $links;
     }
 
-    private function normalize_url($url)
+    public function normalize_url($url)
     {
         $url = trim($url);
 
@@ -154,7 +154,7 @@ class FRANKDLC_Parser
         return $url;
     }
 
-    private function is_valid_url($url)
+    public function is_valid_url($url)
     {
         if (empty($url)) {
             return false;
@@ -163,9 +163,10 @@ class FRANKDLC_Parser
         return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
-    private function is_excluded($url)
+    public function is_excluded($url)
     {
-        $excluded_domains = isset($this->settings['excluded_domains']) ? (array) $this->settings['excluded_domains'] : array();
+        $settings = get_option('FRANKDLC_settings', array());
+        $excluded_domains = isset($settings['excluded_domains']) ? (array) $settings['excluded_domains'] : array();
 
         if (empty($excluded_domains)) {
             return false;
@@ -193,15 +194,16 @@ class FRANKDLC_Parser
         return false;
     }
 
-    private function is_type_enabled($link_type)
+    public function is_type_enabled($link_type)
     {
+        $settings = get_option('FRANKDLC_settings', array());
         switch ($link_type) {
             case FRANKDLC_Link::TYPE_INTERNAL:
-                return !empty($this->settings['check_internal']);
+                return !empty($settings['check_internal']);
             case FRANKDLC_Link::TYPE_EXTERNAL:
-                return !empty($this->settings['check_external']);
+                return !empty($settings['check_external']);
             case FRANKDLC_Link::TYPE_IMAGE:
-                return !empty($this->settings['check_images']);
+                return !empty($settings['check_images']);
             default:
                 return true;
         }

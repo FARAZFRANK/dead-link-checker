@@ -35,3 +35,6 @@ wp-config.php
 
 # CodeGraph Index
 .codegraph/
+
+# Playwright MCP
+.playwright-mcp/

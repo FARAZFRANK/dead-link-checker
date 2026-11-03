@@ -24,6 +24,7 @@ class FRANKDLC_Scanner
         add_action('FRANKDLC_scheduled_scan', array($this, 'run_scheduled_scan'));
         add_action('FRANKDLC_process_queue', array($this, 'process_queue'));
         add_action('FRANKDLC_recheck_broken', array($this, 'recheck_broken_links'));
+        add_action('FRANKDLC_stale_scan_watchdog', array($this, 'cleanup_stale_scans'));
     }
 
     public function start_scan($type = 'full')
@@ -31,6 +32,9 @@ class FRANKDLC_Scanner
         if (get_transient('FRANKDLC_scan_starting')) {
             return new WP_Error('scan_starting', __('A scan is currently initializing. Please try again in a moment.', 'frank-dead-link-checker'));
         }
+
+        // Auto-recover any stale scans before checking if a scan is running
+        $this->cleanup_stale_scans();
 
         if (FRANKDLC()->database->is_scan_running()) {
             return new WP_Error('scan_running', __('A scan is already in progress.', 'frank-dead-link-checker'));
@@ -164,7 +168,29 @@ class FRANKDLC_Scanner
         if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active()) {
             if (FRANKDLC_Parser_Gutenberg::has_blocks($post_id)) {
                 $gutenberg_links = FRANKDLC_Parser_Gutenberg::extract_links($post_id);
+                $seen_urls = array();
                 foreach ($gutenberg_links as $link) {
+                    $url = $this->parser->normalize_url($link['url'] ?? '');
+                    if (!$this->parser->is_valid_url($url)) {
+                        continue;
+                    }
+                    if ($this->parser->is_excluded($url)) {
+                        continue;
+                    }
+                    $link_type = $link['link_type'] ?? ($this->parser->is_internal_link($url) ? 'internal' : 'external');
+                    if (!$this->parser->is_type_enabled($link_type)) {
+                        continue;
+                    }
+                    if (isset($seen_urls[$url])) {
+                        continue;
+                    }
+                    $seen_urls[$url] = true;
+
+                    $link['url'] = $url;
+                    $link['link_type'] = $link_type;
+                    if (isset($link['anchor_text'])) {
+                        $link['anchor_text'] = function_exists('mb_substr') ? mb_substr((string) $link['anchor_text'], 0, 500) : substr((string) $link['anchor_text'], 0, 500);
+                    }
                     $link['source_id'] = $post_id;
                     $link['source_type'] = $post_type;
                     $link['source_field'] = 'gutenberg_blocks';
@@ -294,7 +320,7 @@ class FRANKDLC_Scanner
         // Update scan status to cancelled
         FRANKDLC()->database->update_scan($scan_id, array(
             'status' => 'cancelled',
-            'completed_at' => current_time('mysql'),
+            'completed_at' => current_time('mysql', true),
         ));
 
         // Clear transients
@@ -329,7 +355,7 @@ class FRANKDLC_Scanner
             $table,
             array(
                 'status' => 'cancelled',
-                'completed_at' => current_time('mysql'),
+                'completed_at' => current_time('mysql', true),
                 'error_message' => __('Force stopped by admin', 'frank-dead-link-checker'),
             ),
             array('status' => 'running'),
@@ -342,7 +368,7 @@ class FRANKDLC_Scanner
             $table,
             array(
                 'status' => 'cancelled',
-                'completed_at' => current_time('mysql'),
+                'completed_at' => current_time('mysql', true),
                 'error_message' => __('Force stopped by admin', 'frank-dead-link-checker'),
             ),
             array('status' => 'pending'),
@@ -391,7 +417,7 @@ class FRANKDLC_Scanner
                     $table,
                     array(
                         'status' => 'failed',
-                        'completed_at' => current_time('mysql'),
+                        'completed_at' => current_time('mysql', true),
                         'error_message' => __('Scan timed out (exceeded 30 minutes)', 'frank-dead-link-checker'),
                     ),
                     array('id' => $scan->id),
@@ -423,7 +449,7 @@ class FRANKDLC_Scanner
             $scan = FRANKDLC()->database->get_running_scan();
             if ($scan) {
                 // Check if scan is stale (running for over 30 minutes)
-                $started_at = strtotime($scan->started_at);
+                $started_at = strtotime($scan->started_at . ' UTC');
                 if ($started_at && (time() - $started_at) > 1800) {
                     // Auto-recover: mark as failed and return idle
                     $this->cleanup_stale_scans();
@@ -468,6 +494,9 @@ class FRANKDLC_Scanner
         global $wpdb;
 
         // Don't run if a full scan is in progress
+        // Auto-recover any stale scans before checking if a scan is running
+        $this->cleanup_stale_scans();
+
         if (FRANKDLC()->database->is_scan_running()) {
             return;
         }

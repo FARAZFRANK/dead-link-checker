@@ -338,7 +338,7 @@ class FRANKDLC_Admin
                 'failedResetPlugin' => __('Failed to reset plugin.', 'frank-dead-link-checker'),
 
                 /* translators: 1: checked count, 2: total count, 3: percentage, 4: broken count, 5: warnings count */
-                'progressText' => __('Checked %1$s of %2$s links (%3$s%%) — %4$s broken, %5$s warnings', 'frank-dead-link-checker'),
+                'progressText' => __('Checked %1$s of %2$s links (%3$s%) — %4$s broken, %5$s warnings', 'frank-dead-link-checker'),
             ),
         ));
     }
@@ -423,21 +423,44 @@ class FRANKDLC_Admin
         }
 
         // Check if URL still exists in source content (detect manual edits)
-        if (!empty($link->source_id) && $link->source_type !== 'menu' && $link->source_type !== 'widget') {
+        if (!empty($link->source_id) && !in_array($link->source_type, array('menu', 'widget', 'comment', 'custom_field'), true)) {
             $post = get_post($link->source_id);
             if ($post && !empty($post->post_content)) {
-                // Check if the URL is still present in the post content
-                if (strpos($post->post_content, $link->url) === false) {
+                $post_raw = $post->post_content;
+                $post_decoded = html_entity_decode($post_raw);
+                $link_decoded = html_entity_decode($link->url);
+                $rel_url = str_replace(home_url(), '', $link->url);
+                $rel_decoded = html_entity_decode($rel_url);
+                $raw_path = wp_parse_url($link->url, PHP_URL_PATH);
+
+                $has_url = (strpos($post_raw, $link->url) !== false)
+                    || (strpos($post_decoded, $link_decoded) !== false)
+                    || (!empty($rel_url) && $rel_url !== '/' && strpos($post_raw, $rel_url) !== false)
+                    || (!empty($rel_decoded) && $rel_decoded !== '/' && strpos($post_decoded, $rel_decoded) !== false)
+                    || (!empty($raw_path) && $raw_path !== '/' && (strpos($post_raw, $raw_path) !== false || strpos($post_decoded, $raw_path) !== false));
+
+                if (!$has_url && class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::has_blocks($post->ID)) {
+                    $block_links = FRANKDLC_Parser_Gutenberg::extract_links($post->ID);
+                    foreach ($block_links as $b_link) {
+                        $b_url = $b_link['url'] ?? '';
+                        if ($b_url === $link->url || html_entity_decode($b_url) === $link_decoded || (!empty($rel_url) && strpos($b_url, $rel_url) !== false)) {
+                            $has_url = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$has_url) {
                     // URL was removed or changed — delete the stale entry
                     FRANKDLC()->database->delete_link($link_id);
                     wp_send_json_success(array(
                         'message' => __('Link was fixed/removed from the source. Entry deleted.', 'frank-dead-link-checker'),
                         'removed' => true,
                     ));
+                    return;
                 }
             }
         }
-
         $checker = new FRANKDLC_Checker();
         $result = $checker->check_url($link->url);
         FRANKDLC()->database->update_link_result($link_id, $result);
@@ -499,34 +522,39 @@ class FRANKDLC_Admin
             $content = $post->post_content;
             $old_url_escaped = preg_quote($link->url, '/');
 
-            // Build replacement based on what changed
+            // Build replacement based on what changed (using callback to prevent $1 / \ corruption)
             if ($new_url && $new_anchor_text !== '') {
                 // Replace both URL and anchor text (limit to 1, scope within tag structure, no DOTALL)
-                $content = preg_replace(
+                $content = preg_replace_callback(
                     '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'][^>]*>)([^<]*)(<\/a>)/i',
-                    '${1}' . $new_url . '${2}' . esc_html($new_anchor_text) . '${4}',
+                    function ($matches) use ($new_url, $new_anchor_text) {
+                        return $matches[1] . $new_url . $matches[2] . esc_html($new_anchor_text) . $matches[4];
+                    },
                     $content,
                     1
                 );
             } elseif ($new_url) {
                 // Replace URL inside href attribute only (limit to 1)
-                $content = preg_replace(
+                $content = preg_replace_callback(
                     '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'])/i',
-                    '${1}' . $new_url . '${2}',
+                    function ($matches) use ($new_url) {
+                        return $matches[1] . $new_url . $matches[2];
+                    },
                     $content,
                     1
                 );
             } elseif ($new_anchor_text !== '') {
                 // Replace anchor text only (limit to 1, scope within tag structure, no DOTALL)
-                $content = preg_replace(
+                $content = preg_replace_callback(
                     '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'][^>]*>)([^<]*)(<\/a>)/i',
-                    '${1}' . $link->url . '${2}' . esc_html($new_anchor_text) . '${4}',
+                    function ($matches) use ($link, $new_anchor_text) {
+                        return $matches[1] . $link->url . $matches[2] . esc_html($new_anchor_text) . $matches[4];
+                    },
                     $content,
                     1
                 );
             }
-
-            wp_update_post(array('ID' => $post->ID, 'post_content' => $content));
+            wp_update_post(array('ID' => $post->ID, 'post_content' => wp_slash($content)));
 
             // Update database record
             $update_data = array();
@@ -579,13 +607,15 @@ class FRANKDLC_Admin
                     if (current_user_can('edit_post', $post->ID)) {
                         $old_url_escaped = preg_quote($link->url, '/');
                         // Replace <a href="URL">text</a> with just the text (unwrap the link, limit to 1, no DOTALL)
-                        $content = preg_replace(
+                        $content = preg_replace_callback(
                             '/<a\s[^>]*href=["\']' . $old_url_escaped . '["\'][^>]*>([^<]*)<\/a>/i',
-                            '$1',
+                            function ($matches) {
+                                return $matches[1];
+                            },
                             $post->post_content,
                             1
                         );
-                        wp_update_post(array('ID' => $post->ID, 'post_content' => $content));
+                        wp_update_post(array('ID' => $post->ID, 'post_content' => wp_slash($content)));
                     }
                 }
             }
@@ -760,9 +790,10 @@ class FRANKDLC_Admin
         $stats = FRANKDLC()->database->get_stats();
         if ($stats['broken'] > 0) {
             /* translators: %d: number of broken links */
+            $broken_msg = sprintf(esc_html__('%d broken links detected!', 'frank-dead-link-checker'), intval($stats['broken']));
             printf(
                 '<div class="frankdlc-notices-container"><div class="notice notice-error inline"><p><strong>%s</strong> %s</p></div></div>',
-                sprintf(esc_html__('%d broken links detected!', 'frank-dead-link-checker'), intval($stats['broken'])),
+                esc_html($broken_msg),
                 esc_html__('Review and fix them.', 'frank-dead-link-checker')
             );
         }

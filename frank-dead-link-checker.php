@@ -4,7 +4,7 @@
  * Plugin Name: Frank Dead Link Checker
  * Plugin URI: https://wordpress.org/plugins/frank-dead-link-checker
  * Description: Scan your WordPress posts and pages for broken links. Detect dead URLs, redirects, and slow responses with a visual dashboard.
- * Version: 1.0.6
+ * Version: 1.0.7
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: A WP Life
@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
 /**
  * Plugin Constants
  */
-define('FRANKDLC_VERSION', '1.0.6');
+define('FRANKDLC_VERSION', '1.0.7');
 define('FRANKDLC_PLUGIN_FILE', __FILE__);
 define('FRANKDLC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FRANKDLC_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -140,6 +140,24 @@ final class FRANKDLC_Plugin
     private function init_hooks()
     {
         add_action('plugins_loaded', array($this, 'init'));
+        add_filter('cron_schedules', array($this, 'register_cron_schedules'));
+    }
+
+    /**
+     * Register custom cron schedules
+     *
+     * @param array $schedules Cron schedules
+     * @return array
+     */
+    public function register_cron_schedules($schedules)
+    {
+        if (!isset($schedules['weekly'])) {
+            $schedules['weekly'] = array(
+                'interval' => 7 * DAY_IN_SECONDS,
+                'display'  => __('Once Weekly', 'frank-dead-link-checker'),
+            );
+        }
+        return $schedules;
     }
 
     /**

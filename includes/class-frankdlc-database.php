@@ -116,7 +116,7 @@ class FRANKDLC_Database
             'source_type' => $data['source_type'] ?? 'post',
             'source_field' => $data['source_field'] ?? 'post_content',
             'anchor_text' => $data['anchor_text'] ?? null,
-            'first_detected' => current_time('mysql'),
+            'first_detected' => current_time('mysql', true),
             'is_broken' => 0,
             'is_warning' => 0,
             'is_dismissed' => 0,
@@ -151,7 +151,7 @@ class FRANKDLC_Database
             'redirect_url' => $result['redirect_url'] ?? null,
             'redirect_count' => $result['redirect_count'] ?? 0,
             'response_time' => $result['response_time'] ?? null,
-            'last_check' => current_time('mysql'),
+            'last_check' => current_time('mysql', true),
             'error_message' => $result['error_message'] ?? null,
         );
 
@@ -354,7 +354,7 @@ class FRANKDLC_Database
         $order = strtoupper($args['order']) === 'ASC' ? 'ASC' : 'DESC';
 
         // Calculate offset
-        $offset = ($args['page'] - 1) * $args['per_page'];
+        $offset = (max(1, (int) ($args['page'] ?? 1)) - 1) * $args['per_page'];
 
         // Build final query
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -469,8 +469,8 @@ class FRANKDLC_Database
         // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $query = 'SELECT COUNT(*) FROM `' . esc_sql($this->table_links) . '` WHERE ' . $where_clause;
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         if ( ! empty( $values ) ) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $prepared_query = $wpdb->prepare($query, $values);
         } else {
             $prepared_query = $query;
@@ -712,7 +712,7 @@ class FRANKDLC_Database
             array(
                 'scan_type' => $scan_type,
                 'status' => 'pending',
-                'started_at' => current_time('mysql'),
+                'started_at' => current_time('mysql', true),
             ),
             array('%s', '%s', '%s')
         );
@@ -752,7 +752,7 @@ class FRANKDLC_Database
 
         $data = array(
             'status' => 'completed',
-            'completed_at' => current_time('mysql'),
+            'completed_at' => current_time('mysql', true),
             'total_links' => $results['total_links'] ?? 0,
             'checked_links' => $results['checked_links'] ?? 0,
             'broken_links' => $results['broken_links'] ?? 0,

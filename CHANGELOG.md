@@ -4,6 +4,14 @@ A WordPress plugin to find and fix broken links on your website.
 
 ## Changelog
 
+### 1.0.7 (2026-11-03)
+- Security: Added SSRF (Server-Side Request Forgery) protection with IP validation and loopback/internal IP blocking.
+- Fix: Handled protocol-relative URL redirects safely in HTTP link checker.
+- Fix: Resolved WordPress Plugin Check warnings and errors (missing translators comments, SQL prepared statements, line endings).
+- Fix: Fixed timezone offset calculation for scan staleness check and cron auto-recheck scheduling.
+- Fix: Sanitized and properly escaped content in link updater.
+- Compatibility: Verified compatibility with WordPress 7.1.
+
 ### 1.0.6 (2026-06-13)
 - Feature: Added a "Copy" icon badge in the URL column to easily copy anchor text.
 - UI: Changed "View Source" icon to an external link icon for better consistency.

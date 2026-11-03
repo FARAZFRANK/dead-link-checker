@@ -1,10 +1,10 @@
-=== Dead Link Checker - SEO and 404 error Fix  ===
+=== Frank Dead Link Checker ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,14 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
+= 1.0.7 =
+* Security: Added SSRF (Server-Side Request Forgery) protection with IP validation and loopback/internal IP blocking.
+* Fix: Handled protocol-relative URL redirects safely in HTTP link checker.
+* Fix: Resolved WordPress Plugin Check warnings and errors (missing translators comments, SQL prepared statements, line endings).
+* Fix: Fixed timezone offset calculation for scan staleness check and cron auto-recheck scheduling.
+* Fix: Sanitized and properly escaped content in link updater.
+* Tweak: Compatibility verified up to WordPress 7.1.
+
 = 1.0.6 =
 * Tweak: Added a "Copy" icon badge in the URL column to easily copy anchor text.
 * Tweak: Changed "View Source" icon to an external link icon for better consistency.
@@ -160,6 +168,9 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+Adds SSRF protection, fixes timezone calculations, resolves Plugin Check compliance warnings, and updates WordPress 7.1 compatibility.
 
 = 1.0.6 =
 Added copy badge for anchor text and improved view source icon.

@@ -351,8 +351,9 @@ class FRANKDLC_Link
     {
         $url = $this->url;
 
-        if (strlen($url) > $max_length) {
-            $url = substr($url, 0, $max_length - 3) . '...';
+        $len = function_exists('mb_strlen') ? mb_strlen($url) : strlen($url);
+        if ($len > $max_length) {
+            $url = (function_exists('mb_substr') ? mb_substr($url, 0, $max_length - 3) : substr($url, 0, $max_length - 3)) . '...';
         }
 
         return $url;

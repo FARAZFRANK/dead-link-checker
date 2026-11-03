@@ -1,7 +1,7 @@
 # Frank Dead Link Checker - WordPress Plugin
 
-![WordPress Plugin Version](https://img.shields.io/badge/version-1.0.3-blue)
-![WordPress Tested](https://img.shields.io/badge/WordPress-6.9-green)
+![WordPress Plugin Version](https://img.shields.io/badge/version-1.0.7-blue)
+![WordPress Tested](https://img.shields.io/badge/WordPress-7.1-green)
 ![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-orange)
 
@@ -101,6 +101,26 @@ Dead Link Checker is a powerful WordPress plugin that automatically finds and he
 - MySQL 5.6 or higher
 
 ## 📝 Changelog
+
+### 1.0.7 (2026-11-03)
+- Security: Added SSRF (Server-Side Request Forgery) protection with IP validation and loopback/internal IP blocking.
+- Fix: Handled protocol-relative URL redirects safely in HTTP link checker.
+- Fix: Resolved WordPress Plugin Check warnings and errors (missing translators comments, SQL prepared statements, line endings).
+- Fix: Fixed timezone offset calculation for scan staleness check and cron auto-recheck scheduling.
+- Fix: Sanitized and properly escaped content in link updater.
+- Compatibility: Verified compatibility with WordPress 7.1.
+
+### 1.0.6 (2026-06-13)
+- Feature: Added a "Copy" icon badge in the URL column to easily copy anchor text.
+- UI: Changed "View Source" icon to an external link icon for better consistency.
+
+### 1.0.5 (2026-06-13)
+- UX: Conditional bulk action options based on active status tab.
+- Feedback: Clearer, pluralized bulk action success and fallback messages.
+- Visibility: Extended toast duration (5s) and delayed reload timeout (4s) to prevent notice cutoffs.
+- Source UI: Unlinked source title text with dedicated Edit (pencil) and View (eye) buttons opening in a new tab/window.
+- Layout: Handles long titles with CSS single-line truncation (ellipsis).
+- URL limit: Expanded URL character display limit from 50 to 80.
 
 ### 1.0.3 (2026-06-11)
 - Security: Handled all unescaped DB parameters to resolve WordPress.org Plugin Check tool warnings.

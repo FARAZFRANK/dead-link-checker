@@ -191,21 +191,29 @@ class FRANKDLC_Activator
      */
     private static function schedule_events()
     {
-        // Schedule automatic scanning - start TOMORROW, not immediately
-        // First scan should always be manual
-        if (!wp_next_scheduled('FRANKDLC_scheduled_scan')) {
-            wp_schedule_event(time() + DAY_IN_SECONDS, 'daily', 'FRANKDLC_scheduled_scan');
+        // Schedule automatic scanning based on settings
+        $settings = get_option('FRANKDLC_settings', array());
+        $frequency = $settings['scan_frequency'] ?? 'weekly';
+        $scan_type = $settings['scan_type'] ?? 'automatic';
+
+        if ($scan_type !== 'manual' && $frequency !== 'manual') {
+            if (!wp_next_scheduled('FRANKDLC_scheduled_scan')) {
+                $recurrence = in_array($frequency, array('daily', 'weekly'), true) ? $frequency : 'weekly';
+                $first_run = ($recurrence === 'weekly') ? (time() + 7 * DAY_IN_SECONDS) : (time() + DAY_IN_SECONDS);
+                wp_schedule_event($first_run, $recurrence, 'FRANKDLC_scheduled_scan');
+            }
         }
 
         // Schedule auto-recheck of broken/warning links (lightweight daily check)
         if (!wp_next_scheduled('FRANKDLC_recheck_broken')) {
             wp_schedule_event(time() + HOUR_IN_SECONDS * 12, 'twicedaily', 'FRANKDLC_recheck_broken');
         }
-    }
 
-    /**
-     * Set activation flag for redirect
-     */
+        // Schedule watchdog to auto-recover stale or stuck scans
+        if (!wp_next_scheduled('FRANKDLC_stale_scan_watchdog')) {
+            wp_schedule_event(time() + HOUR_IN_SECONDS, 'hourly', 'FRANKDLC_stale_scan_watchdog');
+        }
+    }
     private static function set_activation_flag()
     {
         set_transient('FRANKDLC_activation_redirect', true, 30);

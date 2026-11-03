@@ -273,6 +273,7 @@
                                     .replace('%3$s', data.percent)
                                     .replace('%4$s', data.broken)
                                     .replace('%5$s', data.warnings)
+                                    .replace('%%', '%')
                             );
 
                             // Poll again
@@ -498,7 +499,7 @@
             // Remove existing toasts
             $('.frankdlc-toast').remove();
 
-            const $toast = $('<div class="frankdlc-toast ' + type + '">' + message + '</div>');
+            const $toast = $('<div class="frankdlc-toast"></div>').addClass(type).text(message);
             $('body').append($toast);
 
             setTimeout(function () {
@@ -508,19 +509,23 @@
 
         confirmModal: function (message, onConfirm) {
             $('.frankdlc-confirm-modal').remove();
-            const modalHtml = `
+            const $modal = $(`
                 <div class="frankdlc-modal frankdlc-confirm-modal" style="display:flex; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:99999; align-items:center; justify-content:center;">
                     <div style="background:#fff; border-radius:8px; width:400px; max-width:90%; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.2);">
-                        <h3 style="margin-top:0; margin-bottom:15px; font-size:18px; color:#1d2327;">${frankdlcAdmin.strings.confirmTitle || 'Please Confirm'}</h3>
-                        <p style="font-size:14px; color:#3c434a; margin-bottom:24px; line-height:1.5;">${message}</p>
+                        <h3 class="frankdlc-modal-title" style="margin-top:0; margin-bottom:15px; font-size:18px; color:#1d2327;"></h3>
+                        <p class="frankdlc-modal-message" style="font-size:14px; color:#3c434a; margin-bottom:24px; line-height:1.5;"></p>
                         <div style="text-align:right;">
-                            <button type="button" class="button frankdlc-modal-cancel" style="margin-right:8px;">${frankdlcAdmin.strings.cancel || 'Cancel'}</button>
-                            <button type="button" class="button button-primary frankdlc-modal-confirm">${frankdlcAdmin.strings.ok || 'OK'}</button>
+                            <button type="button" class="button frankdlc-modal-cancel" style="margin-right:8px;"></button>
+                            <button type="button" class="button button-primary frankdlc-modal-confirm"></button>
                         </div>
                     </div>
                 </div>
-            `;
-            $('body').append(modalHtml);
+            `);
+            $modal.find('.frankdlc-modal-title').text(frankdlcAdmin.strings.confirmTitle || 'Please Confirm');
+            $modal.find('.frankdlc-modal-message').text(message);
+            $modal.find('.frankdlc-modal-cancel').text(frankdlcAdmin.strings.cancel || 'Cancel');
+            $modal.find('.frankdlc-modal-confirm').text(frankdlcAdmin.strings.ok || 'OK');
+            $('body').append($modal);
             
             $('.frankdlc-modal-cancel').on('click', function() {
                 $('.frankdlc-confirm-modal').fadeOut(200, function() { $(this).remove(); });

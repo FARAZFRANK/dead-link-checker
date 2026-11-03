@@ -28,7 +28,7 @@ class FRANKDLC_Dashboard
             }
         }
 
-        $paged = isset($_GET['paged']) ? absint(wp_unslash($_GET['paged'])) : 1;
+        $paged = isset($_GET['paged']) ? max(1, absint(wp_unslash($_GET['paged']))) : 1;
         $allowed_per_page = array(10, 20, 50, 100, 200);
         $per_page = isset($_GET['per_page']) ? absint(wp_unslash($_GET['per_page'])) : 10;
         if (!in_array($per_page, $allowed_per_page, true)) {
