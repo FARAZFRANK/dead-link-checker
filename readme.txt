@@ -1,4 +1,4 @@
-=== Frank Dead Link Checker ===
+=== Broken Link Checker - SEO and 404 error Fix  ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
