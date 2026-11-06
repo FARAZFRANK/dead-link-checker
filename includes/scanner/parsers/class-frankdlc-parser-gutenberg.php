@@ -141,6 +141,26 @@ class FRANKDLC_Parser_Gutenberg
                 self::parse_navigation_link_block($attrs, $links);
                 break;
 
+            case 'core/block':
+                // Synced patterns / Reusable blocks: <!-- wp:block {"ref":123} /-->
+                $ref_id = !empty($attrs['ref']) ? absint($attrs['ref']) : 0;
+                if ($ref_id > 0) {
+                    $pattern_post = get_post($ref_id);
+                    if ($pattern_post && !empty($pattern_post->post_content)) {
+                        $pattern_blocks = parse_blocks($pattern_post->post_content);
+                        self::process_blocks($pattern_blocks, $links);
+                    }
+                }
+                break;
+
+            case 'core/shortcode':
+                // Shortcode blocks: expand shortcode content to extract output links
+                if (!empty($inner_html)) {
+                    $expanded_html = do_shortcode($inner_html);
+                    self::parse_html_for_links($expanded_html, $links);
+                }
+                break;
+
             default:
                 // For all other blocks, parse HTML for links
                 if (!empty($inner_html)) {
@@ -394,6 +414,11 @@ class FRANKDLC_Parser_Gutenberg
     {
         if (empty($html)) {
             return;
+        }
+
+        // Expand any embedded shortcodes prior to link extraction
+        if (strpos($html, '[') !== false && strpos($html, ']') !== false) {
+            $html = do_shortcode($html);
         }
 
         // Extract anchor tags

@@ -51,113 +51,151 @@ class FRANKDLC_Scanner
         FRANKDLC()->database->update_scan($scan_id, array('status' => 'running'));
         set_transient('FRANKDLC_current_scan_id', $scan_id, HOUR_IN_SECONDS);
 
-        // Discover all links
-        $total_links = $this->discover_links();
-
-        FRANKDLC()->database->update_scan($scan_id, array('total_links' => $total_links));
+        // Initialize discovery cursor and run first batch
+        delete_transient('FRANKDLC_discovery_cursor');
+        $this->discover_next_batch(50);
         delete_transient('FRANKDLC_scan_starting');
 
         // Schedule queue processing using Queue Manager
         if (!FRANKDLC_Queue_Manager::is_scheduled('FRANKDLC_process_queue')) {
-            FRANKDLC_Queue_Manager::schedule_single(time() + 5, 'FRANKDLC_process_queue');
+            FRANKDLC_Queue_Manager::schedule_single(time() + 2, 'FRANKDLC_process_queue');
         }
 
         return $scan_id;
     }
 
-    private function discover_links()
+    public function get_discovery_sources()
     {
-        $count = 0;
         $settings = get_option('FRANKDLC_settings', array());
+        $sources = array();
 
-        // Scan posts
         if (!empty($settings['scan_posts'])) {
-            $count += $this->scan_post_type('post');
+            $sources[] = 'post';
         }
-
-        // Scan pages
         if (!empty($settings['scan_pages'])) {
-            $count += $this->scan_post_type('page');
+            $sources[] = 'page';
         }
 
-        return $count;
+        return $sources;
     }
 
-    private function scan_post_type($post_type)
+    public function discover_next_batch($limit = 50)
     {
-        $count = 0;
-        $posts_per_page = 50;
-        $paged = 1;
-
-        while (true) {
-            $posts = get_posts(array(
-                'post_type'      => $post_type,
-                'post_status'    => 'publish',
-                'posts_per_page' => $posts_per_page,
-                'paged'          => $paged,
-                'fields'         => 'ids',
-            ));
-
-            if (empty($posts)) {
-                break;
-            }
-
-            foreach ($posts as $post_id) {
-                $post = get_post($post_id);
-                if (!$post) {
-                    continue;
-                }
-
-                $post_url_hashes = array();
-
-                // Check if this post uses Gutenberg blocks
-                $uses_page_builder = false;
-
-                if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active() && FRANKDLC_Parser_Gutenberg::has_blocks($post_id)) {
-                    $uses_page_builder = true;
-                }
-
-                // Only use standard parser if NOT using a page builder (to avoid duplicates)
-                if (!$uses_page_builder) {
-                    $links = $this->parser->parse_content($post->post_content);
-                    foreach ($links as $link) {
-                        $link['source_id'] = $post_id;
-                        $link['source_type'] = $post_type;
-                        $link['source_field'] = 'post_content';
-                        if (FRANKDLC()->database->save_link($link)) {
-                            $count++;
-                        }
-                        $post_url_hashes[] = md5($link['url']);
-                    }
-                }
-
-                // Parse with Gutenberg parser
-                $count += $this->parse_page_builder_content($post_id, $post_type, $post_url_hashes);
-
-                // Parse excerpt (always parse, as this is separate from main content)
-                if (!empty($post->post_excerpt)) {
-                    $links = $this->parser->parse_content($post->post_excerpt);
-                    foreach ($links as $link) {
-                        $link['source_id'] = $post_id;
-                        $link['source_type'] = $post_type;
-                        $link['source_field'] = 'post_excerpt';
-                        if (FRANKDLC()->database->save_link($link)) {
-                            $count++;
-                        }
-                        $post_url_hashes[] = md5($link['url']);
-                    }
-                }
-
-                // Clean up any links previously associated with this post that are no longer present
-                FRANKDLC()->database->cleanup_stale_source_links($post_id, $post_type, array_unique($post_url_hashes));
-
-                clean_post_cache($post_id);
-            }
-
-            $paged++;
+        $scan = FRANKDLC()->database->get_running_scan();
+        if (!$scan) {
+            delete_transient('FRANKDLC_discovery_cursor');
+            return true;
         }
 
-        return $count;
+        $cursor = get_transient('FRANKDLC_discovery_cursor');
+        if (!$cursor || !isset($cursor['sources'])) {
+            $cursor = array(
+                'sources' => $this->get_discovery_sources(),
+                'source_idx' => 0,
+                'page' => 1,
+            );
+        }
+
+        $sources = $cursor['sources'];
+        $idx = $cursor['source_idx'];
+        $page = $cursor['page'];
+
+        if ($idx >= count($sources)) {
+            delete_transient('FRANKDLC_discovery_cursor');
+            $stats = FRANKDLC()->database->get_stats();
+            FRANKDLC()->database->update_scan($scan->id, array(
+                'total_links' => (int) $stats['total'],
+            ));
+            return true;
+        }
+
+        $current_source = $sources[$idx];
+        $items_processed = $this->scan_post_type($current_source, $page, $limit);
+
+        if ($items_processed < $limit) {
+            $cursor['source_idx']++;
+            $cursor['page'] = 1;
+        } else {
+            $cursor['page']++;
+        }
+
+        $stats = FRANKDLC()->database->get_stats();
+        FRANKDLC()->database->update_scan($scan->id, array(
+            'total_links' => (int) $stats['total'],
+        ));
+
+        if ($cursor['source_idx'] >= count($sources)) {
+            delete_transient('FRANKDLC_discovery_cursor');
+            return true;
+        }
+
+        set_transient('FRANKDLC_discovery_cursor', $cursor, HOUR_IN_SECONDS);
+        return false;
+    }
+
+    private function scan_post_type($post_type, $paged = 1, $posts_per_page = 50)
+    {
+        $posts = get_posts(array(
+            'post_type'      => $post_type,
+            'post_status'    => 'publish',
+            'posts_per_page' => $posts_per_page,
+            'paged'          => $paged,
+            'fields'         => 'ids',
+        ));
+
+        if (empty($posts)) {
+            return 0;
+        }
+
+        foreach ($posts as $post_id) {
+            $post = get_post($post_id);
+            if (!$post) {
+                continue;
+            }
+
+            $post_url_hashes = array();
+
+            // Check if this post uses Gutenberg blocks
+            $uses_page_builder = false;
+            if (class_exists('FRANKDLC_Parser_Gutenberg') && FRANKDLC_Parser_Gutenberg::is_active() && FRANKDLC_Parser_Gutenberg::has_blocks($post_id)) {
+                $uses_page_builder = true;
+            }
+
+            // Always parse standard post content for links
+            if (!empty($post->post_content)) {
+                $links = $this->parser->parse_content($post->post_content);
+                foreach ($links as $link) {
+                    $link['source_id'] = $post_id;
+                    $link['source_type'] = $post_type;
+                    $link['source_field'] = 'post_content';
+                    FRANKDLC()->database->save_link($link);
+                    $post_url_hashes[] = md5($link['url']);
+                }
+            }
+
+            // Parse block attributes if Gutenberg
+            if ($uses_page_builder) {
+                $this->parse_page_builder_content($post_id, $post_type, $post_url_hashes);
+            }
+
+            // Parse excerpt
+            if (!empty($post->post_excerpt)) {
+                $links = $this->parser->parse_content($post->post_excerpt);
+                foreach ($links as $link) {
+                    $link['source_id'] = $post_id;
+                    $link['source_type'] = $post_type;
+                    $link['source_field'] = 'post_excerpt';
+                    FRANKDLC()->database->save_link($link);
+                    $post_url_hashes[] = md5($link['url']);
+                }
+            }
+
+            // Clean up any links previously associated with this post that are no longer present
+            FRANKDLC()->database->cleanup_stale_source_links($post_id, $post_type, array_unique($post_url_hashes));
+            clean_post_cache($post_id);
+        }
+
+        return count($posts);
     }
 
     /**
@@ -218,6 +256,14 @@ class FRANKDLC_Scanner
         $scan_id = get_transient('FRANKDLC_current_scan_id');
         if (!$scan_id)
             return;
+
+        // If link discovery is still running in chunks, advance the discovery batch
+        if (get_transient('FRANKDLC_discovery_cursor')) {
+            $this->discover_next_batch(50);
+            $this->update_progress($scan_id);
+            FRANKDLC_Queue_Manager::schedule_single(time() + 2, 'FRANKDLC_process_queue');
+            return;
+        }
 
         $settings = get_option('FRANKDLC_settings', array());
         $batch_size = isset($settings['concurrent_requests']) ? absint($settings['concurrent_requests']) : 3;
@@ -283,6 +329,7 @@ class FRANKDLC_Scanner
         }
 
         delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_discovery_cursor');
         delete_transient('FRANKDLC_scan_progress');
 
         // Trigger notification if broken links found
@@ -337,6 +384,7 @@ class FRANKDLC_Scanner
 
         // Clear transients
         delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_discovery_cursor');
         delete_transient('FRANKDLC_scan_progress');
 
         // Clear any scheduled queue processing (uses Queue Manager for AS/WP-Cron)
@@ -390,6 +438,7 @@ class FRANKDLC_Scanner
 
         // Clear all transients
         delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_discovery_cursor');
         delete_transient('FRANKDLC_scan_progress');
         delete_transient('FRANKDLC_stats_cache');
 
@@ -440,6 +489,7 @@ class FRANKDLC_Scanner
 
             // Clear transients
             delete_transient('FRANKDLC_current_scan_id');
+        delete_transient('FRANKDLC_discovery_cursor');
             delete_transient('FRANKDLC_scan_progress');
 
             // Clear queue

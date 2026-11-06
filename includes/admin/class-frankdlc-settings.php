@@ -61,7 +61,7 @@ class FRANKDLC_Settings
         $sanitized['scan_pages'] = !empty($input['scan_pages']);
         $sanitized['check_internal'] = !empty($input['check_internal']);
         $sanitized['check_external'] = !empty($input['check_external']);
-        $sanitized['check_images'] = !empty($input['check_images']);
+        $sanitized['check_images'] = isset($input['check_images']) ? !empty($input['check_images']) : (!empty($existing['check_images']) || !isset($existing['check_images']));
         $excluded_raw = $input['excluded_domains'] ?? '';
         $sanitized['excluded_domains'] = array_filter(array_map('sanitize_text_field', is_array($excluded_raw) ? $excluded_raw : explode("\n", $excluded_raw)));
         $sanitized['concurrent_requests'] = min(3, max(1, absint($input['concurrent_requests'] ?? 3)));
