@@ -537,39 +537,65 @@ class FRANKDLC_Admin
 
             $content = $post->post_content;
             $old_url_escaped = preg_quote($link->url, '/');
+            $replacement_count = 0;
 
-            // Build replacement based on what changed (using callback to prevent $1 / \ corruption)
+            // 1. If both new URL and new anchor text are provided
             if ($new_url && $new_anchor_text !== '') {
-                // Replace both URL and anchor text (limit to 1, scope within tag structure, no DOTALL)
                 $content = preg_replace_callback(
                     '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'][^>]*>)([^<]*)(<\/a>)/i',
                     function ($matches) use ($new_url, $new_anchor_text) {
                         return $matches[1] . $new_url . $matches[2] . esc_html($new_anchor_text) . $matches[4];
                     },
                     $content,
-                    1
+                    1,
+                    $replacement_count
                 );
-            } elseif ($new_url) {
-                // Replace URL inside href attribute only (limit to 1)
+            }
+
+            // 2. If new URL is provided (either only new URL, or anchor tag didn't match)
+            if ($replacement_count === 0 && $new_url) {
+                // Replace URL inside href attribute only
                 $content = preg_replace_callback(
                     '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'])/i',
                     function ($matches) use ($new_url) {
                         return $matches[1] . $new_url . $matches[2];
                     },
                     $content,
-                    1
+                    1,
+                    $replacement_count
                 );
-            } elseif ($new_anchor_text !== '') {
-                // Replace anchor text only (limit to 1, scope within tag structure, no DOTALL)
+
+                // Replace src attribute on media/embed tags
+                if ($replacement_count === 0) {
+                    $content = preg_replace_callback(
+                        '/((?:<img|<iframe|<script|<source|<embed)\s[^>]*src=["\'])' . $old_url_escaped . '(["\'])/i',
+                        function ($matches) use ($new_url) {
+                            return $matches[1] . $new_url . $matches[2];
+                        },
+                        $content,
+                        1,
+                        $replacement_count
+                    );
+                }
+            }
+
+            // 3. If anchor text only is updated
+            if ($replacement_count === 0 && $new_anchor_text !== '') {
                 $content = preg_replace_callback(
                     '/(<a\s[^>]*href=["\'])' . $old_url_escaped . '(["\'][^>]*>)([^<]*)(<\/a>)/i',
                     function ($matches) use ($link, $new_anchor_text) {
                         return $matches[1] . $link->url . $matches[2] . esc_html($new_anchor_text) . $matches[4];
                     },
                     $content,
-                    1
+                    1,
+                    $replacement_count
                 );
             }
+
+            if ($replacement_count === 0) {
+                wp_send_json_error(__('Link could not be found in post content to update.', 'frank-dead-link-checker'));
+            }
+
             wp_update_post(array('ID' => $post->ID, 'post_content' => wp_slash($content)));
 
             // Update database record
@@ -622,16 +648,34 @@ class FRANKDLC_Admin
                 if ($post) {
                     if (current_user_can('edit_post', $post->ID)) {
                         $old_url_escaped = preg_quote($link->url, '/');
-                        // Replace <a href="URL">text</a> with just the text (unwrap the link, limit to 1, no DOTALL)
+                        $replacement_count = 0;
+
+                        // 1. Replace <a href="URL">text</a> with just the text (unwrap the link)
                         $content = preg_replace_callback(
                             '/<a\s[^>]*href=["\']' . $old_url_escaped . '["\'][^>]*>([^<]*)<\/a>/i',
                             function ($matches) {
                                 return $matches[1];
                             },
                             $post->post_content,
-                            1
+                            1,
+                            $replacement_count
                         );
-                        wp_update_post(array('ID' => $post->ID, 'post_content' => wp_slash($content)));
+
+                        // 2. If not an <a> tag, check if it is <img>, <iframe>, <script>, <source>, <embed> tag
+                        if ($replacement_count === 0) {
+                            $pattern_media = '/<(img|iframe|script|source|embed)\s[^>]*src=["\']' . $old_url_escaped . '["\'][^>]*>(?:<\/\1>)?/si';
+                            $content = preg_replace(
+                                $pattern_media,
+                                '',
+                                $post->post_content,
+                                1,
+                                $replacement_count
+                            );
+                        }
+
+                        if ($replacement_count > 0) {
+                            wp_update_post(array('ID' => $post->ID, 'post_content' => wp_slash($content)));
+                        }
                     }
                 }
             }
