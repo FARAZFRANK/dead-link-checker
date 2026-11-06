@@ -20,9 +20,11 @@ class FRANKDLC_Dashboard
         $current_status = isset($_GET['status']) ? sanitize_key(wp_unslash($_GET['status'])) : 'all';
         $current_type = isset($_GET['link_type']) ? sanitize_key(wp_unslash($_GET['link_type'])) : 'all';
 
-        // Handle search from POST (to allow URLs with special characters)
+        // Handle search from GET or POST
         $search = '';
-        if (isset($_POST['FRANKDLC_search']) && isset($_POST['FRANKDLC_search_nonce'])) {
+        if (isset($_GET['s'])) {
+            $search = sanitize_text_field(wp_unslash($_GET['s']));
+        } elseif (isset($_POST['FRANKDLC_search']) && isset($_POST['FRANKDLC_search_nonce'])) {
             if (wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['FRANKDLC_search_nonce'])), 'FRANKDLC_search_nonce')) {
                 $search = sanitize_text_field(wp_unslash($_POST['FRANKDLC_search']));
             }
@@ -220,10 +222,16 @@ class FRANKDLC_Dashboard
                         </a></li>
                 </ul>
                 <div class="frankdlc-filter-right">
-                    <form method="post" class="frankdlc-search-form"
-                        action="<?php echo esc_url(admin_url('admin.php?page=frank-dead-link-checker&status=' . $current_status)); ?>">
-                        <?php wp_nonce_field('FRANKDLC_search_nonce', 'FRANKDLC_search_nonce'); ?>
-                        <input type="search" name="FRANKDLC_search" value="<?php echo esc_attr($search); ?>"
+                    <form method="get" class="frankdlc-search-form"
+                        action="<?php echo esc_url(admin_url('admin.php')); ?>">
+                        <input type="hidden" name="page" value="frank-dead-link-checker">
+                        <?php if ($current_status !== 'all'): ?>
+                            <input type="hidden" name="status" value="<?php echo esc_attr($current_status); ?>">
+                        <?php endif; ?>
+                        <?php if ($current_type !== 'all'): ?>
+                            <input type="hidden" name="link_type" value="<?php echo esc_attr($current_type); ?>">
+                        <?php endif; ?>
+                        <input type="search" name="s" value="<?php echo esc_attr($search); ?>"
                             placeholder="<?php esc_attr_e('Search URLs...', 'frank-dead-link-checker'); ?>">
                         <button type="submit" class="button"><span class="dashicons dashicons-search"></span></button>
                     </form>
@@ -390,6 +398,22 @@ class FRANKDLC_Dashboard
                     </tr>
                 </thead>
                 <tbody>
+                    <?php
+                    // Batch prime WordPress post caches to eliminate N+1 queries in the loop
+                    if (!empty($links)) {
+                        $post_ids_to_prime = array();
+                        foreach ($links as $item) {
+                            $sid = is_object($item) ? $item->source_id : (is_array($item) ? ($item['source_id'] ?? 0) : 0);
+                            $stype = is_object($item) ? $item->source_type : (is_array($item) ? ($item['source_type'] ?? '') : '');
+                            if ($sid && !in_array($stype, array('menu', 'widget', 'comment', 'custom_field'), true)) {
+                                $post_ids_to_prime[] = absint($sid);
+                            }
+                        }
+                        if (!empty($post_ids_to_prime)) {
+                            _prime_post_caches(array_unique($post_ids_to_prime));
+                        }
+                    }
+                    ?>
                     <?php if (empty($links)): ?>
                         <tr>
                             <td colspan="6" class="frankdlc-no-items">
@@ -510,7 +534,18 @@ class FRANKDLC_Dashboard
                     <?php
                     // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- paginate_links returns safe HTML
                     echo paginate_links(array(
-                        'base' => add_query_arg(array('paged' => '%#%', 'per_page' => $per_page)),
+                        'base' => add_query_arg(array(
+                            'paged' => '%#%',
+                            'per_page' => $per_page,
+                            's' => !empty($search) ? $search : null,
+                            'status' => $current_status !== 'all' ? $current_status : null,
+                            'link_type' => $current_type !== 'all' ? $current_type : null,
+                            'date_from' => !empty($date_from) ? $date_from : null,
+                            'date_to' => !empty($date_to) ? $date_to : null,
+                            'http_status' => !empty($http_status) ? $http_status : null,
+                            'orderby' => $orderby,
+                            'order' => $order,
+                        )),
                         'format' => '',
                         'current' => $paged,
                         'total' => $total_pages,

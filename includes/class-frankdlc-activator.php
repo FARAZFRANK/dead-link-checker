@@ -144,7 +144,10 @@ class FRANKDLC_Activator
             KEY is_warning (is_warning),
             KEY source_id (source_id),
             KEY link_type (link_type),
-            KEY last_check (last_check)
+            KEY last_check (last_check),
+            KEY idx_check_queue (last_check, link_type),
+            KEY idx_broken_queue (is_broken, is_warning),
+            KEY idx_source (source_id, source_type)
         ) {$charset_collate};";
 
         // Scans table - stores scan history

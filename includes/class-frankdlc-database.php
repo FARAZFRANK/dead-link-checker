@@ -155,21 +155,34 @@ class FRANKDLC_Database
             'error_message' => $result['error_message'] ?? null,
         );
 
-        // Increment check count
+        // Consolidated single UPDATE for performance
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->query(
+        $update_success = (bool) $wpdb->query(
             $wpdb->prepare(
                 // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "UPDATE {$this->table_links} SET check_count = check_count + 1 WHERE id = %d",
+                "UPDATE {$this->table_links} SET 
+                    status_code = %s,
+                    status_text = %s,
+                    is_broken = %d,
+                    is_warning = %d,
+                    redirect_url = %s,
+                    redirect_count = %d,
+                    response_time = %s,
+                    last_check = %s,
+                    error_message = %s,
+                    check_count = check_count + 1
+                WHERE id = %d",
+                $data['status_code'],
+                $data['status_text'],
+                $data['is_broken'],
+                $data['is_warning'],
+                $data['redirect_url'],
+                $data['redirect_count'],
+                $data['response_time'],
+                $data['last_check'],
+                $data['error_message'],
                 $link_id
             )
-        );
-
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $update_success = (bool) $wpdb->update(
-            $this->table_links,
-            $data,
-            array('id' => $link_id)
         );
 
         // Clear stats cache so dashboard shows updated counts immediately

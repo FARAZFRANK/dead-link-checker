@@ -145,7 +145,16 @@ final class FRANKDLC_Plugin
     private function init_hooks()
     {
         add_action('plugins_loaded', array($this, 'init'));
+        add_action('init', array($this, 'load_textdomain'));
         add_filter('cron_schedules', array($this, 'register_cron_schedules'));
+    }
+
+    /**
+     * Load plugin textdomain for translations
+     */
+    public function load_textdomain()
+    {
+        load_plugin_textdomain('frank-dead-link-checker', false, dirname(plugin_basename(FRANKDLC_PLUGIN_FILE)) . '/languages');
     }
 
     /**

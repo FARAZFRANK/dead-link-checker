@@ -496,6 +496,26 @@
         showToast: function (message, type) {
             type = type || 'success';
 
+            // Normalize message if an object/response payload was passed
+            if (message && typeof message === 'object') {
+                if (typeof message.message === 'string') {
+                    message = message.message;
+                } else if (message.data && typeof message.data === 'string') {
+                    message = message.data;
+                } else if (message.data && typeof message.data.message === 'string') {
+                    message = message.data.message;
+                } else if (typeof message.responseText === 'string') {
+                    try {
+                        var parsed = JSON.parse(message.responseText);
+                        message = (parsed.data && parsed.data.message) ? parsed.data.message : (parsed.data || parsed.message || message.responseText);
+                    } catch (e) {
+                        message = message.responseText;
+                    }
+                } else {
+                    message = String(message);
+                }
+            }
+
             // Remove existing toasts
             $('.frankdlc-toast').remove();
 
@@ -658,34 +678,6 @@
             });
         },
 
-        /**
-         * Cleanup Export Files
-         */
-        cleanupExports: function (e) {
-            e.preventDefault();
-            FRANKDLC.confirmModal(frankdlcAdmin.strings.confirmCleanupExports, function() {
-                const $btn = $('#frankdlc-cleanup-exports-btn');
-                $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + frankdlcAdmin.strings.cleaning);
-                $.ajax({
-                    url: frankdlcAdmin.ajaxUrl,
-                    type: 'POST',
-                    data: { action: 'FRANKDLC_cleanup_exports', nonce: frankdlcAdmin.nonce },
-                    success: function (response) {
-                        if (response.success) {
-                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.exportFilesCleaned, 'success');
-                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
-                        } else {
-                            FRANKDLC.showToast(response.data || frankdlcAdmin.strings.failedCleanupExports, 'error');
-                            $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
-                        }
-                    },
-                    error: function () {
-                        FRANKDLC.showToast(frankdlcAdmin.strings.error, 'error');
-                        $btn.prop('disabled', false).html('<span class="dashicons dashicons-trash"></span> ' + frankdlcAdmin.strings.cleanupExports);
-                    }
-                });
-            });
-        }
     };
 
     // Initialize on document ready
