@@ -4,7 +4,7 @@ Tags: broken link, dead link, link checker, 404 error, seo
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,17 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 
 == Changelog ==
 
+= 1.0.8 =
+* Performance: Replaced unbounded post discovery with cursor-based batched discovery (50 items/batch), eliminating memory exhaustion and 504 gateway timeouts on large sites.
+* Feature: Added support for Gutenberg synced patterns (wp_block references) and shortcode link expansion.
+* Fix: Preserved images settings flag across settings save operations.
+* Fix: Tag-aware content editing and unlinking with support for <a>, <img>, <iframe>, <script>, and media elements.
+* Fix: Converted dashboard URL search from POST to GET, preserving search terms and filter parameters across pagination pages.
+* Performance: Added composite database indexes (idx_check_queue, idx_broken_queue, idx_source) and batch post cache priming to eliminate N+1 queries.
+* Performance: Consolidated check queue database updates into a single atomic SQL UPDATE statement.
+* Polish: Fully eliminated all 27 !important CSS overrides and normalized toast error message handling.
+* I18n: Added textdomain loading hook on init.
+
 = 1.0.7 - 2026-11-03 =
 * Security: Added SSRF (Server-Side Request Forgery) protection with IP validation and loopback/internal IP blocking.
 * Fix: Handled protocol-relative URL redirects safely in HTTP link checker.
@@ -168,6 +179,9 @@ Yes. It reports all 404 error pages. It also flags other server issues like 500 
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.8 =
+Scalable batched post discovery, tag-aware editing, dashboard search pagination fixes, and database query optimizations.
 
 = 1.0.7 =
 Adds SSRF protection, fixes timezone calculations, resolves Plugin Check compliance warnings, and updates WordPress 7.1 compatibility.
